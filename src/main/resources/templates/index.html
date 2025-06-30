@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HOME</title>
+</head>
+<link rel="stylesheet" th:href="@{style.css}" type="text/css">
+<body>
+<h1>Login</h1>
+<form th:action="login" method="post">
+    Phone <input type="text" name="phone" th:value="${phone}"/>
+    <br/>
+    <br/>
+    Password <input type="password" name="password" th:value="${password}"/>
+    <br/>
+    <input type="submit" value="login" class="btn"/>
+</form>
+
+</body>
+</html>
