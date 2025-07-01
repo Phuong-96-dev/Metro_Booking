@@ -18,5 +18,72 @@ public class TicketType {
 
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
+
+    public TicketType(Long ticketTypeId, String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets) {
+        this.ticketTypeId = ticketTypeId;
+        this.name = name;
+        this.price = price;
+        this.dateStart = dateStart;
+        this.expirationDate = expirationDate;
+        this.tickets = tickets;
+    }
+
+    public TicketType(String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets) {
+        this.name = name;
+        this.price = price;
+        this.dateStart = dateStart;
+        this.expirationDate = expirationDate;
+        this.tickets = tickets;
+    }
+    public TicketType() {
+    }
+
+    public Long getTicketTypeId() {
+        return ticketTypeId;
+    }
+
+    public void setTicketTypeId(Long ticketTypeId) {
+        this.ticketTypeId = ticketTypeId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public LocalDate getDateStart() {
+        return dateStart;
+    }
+
+    public void setDateStart(LocalDate dateStart) {
+        this.dateStart = dateStart;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
 }
 

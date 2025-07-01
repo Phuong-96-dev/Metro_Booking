@@ -18,5 +18,20 @@ public class Train {
 
     @OneToMany(mappedBy = "train")
     private List<TrainSchedule> schedules;
+
+    public Train(Long trainId, String name, Admin admin, List<TrainSchedule> schedules) {
+        this.trainId = trainId;
+        this.name = name;
+        this.admin = admin;
+        this.schedules = schedules;
+    }
+
+    public Train(String name, Admin admin, List<TrainSchedule> schedules) {
+        this.name = name;
+        this.admin = admin;
+        this.schedules = schedules;
+    }
+    public Train() {
+    }
 }
 
