@@ -5,4 +5,7 @@ import org.springframework.stereotype.Repository;
 import sum25.se180455.metro.pojo.TrainSchedule;
 @Repository
 public interface TrainScheduleRepository extends JpaRepository<TrainSchedule,Integer> {
+    TrainSchedule findTrainScheduleByScheduleId(Long scheduleId);
+
+    TrainSchedule getTrainScheduleByScheduleId(Long scheduleId);
 }

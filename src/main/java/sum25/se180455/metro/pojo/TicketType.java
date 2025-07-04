@@ -19,22 +19,35 @@ public class TicketType {
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
 
-    public TicketType(Long ticketTypeId, String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets) {
+    @ManyToOne
+    @JoinColumn(name = "station_start_id")
+    private TrainStation stationStart;
+
+    @ManyToOne
+    @JoinColumn(name = "station_end_id")
+    private TrainStation stationEnd;
+
+    public TicketType(Long ticketTypeId, String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.ticketTypeId = ticketTypeId;
         this.name = name;
         this.price = price;
         this.dateStart = dateStart;
         this.expirationDate = expirationDate;
         this.tickets = tickets;
+        this.stationStart = stationStart;
+        this.stationEnd = stationEnd;
     }
 
-    public TicketType(String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets) {
+    public TicketType(String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.name = name;
         this.price = price;
         this.dateStart = dateStart;
         this.expirationDate = expirationDate;
         this.tickets = tickets;
+        this.stationStart = stationStart;
+        this.stationEnd = stationEnd;
     }
+
     public TicketType() {
     }
 
@@ -84,6 +97,22 @@ public class TicketType {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public TrainStation getStationStart() {
+        return stationStart;
+    }
+
+    public void setStationStart(TrainStation stationStart) {
+        this.stationStart = stationStart;
+    }
+
+    public TrainStation getStationEnd() {
+        return stationEnd;
+    }
+
+    public void setStationEnd(TrainStation stationEnd) {
+        this.stationEnd = stationEnd;
     }
 }
 

@@ -1,19 +1,74 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HOME</title>
-    <link rel="stylesheet" th:href="@{/style.css}" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
+    <title>All Ticket Types</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<!-- Navbar -->
 <div th:replace="~{common/navbar :: navbar}"></div>
 
-<h1> VEs Tau </h1>
-<!-- Footer -->
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Vé 1 lần</h2>
+    <table class="table table-bordered mb-5">
+        <thead>
+        <tr>
+
+            <th>Tên vé</th>
+            <th>Giá</th>
+            <th>Ga bắt đầu</th>
+            <th>Ga kết thúc</th>
+            <th>Mua vé</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="type : ${ticketTypes}" th:if="${type.name == 'Vé 1 l?n'}">
+
+            <td th:text="${type.name}"></td>
+            <td th:text="${type.price}"></td>
+            <td th:text="${type.stationStart.name}"></td>
+            <td th:text="${type.stationEnd.name}"></td>
+            <td>
+                <form th:action="@{/ticket/buy}" method="post">
+                    <input type="hidden" name="ticketTypeId" th:value="${type.ticketTypeId}" />
+                    <button type="submit" class="btn btn-success">Mua vé</button>
+                </form>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <h2 class="mb-4 text-center">Vé theo thời gian (3 ngày, tuần, tháng)</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+
+            <th>Tên vé</th>
+            <th>Giá</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày hết hạn</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="type : ${ticketTypes}" th:if="${type.name != 'Vé 1 l?n'}">
+
+            <td th:text="${type.name}"></td>
+            <td th:text="${type.price}"></td>
+            <td th:text="${type.dateStart}"></td>
+            <td th:text="${type.expirationDate}"></td>
+            <td>
+                <form th:action="@{/ticket/buy}" method="post">
+                    <input type="hidden" name="ticketTypeId" th:value="${type.ticketTypeId}" />
+                    <button type="submit" class="btn btn-primary">Mua vé</button>
+                </form>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
 <div th:replace="~{common/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
