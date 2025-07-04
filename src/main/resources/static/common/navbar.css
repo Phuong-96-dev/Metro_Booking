@@ -1,0 +1,126 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #0B4C8A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    position: relative; /* để auth-buttons dùng absolute theo navbar */
+}
+
+/* Logo chính giữa */
+.logo-container img {
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+/* Menu ở giữa dưới logo */
+.menu-auth-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Menu items */
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 120px;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.menu li a:hover {
+    text-decoration: underline;
+}
+
+/* Sign up, Sign in hoặc dropdown luôn góc phải */
+.auth-buttons {
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.auth-buttons .signup {
+    color: white;
+    text-decoration: none;
+}
+
+.auth-buttons .signin {
+    background-color: #888;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.auth-buttons .signin:hover {
+    background-color: #666;
+}
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Dropdown content (ẩn mặc định) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    right: 0;   /* mở về bên trái để không bị tràn màn hình */
+    left: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 4px;
+}
+
+/* Links inside dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+
+/* Hover link */
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Hover dropdown -> show content */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Hover đổi màu nút */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}

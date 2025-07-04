@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Train Station Detail</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+<h1>Train Station Detail</h1>
+<div th:if="${station != null}">
+  <h2>Station Information</h2>
+  <p>
+    ID: <span th:text="${station.stationId}"></span><br>
+    Name: <span th:text="${station.name}"></span><br>
+    Arrival Time: <span th:text="${station.arrivalTime}"></span><br>
+    Note: <span th:text="${station.note != null} ? ${station.note} : 'No Note'"></span><br>
+  </p>
+  <h3>Schedules</h3>
+  <table th:if="${station.schedules != null and not #lists.isEmpty(station.schedules)}">
+    <tr>
+      <th>Schedule ID</th>
+      <th>Start Time</th>
+      <th>Depart Time</th>
+      <th>Arrival Time</th>
+      <th>Station Start</th>
+      <th>Station End</th>
+    </tr>
+    <tr th:each="schedule : ${station.schedules}">
+      <td th:text="${schedule.scheduleId}"></td>
+      <td th:text="${schedule.startTime}"></td>
+      <td th:text="${schedule.departTime}"></td>
+      <td th:text="${schedule.arrivalTime}"></td>
+      <td th:text="${schedule.stationStart}"></td>
+      <td th:text="${schedule.stationEnd}"></td>
+    </tr>
+  </table>
+  <p th:unless="${station.schedules != null and not #lists.isEmpty(station.schedules)}">No Schedules Available</p>
+  <h3>Bus Routes</h3>
+  <p th:if="${station.busRoutes != null and not #lists.isEmpty(station.busRoutes)}"
+     th:utext="${#strings.listJoin(station.busRoutes.![routeId], ', ')}"></p>
+  <p th:unless="${station.busRoutes != null and not #lists.isEmpty(station.busRoutes)}">No Bus Routes Available</p>
+</div>
+<p th:unless="${station != null}">Station not found</p>
+<a href="/train-stations">Back to List</a>
+</body>
+</html>

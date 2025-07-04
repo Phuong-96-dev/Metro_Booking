@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Navbar</title>
+    <link rel="stylesheet" th:href="@{/common/navbar.css}" />
+</head>
+<body>
+<div th:fragment="navbar">
+    <nav class="navbar">
+        <div class="logo-container">
+            <img th:src="@{/images/metro-logo.png}" alt="Metro Logo">
+        </div>
+        <div class="menu-auth-container">
+            <ul class="menu">
+                <li><a th:href="@{/}">Trang chủ</a></li>
+                <li><a th:href="@{/map}">Bản đồ</a></li>
+                <li><a th:href="@{/news}">Tin tức</a></li>
+                <li><a th:href="@{/ticket}">Vé tàu</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <!-- Nếu chưa đăng nhập -->
+                <div th:if="${member == null}">
+                    <a th:href="@{/register}" class="signup">Sign Up</a>
+                    <a th:href="@{/login}" class="signin">Sign In</a>
+                </div>
+
+                <!-- Nếu đã đăng nhập -->
+                <div th:if="${member != null}" class="dropdown">
+                    <button class="dropbtn">
+                        Chào, <span th:text="${member.name}">User</span> ▼
+                    </button>
+                    <div class="dropdown-content">
+                        <a th:href="@{/profile}">Thông tin cá nhân</a>
+                        <a th:href="@{/my-tickets}">Vé của tôi</a>
+                        <a th:href="@{/logout}">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
