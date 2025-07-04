@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Train Schedule List</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+<h1>Train Schedules</h1>
+<a href="/train-schedules/add">Add New Schedule</a>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Start Time</th>
+    <th>Depart Time</th>
+    <th>Arrival Time</th>
+    <th>Station Start</th>
+    <th>Station End</th>
+    <th>Train</th>
+    <th>Action</th>
+  </tr>
+  <tr th:each="schedule : ${schedules}">
+    <td th:text="${schedule.scheduleId}"></td>
+    <td th:text="${schedule.startTime}"></td>
+    <td th:text="${schedule.departTime}"></td>
+    <td th:text="${schedule.arrivalTime}"></td>
+    <td th:text="${schedule.stationStart}"></td>
+    <td th:text="${schedule.stationEnd}"></td>
+    <td th:text="${schedule.train != null} ? ${schedule.train.name} : 'No Train'"></td>
+    <td>
+      <a th:href="@{/train-schedules/edit/{id}(id=${schedule.scheduleId})}">Edit</a>
+      <a th:href="@{/train-schedules/delete/{id}(id=${schedule.scheduleId})}" onclick="return confirm('Are you sure?')">Delete</a>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

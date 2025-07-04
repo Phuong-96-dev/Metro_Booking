@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Train Station List</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+<h1>Train Stations</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Arrival Time</th>
+    <th>Note</th>
+    <th>Schedules</th>
+    <th>Action</th>
+  </tr>
+  <tr th:each="station : ${trainStations}">
+    <td th:text="${station.stationId}"></td>
+    <td th:text="${station.name}"></td>
+    <td th:text="${station.arrivalTime}"></td>
+    <td th:text="${station.note != null} ? ${station.note} : 'No Note'"></td>
+    <td>
+            <span th:if="${station.schedules != null and not #lists.isEmpty(station.schedules)}"
+                  th:utext="${#strings.listJoin(station.schedules.![scheduleId], ', ')}"></span>
+      <span th:unless="${station.schedules != null and not #lists.isEmpty(station.schedules)}">No Schedules</span>
+    </td>
+    <td><a th:href="@{/train-stations/{id}(id=${station.stationId})}">View</a></td>
+  </tr>
+</table>
+</body>
+</html>
