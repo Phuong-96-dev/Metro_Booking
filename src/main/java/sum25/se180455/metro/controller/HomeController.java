@@ -34,7 +34,13 @@ public class HomeController {
         Member member = memberService.login(email, password);
         if (member != null) {
             session.setAttribute("member", member);
-            return "redirect:/?message=Login successful";
+
+            // Check role để chuyển hướng
+            if ("ADMIN".equalsIgnoreCase(member.getRole())) {
+                return "redirect:/admin?message=Welcome admin";
+            } else {
+                return "redirect:/?message=Login successful";
+            }
         } else {
             return "redirect:/login?message=Invalid email or password";
         }
@@ -52,7 +58,7 @@ public class HomeController {
     public String processRegister(@ModelAttribute Member member) {
         member.setRole("MEMBER");
         memberService.register(member);
-        return "redirect:/success";
+        return "redirect:/login?message=Registration successful, please login";
     }
 
     @GetMapping("/ticket")
@@ -65,4 +71,10 @@ public class HomeController {
         session.invalidate();
         return "redirect:/?message=Logged out";
     }
+    // more
+    @GetMapping("/more")
+    public String morePage() {
+        return "more";
+    }
+
 }
