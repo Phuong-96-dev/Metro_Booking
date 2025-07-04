@@ -40,4 +40,10 @@ public class UserController {
         return "redirect:/profile?message=Profile updated successfully";
     }
 
+    // Admin dashboard
+    @GetMapping("/admin")
+    public String adminDashboard() {
+        return "admin/dashboard";
+    }
+
 }
