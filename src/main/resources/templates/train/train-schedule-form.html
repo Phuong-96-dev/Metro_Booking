@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Train Schedule Form</title>
+</head>
+<body>
+<h1>Train Schedule Form</h1>
+<form th:action="${schedule.scheduleId != null} ? @{/train-schedules/update/{id}(id=${schedule.scheduleId})} : @{/train-schedules}"
+      th:object="${schedule}" method="post">
+    <input type="hidden" th:field="*{scheduleId}" />
+    <label>Start Time:</label>
+    <input type="date" name="startTime"
+           th:value="${schedule.startTime != null ? #temporals.format(schedule.startTime, 'yyyy-MM-dd') : ''}" required /><br>
+
+    <label>Depart Time:</label>
+    <input type="date" name="departTime"
+           th:value="${schedule.departTime != null ? #temporals.format(schedule.departTime, 'yyyy-MM-dd') : ''}" required /><br>
+    <label>Arrival Time:</label>
+    <input type="date" name="arrivalTime"
+           th:value="${schedule.arrivalTime != null ? #temporals.format(schedule.arrivalTime, 'yyyy-MM-dd') : ''}" required /><br>
+    <label>Station Start:</label>
+    <select th:field="*{stationStart}" required>
+        <option value="">Select Start Station</option>
+        <option th:each="station : ${trainStations}"
+                th:value="${station.name}"
+                th:text="${station.name}"
+                th:selected="${station.name == schedule.stationStart}"></option>
+    </select><br>
+    <label>Station End:</label>
+    <select th:field="*{stationEnd}" required>
+        <option value="">Select End Station</option>
+        <option th:each="station : ${trainStations}"
+                th:value="${station.name}"
+                th:text="${station.name}"
+                th:selected="${station.name == schedule.stationEnd}"></option>
+    </select><br>
+    <label>Train:</label>
+    <select th:field="*{train}" required>
+        <option value="">Select Train</option>
+        <option th:each="train : ${trains}"
+                th:value="${train.trainId}"
+                th:text="${train.name}"
+                th:selected="${train.trainId == schedule.train?.trainId}"></option>
+    </select><br>
+    <button type="submit">Save</button>
+</form>
+<a href="/train-schedules">Back to List</a>
+</body>
+</html>
