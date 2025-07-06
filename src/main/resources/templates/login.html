@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>Login - Metro</title>
     <link rel="stylesheet" th:href="@{/train/login.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
 </head>
 <body>
 
+<div th:replace="common/navbar :: navbar"></div>
 <div class="login-container">
     <h2>Chào mừng trở lại!</h2>
     <h1>Đăng nhập</h1>
@@ -29,5 +32,7 @@
     </form>
     <p class="signup">Không có tài khoản? <a href="#">Đăng ký tại đây</a></p>
 </div>
+<div th:replace="common/footer :: footer"></div>
+
 </body>
 </html>
