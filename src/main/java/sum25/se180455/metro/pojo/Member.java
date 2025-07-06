@@ -24,7 +24,7 @@
         @OneToMany(mappedBy = "member")
         private List<Ticket> tickets;
 
-        @OneToMany(mappedBy = "member")
+        @OneToMany(mappedBy = "admin")
         private List<Blog> blogs;
 
         @OneToMany(mappedBy = "admin")
