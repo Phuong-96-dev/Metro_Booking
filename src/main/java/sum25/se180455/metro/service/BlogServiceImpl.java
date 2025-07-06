@@ -7,6 +7,7 @@ import sum25.se180455.metro.repository.BlogRepository;
 
 import sum25.se180455.metro.pojo.Member;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +27,19 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Blog createBlog(String title, String content, String img, Member adminId) {
-        return blogRepository.save(new Blog(title, content, img, adminId));
+    public Blog createBlog(Blog blog, Long adminId) {
+        blog.setPostingDate(LocalDate.now());
+
+        // Tạo entity Member chỉ với id để tránh lỗi duplicate persist
+        Member admin = new Member();
+        admin.setMemberId(adminId);
+        blog.setAdmin(admin);
+
+        return blogRepository.save(blog);
     }
+
+
+
 
     @Override
     public Blog updateBlog(Long blogId, String title, String content, String img) {
@@ -39,6 +50,7 @@ public class BlogServiceImpl implements BlogService {
         }
 
         Blog blog = optionalBlog.get();
+        blog.setPostingDate(LocalDate.now());
         blog.setTitle(title);
         blog.setContent(content);
         blog.setImageUrl(img);
@@ -50,5 +62,10 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public void deleteBlog(Long blogId) {
         blogRepository.deleteById(blogId);
+    }
+
+    @Override
+    public List<Blog> findAllBlogsOrderByDateDesc() {
+        return blogRepository.findAllByOrderByPostingDateDesc();
     }
 }

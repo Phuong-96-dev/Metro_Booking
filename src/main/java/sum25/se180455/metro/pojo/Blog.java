@@ -11,6 +11,7 @@ public class Blog {
 
     private String title;
     private String content;
+    @Column(name = "image_url", length = 5000)
     private String imageUrl;
     private LocalDate postingDate;
 

@@ -12,9 +12,12 @@ public interface BlogService {
     // view by id
     public Optional<Blog> viewBlogById(Long blogId);
     // create
-    public Blog createBlog(String title, String content, String img , Member adminId);
+    public Blog createBlog(Blog blog, Long admin_id);
     // update
     public Blog updateBlog(Long blogId, String title, String content, String img);
     // delete
     public void deleteBlog(Long blogId);
+
+    // view
+    public List<Blog> findAllBlogsOrderByDateDesc();
 }
