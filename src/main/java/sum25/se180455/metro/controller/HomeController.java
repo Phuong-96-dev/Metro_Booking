@@ -37,7 +37,7 @@ public class HomeController {
 
             // Check role để chuyển hướng
             if ("ADMIN".equalsIgnoreCase(member.getRole())) {
-                return "redirect:/admin?message=Welcome admin";
+                return "redirect:/admindashboard?message=Welcome admin";
             } else {
                 return "redirect:/?message=Login successful";
             }
@@ -48,18 +48,30 @@ public class HomeController {
 
     @GetMapping("/register")
     public String registerPage(Model model) {
-        Member member = new Member();
-        member.setRole("MEMBER");
-        model.addAttribute("member", member);
+        Member newMember = new Member();
+        newMember.setRole("MEMBER");
+        model.addAttribute("newMember", newMember);
         return "register";
     }
 
     @PostMapping("/register")
-    public String processRegister(@ModelAttribute Member member) {
-        member.setRole("MEMBER");
-        memberService.register(member);
+    public String processRegister(@ModelAttribute("newMember") Member newMember) {
+        if (newMember == null) {
+            System.out.println("Member is null. Possibly form binding failed.");
+            return "redirect:/register?error=Member is null";
+        }
+
+        System.out.println("Member info:");
+        System.out.println("Name: " + newMember.getName());
+        System.out.println("Email: " + newMember.getEmail());
+        System.out.println("Phone: " + newMember.getPhone());
+        System.out.println("Password: " + newMember.getPassword());
+
+        newMember.setRole("MEMBER");
+        memberService.register(newMember);
         return "redirect:/login?message=Registration successful, please login";
     }
+
 
     @GetMapping("/ticket")
     public String ticketPage() {

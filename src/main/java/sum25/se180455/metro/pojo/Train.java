@@ -12,9 +12,9 @@ public class Train {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    private String status;
+
+    private int capacity;
 
     @OneToMany(mappedBy = "train")
     private List<TrainSchedule> schedules;
@@ -22,16 +22,18 @@ public class Train {
     public Train() {
     }
 
-    public Train(Long trainId, String name, Admin admin, List<TrainSchedule> schedules) {
+    public Train(Long trainId, String name, String status, int capacity, List<TrainSchedule> schedules) {
         this.trainId = trainId;
         this.name = name;
-        this.admin = admin;
+        this.status = status;
+        this.capacity = capacity;
         this.schedules = schedules;
     }
 
-    public Train(String name, Admin admin, List<TrainSchedule> schedules) {
+    public Train(String name, String status, int capacity, List<TrainSchedule> schedules) {
         this.name = name;
-        this.admin = admin;
+        this.status = status;
+        this.capacity = capacity;
         this.schedules = schedules;
     }
 
@@ -51,12 +53,20 @@ public class Train {
         this.name = name;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public String getStatus() {
+        return status;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public List<TrainSchedule> getSchedules() {

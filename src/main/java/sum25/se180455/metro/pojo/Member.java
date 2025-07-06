@@ -27,7 +27,13 @@
         @OneToMany(mappedBy = "member")
         private List<Blog> blogs;
 
-        public Member(Long memberId, String name, String studentCard, String email, String phone, String schoolName, String password, String role, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs) {
+        @OneToMany(mappedBy = "admin")
+        private List<TrainSchedule> trainSchedules;
+
+        public Member() {
+        }
+
+        public Member(Long memberId, String name, String studentCard, String email, String phone, String schoolName, String password, String role, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<TrainSchedule> trainSchedules) {
             this.memberId = memberId;
             this.name = name;
             this.studentCard = studentCard;
@@ -39,21 +45,21 @@
             this.payments = payments;
             this.tickets = tickets;
             this.blogs = blogs;
-        }
-        public Member() {
+            this.trainSchedules = trainSchedules;
         }
 
-        public Member(String name, String studentCard, String email, String phone, String schoolName, String role, String password, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs) {
+        public Member(String name, String studentCard, String email, String phone, String schoolName, String password, String role, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<TrainSchedule> trainSchedules) {
             this.name = name;
             this.studentCard = studentCard;
             this.email = email;
             this.phone = phone;
             this.schoolName = schoolName;
-            this.role = role;
             this.password = password;
+            this.role = role;
             this.payments = payments;
             this.tickets = tickets;
             this.blogs = blogs;
+            this.trainSchedules = trainSchedules;
         }
 
         public Long getMemberId() {
@@ -72,20 +78,20 @@
             this.name = name;
         }
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
         public String getStudentCard() {
             return studentCard;
         }
 
         public void setStudentCard(String studentCard) {
             this.studentCard = studentCard;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
 
         public String getPhone() {
@@ -142,5 +148,13 @@
 
         public void setBlogs(List<Blog> blogs) {
             this.blogs = blogs;
+        }
+
+        public List<TrainSchedule> getTrainSchedules() {
+            return trainSchedules;
+        }
+
+        public void setTrainSchedules(List<TrainSchedule> trainSchedules) {
+            this.trainSchedules = trainSchedules;
         }
     }
