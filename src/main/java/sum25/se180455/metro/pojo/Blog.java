@@ -3,8 +3,6 @@ package sum25.se180455.metro.pojo;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
-
 @Entity
 public class Blog {
     @Id
@@ -13,33 +11,36 @@ public class Blog {
 
     private String title;
     private String content;
+    private String imageUrl;
     private LocalDate postingDate;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "admin_id") // đặt tên cột rõ nghĩa
+    private Member admin;
 
-    @ManyToOne
-    @JoinColumn(name = "approved_by")
-    private Admin approvedBy;
-    public Blog() {
-    }
-
-    public Blog(String title, LocalDate postingDate, String content, Member member, Admin approvedBy) {
-        this.title = title;
-        this.postingDate = postingDate;
-        this.content = content;
-        this.member = member;
-        this.approvedBy = approvedBy;
-    }
-
-    public Blog(Long blogId, String title, String content, LocalDate postingDate, Member member, Admin approvedBy) {
+    public Blog() {}
+    public Blog(Long blogId, String title, String content, String imageUrl, LocalDate postingDate, Member admin) {
         this.blogId = blogId;
         this.title = title;
         this.content = content;
+        this.imageUrl = imageUrl;
         this.postingDate = postingDate;
-        this.member = member;
-        this.approvedBy = approvedBy;
+        this.admin = admin;
+    }
+
+    public Blog(String title, String content, String imageUrl, LocalDate postingDate, Member admin) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+        this.postingDate = postingDate;
+        this.admin = admin;
+    }
+
+    public Blog(String title, String content, String imageUrl, Member admin) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+        this.admin = admin;
     }
 
     public Long getBlogId() {
@@ -66,6 +67,14 @@ public class Blog {
         this.content = content;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public LocalDate getPostingDate() {
         return postingDate;
     }
@@ -74,20 +83,12 @@ public class Blog {
         this.postingDate = postingDate;
     }
 
-    public Member getMember() {
-        return member;
+    public Member getAdmin() {
+        return admin;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    public Admin getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Admin approvedBy) {
-        this.approvedBy = approvedBy;
+    public void setAdmin(Member admin) {
+        this.admin = admin;
     }
 }
 

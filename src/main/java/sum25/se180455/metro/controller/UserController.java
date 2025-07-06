@@ -39,11 +39,10 @@ public class UserController {
 
         return "redirect:/profile?message=Profile updated successfully";
     }
-
-    // Admin dashboard
-    @GetMapping("/admin")
+    @GetMapping("/admindashboard")
     public String adminDashboard() {
-        return "admin/dashboard";
+        return "admindashboard";
     }
+    // Admin dashboard
 
 }
