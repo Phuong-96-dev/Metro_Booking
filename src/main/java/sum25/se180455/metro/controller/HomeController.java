@@ -33,9 +33,12 @@ public class HomeController {
                         @RequestParam String password) {
         Member member = memberService.login(email, password);
         if (member != null) {
+            if (!"ACTIVE".equalsIgnoreCase(member.getStatus())) {
+                return "redirect:/login?message=Tài khoản đã bị khóa";
+            }
+
             session.setAttribute("member", member);
 
-            // Check role để chuyển hướng
             if ("ADMIN".equalsIgnoreCase(member.getRole())) {
                 return "redirect:/admindashboard?message=Welcome admin";
             } else {
