@@ -2,37 +2,29 @@ package sum25.se180455.metro.pojo;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class BusRoute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long busId;
 
+    @Column(name = "name", columnDefinition = "NVARCHAR(100)")
     private String name;
+
+    @Column(name = "location", columnDefinition = "NVARCHAR(100)")
     private String location;
+
+    @Column(name = "bus_status", columnDefinition = "NVARCHAR(50)")
     private String busStatus;
 
     @ManyToOne
     @JoinColumn(name = "station_id")
     private TrainStation station;
 
-    public BusRoute() {
-    }
-
-    public BusRoute(String name, String location, String busStatus, TrainStation station) {
-        this.name = name;
-        this.location = location;
-        this.busStatus = busStatus;
-        this.station = station;
-    }
-
-    public BusRoute(Long busId, String name, String location, String busStatus, TrainStation station) {
-        this.busId = busId;
-        this.name = name;
-        this.location = location;
-        this.busStatus = busStatus;
-        this.station = station;
-    }
+    @OneToMany(mappedBy = "busRoute")
+    private List<BusRouteDestination> destinations;
 
     public Long getBusId() {
         return busId;
@@ -50,14 +42,6 @@ public class BusRoute {
         this.name = name;
     }
 
-    public String getBusStatus() {
-        return busStatus;
-    }
-
-    public void setBusStatus(String busStatus) {
-        this.busStatus = busStatus;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -66,12 +50,28 @@ public class BusRoute {
         this.location = location;
     }
 
+    public String getBusStatus() {
+        return busStatus;
+    }
+
+    public void setBusStatus(String busStatus) {
+        this.busStatus = busStatus;
+    }
+
     public TrainStation getStation() {
         return station;
     }
 
     public void setStation(TrainStation station) {
         this.station = station;
+    }
+
+    public List<BusRouteDestination> getDestinations() {
+        return destinations;
+    }
+
+    public void setDestinations(List<BusRouteDestination> destinations) {
+        this.destinations = destinations;
     }
 }
 

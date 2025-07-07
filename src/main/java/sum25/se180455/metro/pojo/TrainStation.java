@@ -11,34 +11,18 @@ public class TrainStation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long stationId;
 
+    @Column(name = "name", columnDefinition = "NVARCHAR(100)")
     private String name;
+
     private LocalDate arrivalTime;
+
+    @Column(name = "note", columnDefinition = "NVARCHAR(255)")
     private String note;
 
-    @ManyToMany(mappedBy = "stations")
-    private List<TrainSchedule> schedules;
+    private int position;
 
     @OneToMany(mappedBy = "station")
     private List<BusRoute> busRoutes;
-
-    public TrainStation(Long stationId, String name, LocalDate arrivalTime, String note, List<TrainSchedule> schedules, List<BusRoute> busRoutes) {
-        this.stationId = stationId;
-        this.name = name;
-        this.arrivalTime = arrivalTime;
-        this.note = note;
-        this.schedules = schedules;
-        this.busRoutes = busRoutes;
-    }
-
-    public TrainStation(String name, LocalDate arrivalTime, String note, List<TrainSchedule> schedules, List<BusRoute> busRoutes) {
-        this.name = name;
-        this.arrivalTime = arrivalTime;
-        this.note = note;
-        this.schedules = schedules;
-        this.busRoutes = busRoutes;
-    }
-    public TrainStation() {
-    }
 
     public Long getStationId() {
         return stationId;
@@ -54,6 +38,14 @@ public class TrainStation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public LocalDate getArrivalTime() {
@@ -72,13 +64,6 @@ public class TrainStation {
         this.note = note;
     }
 
-    public List<TrainSchedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<TrainSchedule> schedules) {
-        this.schedules = schedules;
-    }
 
     public List<BusRoute> getBusRoutes() {
         return busRoutes;

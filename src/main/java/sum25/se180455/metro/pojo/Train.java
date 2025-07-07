@@ -10,7 +10,13 @@ public class Train {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long trainId;
 
+    @Column(name = "name", columnDefinition = "NVARCHAR(100)")
     private String name;
+
+    @Column(name = "status", columnDefinition = "NVARCHAR(50)")
+    private String status;
+
+    private Integer numberPeople;
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
@@ -19,20 +25,20 @@ public class Train {
     @OneToMany(mappedBy = "train")
     private List<TrainSchedule> schedules;
 
-    public Train() {
+    public String getStatus() {
+        return status;
     }
 
-    public Train(Long trainId, String name, Admin admin, List<TrainSchedule> schedules) {
-        this.trainId = trainId;
-        this.name = name;
-        this.admin = admin;
-        this.schedules = schedules;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public Train(String name, Admin admin, List<TrainSchedule> schedules) {
-        this.name = name;
-        this.admin = admin;
-        this.schedules = schedules;
+    public Integer getNumberPeople() {
+        return numberPeople;
+    }
+
+    public void setNumberPeople(Integer numberPeople) {
+        this.numberPeople = numberPeople;
     }
 
     public Long getTrainId() {

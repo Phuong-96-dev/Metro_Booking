@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface TrainStationService {
     public List<TrainStation> getAllTrainStations();
     public Optional<TrainStation> getTrainStationById(Long id);
+    public Optional<TrainStation> getTrainStationByName(String name);
 }

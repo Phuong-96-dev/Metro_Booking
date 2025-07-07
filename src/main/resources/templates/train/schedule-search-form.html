@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tra cứu Lịch Trình Tàu</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/common/navbar.css}">
+    <link rel="stylesheet" th:href="@{/common/footer.css}">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{common/navbar :: navbar}"></div>
+<h1>Tra cứu Lịch Trình Tàu</h1>
+<div th:if="${error}" th:text="${error}" style="color: red;"></div>
+<form th:action="@{/search-schedules}" method="post">
+    <label>Ga bắt đầu:</label>
+    <select name="startStationId" required>
+        <option value="">Chọn Ga Bắt Đầu</option>
+        <option th:each="station : ${stations}"
+                th:value="${station.stationId}"
+                th:text="${station.name}"></option>
+    </select><br>
+    <label>Ga kết thúc:</label>
+    <select name="endStationId" required>
+        <option value="">Chọn Ga Kết Thúc</option>
+        <option th:each="station : ${stations}"
+                th:value="${station.stationId}"
+                th:text="${station.name}"></option>
+    </select><br>
+    <label>Ngày giờ:</label>
+    <input type="datetime-local" name="dateTime" required /><br>
+    <button type="submit">Tra cứu</button>
+</form>
+<a href="/">Quay lại Trang chủ</a>
+<!-- Footer -->
+<div th:replace="~{common/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

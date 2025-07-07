@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tìm Tuyến Xe Buýt</title>
+</head>
+<body>
+<h1>Tìm Tuyến Xe Buýt từ Ga Tàu</h1>
+
+<!-- FORM CHỌN GA TÀU -->
+<form method="post" th:action="@{/bus-routes/search}">
+    <label for="stationId">Chọn Ga Tàu:</label>
+    <select name="stationId" id="stationId">
+        <option th:each="station : ${stations}" th:value="${station.stationId}" th:text="${station.name}"></option>
+    </select>
+    <button type="submit">Tìm</button>
+</form>
+
+<!-- KẾT QUẢ -->
+<h2 th:if="${results != null}">Kết quả Tuyến Xe Buýt:</h2>
+
+<ul th:if="${results != null}">
+    <li th:each="bus : ${results}">
+        <h3 th:text="'Tuyến: ' + ${bus.name} + ' (' + ${bus.busStatus} + ')'"></h3>
+        <p><strong>Xuất phát từ ga:</strong> <span th:text="${bus.station.name}"></span></p>
+        <p><strong>Địa chỉ tuyến:</strong> <span th:text="${bus.location}"></span></p>
+
+        <p><strong>Các điểm đến:</strong></p>
+        <ul>
+            <li th:each="dest : ${bus.destinations}">
+                <span th:text="'→ ' + ${dest.destination}"></span><br/>
+                <span th:text="'Thời gian dự kiến: ' + ${dest.estimatedMinutes} + ' phút'"></span>
+            </li>
+        </ul>
+    </li>
+</ul>
+</body>
+</html>

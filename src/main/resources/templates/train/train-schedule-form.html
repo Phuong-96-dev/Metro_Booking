@@ -1,49 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Train Schedule Form</title>
+    <title>Form Lịch Trình Tàu</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/common/navbar.css}">
+    <link rel="stylesheet" th:href="@{/common/footer.css}">
 </head>
 <body>
-<h1>Train Schedule Form</h1>
-<form th:action="${schedule.scheduleId != null} ? @{/train-schedules/update/{id}(id=${schedule.scheduleId})} : @{/train-schedules}"
-      th:object="${schedule}" method="post">
-    <input type="hidden" th:field="*{scheduleId}" />
-    <label>Start Time:</label>
-    <input type="date" name="startTime"
-           th:value="${schedule.startTime != null ? #temporals.format(schedule.startTime, 'yyyy-MM-dd') : ''}" required /><br>
+<!-- Navbar -->
+<div th:replace="~{common/navbar :: navbar}"></div>
+<h1>Form Lịch Trình Tàu</h1>
+<div th:if="${error}" th:text="${error}" style="color: red;"></div>
 
-    <label>Depart Time:</label>
-    <input type="date" name="departTime"
-           th:value="${schedule.departTime != null ? #temporals.format(schedule.departTime, 'yyyy-MM-dd') : ''}" required /><br>
-    <label>Arrival Time:</label>
-    <input type="date" name="arrivalTime"
-           th:value="${schedule.arrivalTime != null ? #temporals.format(schedule.arrivalTime, 'yyyy-MM-dd') : ''}" required /><br>
-    <label>Station Start:</label>
-    <select th:field="*{stationStart}" required>
-        <option value="">Select Start Station</option>
-        <option th:each="station : ${trainStations}"
-                th:value="${station.name}"
-                th:text="${station.name}"
-                th:selected="${station.name == schedule.stationStart}"></option>
+<form th:action="@{/train-schedules}" method="post" th:object="${schedule}">
+    <input type="hidden" th:field="*{scheduleId}"/>
+
+    <label>Thời gian bắt đầu:</label>
+    <input type="datetime-local" th:field="*{startTime}" required/><br>
+
+    <label>Thời gian khởi hành:</label>
+    <input type="datetime-local" th:field="*{departTime}" required/><br>
+
+    <label>Thời gian đến:</label>
+    <input type="datetime-local" th:field="*{arrivalTime}" required/><br>
+
+    <label>Hướng đi:</label>
+    <select name="startStationId" id="startStation" onchange="updateEndStation()" required>
+        <option value="">Chọn Hướng Đi</option>
+        <option value="1" th:selected="${schedule.startStation != null and schedule.startStation.stationId == 1}">
+            Bến Thành → Bến xe Suối Tiên
+        </option>
+        <option value="14" th:selected="${schedule.startStation != null and schedule.startStation.stationId == 14}">
+            Bến xe Suối Tiên → Bến Thành
+        </option>
     </select><br>
-    <label>Station End:</label>
-    <select th:field="*{stationEnd}" required>
-        <option value="">Select End Station</option>
-        <option th:each="station : ${trainStations}"
-                th:value="${station.name}"
-                th:text="${station.name}"
-                th:selected="${station.name == schedule.stationEnd}"></option>
-    </select><br>
-    <label>Train:</label>
+
+    <input type="hidden" name="endStationId" id="endStation"
+           th:value="${schedule.endStation != null ? schedule.endStation.stationId : ''}"/>
+
+    <label>Tàu:</label>
     <select th:field="*{train}" required>
-        <option value="">Select Train</option>
+        <option value="">Chọn Tàu</option>
         <option th:each="train : ${trains}"
                 th:value="${train.trainId}"
                 th:text="${train.name}"
-                th:selected="${train.trainId == schedule.train?.trainId}"></option>
+                th:selected="${schedule.train != null and schedule.train.trainId == train.trainId}"></option>
     </select><br>
-    <button type="submit">Save</button>
+
+    <button type="submit">Lưu</button>
 </form>
-<a href="/train-schedules">Back to List</a>
+<a href="/train-schedules">Quay lại Danh sách</a>
+
+<script>
+    function updateEndStation() {
+        const startStation = document.getElementById("startStation").value;
+        const endStationInput = document.getElementById("endStation");
+        if (startStation === "1") {
+            endStationInput.value = "14";
+        } else if (startStation === "14") {
+            endStationInput.value = "1";
+        } else {
+            endStationInput.value = "";
+        }
+    }
+
+    window.onload = updateEndStation;
+</script>
+<!-- Footer -->
+<div th:replace="~{common/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -9,8 +9,14 @@
             padding: 5px;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/common/navbar.css}">
+    <link rel="stylesheet" th:href="@{/common/footer.css}">
 </head>
 <body>
+<!-- Navbar -->
+<div th:replace="~{common/navbar :: navbar}"></div>
 <h1>Train Detail</h1>
 <div th:if="${train != null}">
     <h2>Train Information</h2>
@@ -34,29 +40,25 @@
             <th>Start Time</th>
             <th>Depart Time</th>
             <th>Arrival Time</th>
-            <th>Station Start</th>
-            <th>Station End</th>
+            <th>Direction</th>
             <th>Train ID</th>
-            <th>Stations</th>
         </tr>
         <tr th:each="schedule : ${train.schedules}">
             <td th:text="${schedule.scheduleId}"></td>
             <td th:text="${schedule.startTime}"></td>
             <td th:text="${schedule.departTime}"></td>
             <td th:text="${schedule.arrivalTime}"></td>
-            <td th:text="${schedule.stationStart}"></td>
-            <td th:text="${schedule.stationEnd}"></td>
+            <td th:text="${schedule.startStation.name} + ' → ' + ${schedule.endStation.name}"></td>
             <td th:text="${schedule.train?.trainId}"></td>
-            <td>
-                <span th:if="${schedule.stations != null and not #lists.isEmpty(schedule.stations)}"
-                      th:utext="${#strings.listJoin(schedule.stations.![name], ', ')}"></span>
-                <span th:unless="${schedule.stations != null and not #lists.isEmpty(schedule.stations)}">No Stations</span>
-            </td>
         </tr>
     </table>
     <p th:unless="${train.schedules != null and not #lists.isEmpty(train.schedules)}">No Schedules Available</p>
 </div>
 <p th:unless="${train != null}">Train not found</p>
 <a href="/trains">Back to List</a>
+<!-- Footer -->
+<div th:replace="~{common/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -11,13 +11,12 @@ import sum25.se180455.metro.service.TrainScheduleService;
 import sum25.se180455.metro.service.TrainService;
 import sum25.se180455.metro.service.TrainStationService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/train-schedules")
 public class TrainScheduleController {
+
     @Autowired
     private TrainScheduleService trainScheduleService;
 
@@ -37,77 +36,93 @@ public class TrainScheduleController {
     public String showAddForm(Model model) {
         model.addAttribute("schedule", new TrainSchedule());
         model.addAttribute("trains", trainService.getAllTrains());
-        model.addAttribute("trainStations", trainStationService.getAllTrainStations());
+        model.addAttribute("stations", getTerminalStations());
         return "train/train-schedule-form";
-    }
-
-    @PostMapping
-    public String addTrainSchedule(@ModelAttribute TrainSchedule schedule, Model model) {
-        // Tìm Train từ trainId
-        Optional<Train> train = trainService.getTrainById(schedule.getTrain().getTrainId());
-        if (!train.isPresent()) {
-            model.addAttribute("error", "Invalid train selected");
-            model.addAttribute("trains", trainService.getAllTrains());
-            model.addAttribute("trainStations", trainStationService.getAllTrainStations());
-            return "train/train-schedule-form";
-        }
-        schedule.setTrain(train.get());
-
-        // Tìm TrainStation tương ứng với stationStart và stationEnd để thêm vào stations
-        List<TrainStation> stations = new ArrayList<>();
-        for (TrainStation station : trainStationService.getAllTrainStations()) {
-            if (station.getName().equals(schedule.getStationStart()) ||
-                    station.getName().equals(schedule.getStationEnd())) {
-                stations.add(station);
-            }
-        }
-        schedule.setStations(stations);
-
-        // Lưu TrainSchedule
-        trainScheduleService.saveTrainSchedule(schedule);
-        return "redirect:/train-schedules";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Optional<TrainSchedule> schedule = trainScheduleService.getTrainScheduleById(id);
-        model.addAttribute("schedule", schedule.orElse(new TrainSchedule()));
+        Optional<TrainSchedule> scheduleOpt = trainScheduleService.getTrainScheduleById(id);
+        if (scheduleOpt.isEmpty()) return "redirect:/train-schedules";
+
+        model.addAttribute("schedule", scheduleOpt.get());
         model.addAttribute("trains", trainService.getAllTrains());
-        model.addAttribute("trainStations", trainStationService.getAllTrainStations());
+        model.addAttribute("stations", getTerminalStations());
         return "train/train-schedule-form";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateTrainSchedule(@PathVariable Long id, @ModelAttribute TrainSchedule schedule, Model model) {
-        // Tìm Train từ trainId
-        Optional<Train> train = trainService.getTrainById(schedule.getTrain().getTrainId());
-        if (!train.isPresent()) {
-            model.addAttribute("error", "Invalid train selected");
-            model.addAttribute("trains", trainService.getAllTrains());
-            model.addAttribute("trainStations", trainStationService.getAllTrainStations());
-            return "train/train-schedule-form";
-        }
-        schedule.setTrain(train.get());
+    @PostMapping
+    public String saveSchedule(
+            @RequestParam Long startStationId,
+            @RequestParam Long endStationId,
+            @ModelAttribute("schedule") TrainSchedule schedule,
+            Model model) {
 
-        // Tìm TrainStation tương ứng với stationStart và stationEnd để thêm vào stations
-        List<TrainStation> stations = new ArrayList<>();
-        for (TrainStation station : trainStationService.getAllTrainStations()) {
-            if (station.getName().equals(schedule.getStationStart()) ||
-                    station.getName().equals(schedule.getStationEnd())) {
-                stations.add(station);
-            }
-        }
-        schedule.setStations(stations);
+        Optional<TrainStation> startStation = trainStationService.getTrainStationById(startStationId);
+        Optional<TrainStation> endStation = trainStationService.getTrainStationById(endStationId);
 
-        // Cập nhật scheduleId và lưu
-        schedule.setScheduleId(id);
+        if (startStation.isEmpty() || endStation.isEmpty()) {
+            model.addAttribute("error", "Không tìm thấy ga bắt đầu hoặc ga kết thúc.");
+            return reloadForm(model, schedule);
+        }
+
+        schedule.setStartStation(startStation.get());
+        schedule.setEndStation(endStation.get());
+
+        if (!isValidStationPair(schedule.getStartStation(), schedule.getEndStation())) {
+            model.addAttribute("error", "Cặp ga không hợp lệ. Phải là Bến Thành đến Bến xe Suối Tiên hoặc ngược lại.");
+            return reloadForm(model, schedule);
+        }
+
+        if (schedule.getDepartTime() != null && schedule.getArrivalTime() != null &&
+                schedule.getDepartTime().isAfter(schedule.getArrivalTime())) {
+            model.addAttribute("error", "Thời gian khởi hành phải trước thời gian đến.");
+            return reloadForm(model, schedule);
+        }
+
+        if (schedule.getTrain() == null || schedule.getTrain().getTrainId() == null) {
+            model.addAttribute("error", "Vui lòng chọn tàu.");
+            return reloadForm(model, schedule);
+        }
+
+        Optional<Train> trainOpt = trainService.getTrainById(schedule.getTrain().getTrainId());
+        if (trainOpt.isEmpty()) {
+            model.addAttribute("error", "Tàu không hợp lệ.");
+            return reloadForm(model, schedule);
+        }
+
+        schedule.setTrain(trainOpt.get());
         trainScheduleService.saveTrainSchedule(schedule);
+
         return "redirect:/train-schedules";
     }
 
+
     @GetMapping("/delete/{id}")
-    public String deleteTrainSchedule(@PathVariable Long id) {
+    public String deleteSchedule(@PathVariable Long id) {
         trainScheduleService.deleteTrainSchedule(id);
         return "redirect:/train-schedules";
+    }
+
+    private boolean isValidStationPair(TrainStation start, TrainStation end) {
+        if (start == null || end == null) return false;
+        String s = start.getName();
+        String e = end.getName();
+        return (s.equals("Bến Thành") && e.equals("Bến xe Suối Tiên")) ||
+                (s.equals("Bến xe Suối Tiên") && e.equals("Bến Thành"));
+    }
+
+    private List<TrainStation> getTerminalStations() {
+        List<TrainStation> result = new ArrayList<>();
+        trainStationService.getTrainStationByName("Bến Thành").ifPresent(result::add);
+        trainStationService.getTrainStationByName("Bến xe Suối Tiên").ifPresent(result::add);
+        return result;
+    }
+
+    private String reloadForm(Model model, TrainSchedule schedule) {
+        model.addAttribute("schedule", schedule);
+        model.addAttribute("trains", trainService.getAllTrains());
+        model.addAttribute("stations", getTerminalStations());
+        return "train/train-schedule-form";
     }
 }
