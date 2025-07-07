@@ -24,37 +24,15 @@
         @OneToMany(mappedBy = "member")
         private List<Ticket> tickets;
 
-        @OneToMany(mappedBy = "member")
+        @OneToMany(mappedBy = "admin")
         private List<Blog> blogs;
 
-        public Member(Long memberId, String name, String studentCard, String email, String phone, String schoolName, String password, String role, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs) {
-            this.memberId = memberId;
-            this.name = name;
-            this.studentCard = studentCard;
-            this.email = email;
-            this.phone = phone;
-            this.schoolName = schoolName;
-            this.password = password;
-            this.role = role;
-            this.payments = payments;
-            this.tickets = tickets;
-            this.blogs = blogs;
-        }
+        @OneToMany(mappedBy = "admin")
+        private List<Train> trains;
+
         public Member() {
         }
 
-        public Member(String name, String studentCard, String email, String phone, String schoolName, String role, String password, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs) {
-            this.name = name;
-            this.studentCard = studentCard;
-            this.email = email;
-            this.phone = phone;
-            this.schoolName = schoolName;
-            this.role = role;
-            this.password = password;
-            this.payments = payments;
-            this.tickets = tickets;
-            this.blogs = blogs;
-        }
 
         public Long getMemberId() {
             return memberId;
@@ -72,20 +50,20 @@
             this.name = name;
         }
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
         public String getStudentCard() {
             return studentCard;
         }
 
         public void setStudentCard(String studentCard) {
             this.studentCard = studentCard;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
 
         public String getPhone() {
@@ -106,6 +84,14 @@
 
         public String getPassword() {
             return password;
+        }
+
+        public List<Train> getTrains() {
+            return trains;
+        }
+
+        public void setTrains(List<Train> trains) {
+            this.trains = trains;
         }
 
         public void setPassword(String password) {

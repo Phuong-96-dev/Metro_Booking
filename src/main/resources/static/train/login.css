@@ -1,0 +1,110 @@
+/* login.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    text-align: center;
+}
+
+.login-container h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.login-container h1 {
+    font-size: 32px;
+    color: #2e4a80;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    background-color: #eef2ff;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #2e4a80;
+}
+
+.remember {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.remember input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+.forgot {
+    color: #c0392b;
+    text-decoration: none;
+}
+
+.forgot:hover {
+    text-decoration: underline;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2e4a80;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #1f3560;
+}
+
+.signup {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+.signup a {
+    color: #c0392b;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup a:hover {
+    text-decoration: underline;
+}

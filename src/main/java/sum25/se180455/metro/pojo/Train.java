@@ -20,7 +20,7 @@ public class Train {
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
-    private Admin admin;
+    private Member admin;
 
     @OneToMany(mappedBy = "train")
     private List<TrainSchedule> schedules;
@@ -57,16 +57,17 @@ public class Train {
         this.name = name;
     }
 
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
 
     public List<TrainSchedule> getSchedules() {
         return schedules;
+    }
+
+    public Member getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Member admin) {
+        this.admin = admin;
     }
 
     public void setSchedules(List<TrainSchedule> schedules) {

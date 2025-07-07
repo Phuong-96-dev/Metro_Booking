@@ -13,29 +13,33 @@ public class TicketType {
 
     private String name;
     private Double price;
-    private LocalDate dateStart;
-    private LocalDate expirationDate;
+    private String description;
 
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
 
-    public TicketType(Long ticketTypeId, String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets) {
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "train_station_id")
+    private TrainStation trainStation;
+
+    public TicketType() {
+    }
+
+    public TicketType(Long ticketTypeId, String name, Double price, String description, List<Ticket> tickets, TrainStation trainStation) {
         this.ticketTypeId = ticketTypeId;
         this.name = name;
         this.price = price;
-        this.dateStart = dateStart;
-        this.expirationDate = expirationDate;
+        this.description = description;
         this.tickets = tickets;
+        this.trainStation = trainStation;
     }
 
-    public TicketType(String name, Double price, LocalDate dateStart, LocalDate expirationDate, List<Ticket> tickets) {
+    public TicketType(String name, Double price, String description, List<Ticket> tickets, TrainStation trainStation) {
         this.name = name;
         this.price = price;
-        this.dateStart = dateStart;
-        this.expirationDate = expirationDate;
+        this.description = description;
         this.tickets = tickets;
-    }
-    public TicketType() {
+        this.trainStation = trainStation;
     }
 
     public Long getTicketTypeId() {
@@ -62,20 +66,12 @@ public class TicketType {
         this.price = price;
     }
 
-    public LocalDate getDateStart() {
-        return dateStart;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDateStart(LocalDate dateStart) {
-        this.dateStart = dateStart;
-    }
-
-    public LocalDate getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<Ticket> getTickets() {
@@ -84,6 +80,14 @@ public class TicketType {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public TrainStation getTrainStation() {
+        return trainStation;
+    }
+
+    public void setTrainStation(TrainStation trainStation) {
+        this.trainStation = trainStation;
     }
 }
 

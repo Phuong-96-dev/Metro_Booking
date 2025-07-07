@@ -46,11 +46,12 @@
         <!-- Sidebar -->
         <div class="col-md-2 sidebar">
             <h4 class="text-center mb-4">Admin Metro</h4>
-            <a href="#"><i class="fa fa-ticket-alt"></i> Quản lý Vé</a>
-            <a href="#"><i class="fa fa-train"></i> Quản lý Ga Tàu</a>
-            <a href="#"><i class="fa fa-bus"></i> Quản lý Bus</a>
-            <a href="#"><i class="fa fa-newspaper"></i> Quản lý Tin tức</a>
-            <a href="#"><i class="fa fa-chart-bar"></i> Thống kê</a>
+            <a th:href="@{/adminManage/manageTicket}"><i class="fa fa-ticket-alt"></i> Quản lý Vé</a>
+            <a th:href="@{/adminManage/manageStation}"><i class="fa fa-train"></i> Quản lý Ga Tàu</a>
+            <a th:href="@{/adminManage/manageBus}"><i class="fa fa-bus"></i> Quản lý Bus</a>
+            <a th:href="@{/adminManage/manageBlog}"><i class="fa fa-newspaper"></i> Quản lý Tin tức</a>
+            <a th:href="@{/adminManage/manageMember}"><i class="fa fa-users"></i> Quản lý Người dùng</a>
+            <a th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i> Log Out</a>
         </div>
 
         <!-- Main content -->
