@@ -20,23 +20,29 @@ public class Payment {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public Payment(Long paymentId, LocalDate paymentDate, Double price, String status, String paymentMethod, Member member) {
+    @OneToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
+    public Payment() {
+    }
+
+    public Payment(Long paymentId, LocalDate paymentDate, Double price, String paymentMethod, String status, Member member, Ticket ticket) {
         this.paymentId = paymentId;
         this.paymentDate = paymentDate;
         this.price = price;
-        this.status = status;
         this.paymentMethod = paymentMethod;
+        this.status = status;
         this.member = member;
+        this.ticket = ticket;
     }
 
-    public Payment(LocalDate paymentDate, Double price, String paymentMethod, String status, Member member) {
+    public Payment(LocalDate paymentDate, Double price, String paymentMethod, String status, Member member, Ticket ticket) {
         this.paymentDate = paymentDate;
         this.price = price;
         this.paymentMethod = paymentMethod;
         this.status = status;
         this.member = member;
-    }
-    public Payment() {
+        this.ticket = ticket;
     }
 
     public Long getPaymentId() {
@@ -85,5 +91,13 @@ public class Payment {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 }

@@ -24,6 +24,10 @@ public class TrainSchedule {
     @OneToMany(mappedBy = "schedule")
     private List<Ticket> tickets;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Member admin;
+
     @ManyToMany
     @JoinTable(
             name = "schedule_station",

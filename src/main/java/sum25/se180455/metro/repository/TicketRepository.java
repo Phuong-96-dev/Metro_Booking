@@ -7,4 +7,6 @@ import sum25.se180455.metro.pojo.TicketType;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
+    // count tickets dashboard
+    int countByStatus(String status);
 }

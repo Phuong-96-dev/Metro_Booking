@@ -3,16 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Metro</title>
-    <h1>Login</h1>
-    <form th:action="login" method="post">
-        Phone <input type="text" name="email" th:value="${email}"/>
-        <br/>
-        <br/>
-        Password <input type="password" name="password" th:value="${password}"/>
-        <br/>
-        <input type="submit" value="login" class="btn"/>
-    </form>
-
-    </body>
+    <link rel="stylesheet" th:href="@{/train/login.css}" type="text/css">
 </head>
+<body>
+
+<div class="login-container">
+    <h2>Chào mừng trở lại!</h2>
+    <h1>Đăng nhập</h1>
+    <form th:action="login" method="post">
+        <div class="input-group">
+            <label>Email/SĐT</label>
+            <input type="text" name="email" th:value="${email}" required>
+        </div>
+        <div class="input-group">
+            <label>Mật khẩu</label>
+            <input type="password" name="password" th:value="${password}" required>
+        </div>
+        <div class="remember">
+            <label class="remember-label">
+                <input type="checkbox" name="remember" id="remember"> Nhớ mật khẩu
+            </label>
+            <a href="#" class="forgot">Quên mật khẩu?</a>
+        </div>
+        <button type="submit" class="login-btn">Đăng nhập</button>
+    </form>
+    <p class="signup">Không có tài khoản? <a href="#">Đăng ký tại đây</a></p>
+</div>
+</body>
 </html>
