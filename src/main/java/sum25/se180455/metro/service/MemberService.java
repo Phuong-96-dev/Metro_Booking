@@ -7,4 +7,8 @@ public interface MemberService {
     public Member login(String email, String password);
 
     public Member register(Member member);
+
+    public Member updateMember(Member member);
+
+    public Member findById(Long memberId);
 }

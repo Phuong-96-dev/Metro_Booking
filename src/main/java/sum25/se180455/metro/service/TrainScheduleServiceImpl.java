@@ -6,19 +6,27 @@ import sum25.se180455.metro.pojo.TrainSchedule;
 import sum25.se180455.metro.repository.TrainScheduleRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class TrainScheduleServiceImpl implements TrainScheduleService {
+public class TrainScheduleServiceImpl implements  TrainScheduleService {
     @Autowired
     private TrainScheduleRepository trainScheduleRepository;
 
     @Override
-    public TrainSchedule getTrainScheduleById(Long id) {
-        return trainScheduleRepository.getTrainScheduleByScheduleId(id);
+    public List<TrainSchedule> getAllTrainSchedules() {
+        return trainScheduleRepository.findAll();
     }
-
     @Override
-    public List<TrainSchedule> getTrainSchedules() {
-        return List.of();
+    public Optional<TrainSchedule> getTrainScheduleById(Long id) {
+        return trainScheduleRepository.findById(id);
+    }
+    @Override
+    public TrainSchedule saveTrainSchedule(TrainSchedule schedule) {
+        return trainScheduleRepository.save(schedule);
+    }
+    @Override
+    public void deleteTrainSchedule(Long id) {
+        trainScheduleRepository.deleteById(id);
     }
 }

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import sum25.se180455.metro.pojo.Member;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Integer> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByEmailAndPassword(String email, String password);
 }

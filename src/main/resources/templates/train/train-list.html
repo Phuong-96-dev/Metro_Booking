@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Train List</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Trains</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Admin Name</th>
+        <th>Admin Email</th>
+        <th>Admin Phone</th>
+        <th>Admin Role</th>
+        <th>Schedules</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="train : ${trains}">
+        <td th:text="${train.trainId}"></td>
+        <td th:text="${train.name}"></td>
+        <td th:text="${train.admin != null} ? ${train.admin.name} : 'No Admin'"></td>
+        <td th:text="${train.admin != null} ? ${train.admin.email} : 'No Admin'"></td>
+        <td th:text="${train.admin != null} ? ${train.admin.phone} : 'No Admin'"></td>
+        <td th:text="${train.admin != null} ? ${train.admin.role} : 'No Admin'"></td>
+        <td>
+            <span th:if="${train.schedules != null and not #lists.isEmpty(train.schedules)}"
+                  th:utext="${#strings.listJoin(train.schedules.![scheduleId], ', ')}"></span>
+            <span th:unless="${train.schedules != null and not #lists.isEmpty(train.schedules)}">No Schedules</span>
+        </td>
+        <td><a th:href="@{/trains/{id}(id=${train.trainId})}">View</a></td>
+    </tr>
+</table>
+</body>
+</html>

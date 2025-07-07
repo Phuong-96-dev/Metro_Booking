@@ -1,0 +1,102 @@
+/* Reset nhẹ */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+
+/* Banner */
+.container .row:first-child {
+    background: #e9ecef;
+    border-radius: 8px;
+    padding: 2rem;
+}
+.container .row:first-child h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+.container .row:first-child p {
+    font-size: 14px;
+}
+
+/* Form tìm chuyến tàu */
+.card form input,
+.card form button {
+    border-radius: 5px;
+}
+.card form button {
+    font-weight: bold;
+}
+
+/* Sơ đồ tuyến */
+.mt-5.text-center img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.mt-5.text-center img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Đánh giá */
+.mt-5 h4 {
+    font-weight: bold;
+}
+.mt-5 .card {
+    border: none;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.mt-5 .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.mt-5 i.fa-star, .mt-5 i.fa-star-half-alt {
+    font-size: 18px;
+    color: #ffc107;
+}
+
+/* Footer */
+.footer, footer {
+    background: #003366;
+    color: white;
+    padding: 1rem 0;
+    margin-top: 2rem;
+    text-align: center;
+}
+.footer a, footer a {
+    color: #ddd;
+}
+.footer a:hover, footer a:hover {
+    color: white;
+}
+
+/* Heading màu đồng bộ */
+h1, h3 {
+    color: #003366;
+}
+
+/* List style nếu dùng */
+.list-group-item {
+    background: #f8f9fa;
+    border-left: 5px solid #003366;
+    margin-bottom: 0.5rem;
+    padding: 1rem 1.2rem;
+}
+.list-group-item strong {
+    color: #003366;
+}
+
+/* Responsive fix */
+@media (max-width: 768px) {
+    .container .row:first-child {
+        text-align: center;
+    }
+    .container .row:first-child h2 {
+        font-size: 20px;
+    }
+}
