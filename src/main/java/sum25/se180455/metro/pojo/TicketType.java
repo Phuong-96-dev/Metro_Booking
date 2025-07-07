@@ -13,7 +13,7 @@ public class TicketType {
 
     private String name;
     private Double price;
-
+    private int durationDays;
 
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
@@ -26,24 +26,27 @@ public class TicketType {
     @JoinColumn(name = "station_end_id")
     private TrainStation stationEnd;
 
-    public TicketType(Long ticketTypeId, String name, Double price, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
+    public TicketType(Long ticketTypeId, String name, Double price, int durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.ticketTypeId = ticketTypeId;
         this.name = name;
         this.price = price;
+        this.durationDays = durationDays;
         this.tickets = tickets;
         this.stationStart = stationStart;
         this.stationEnd = stationEnd;
     }
 
-    public TicketType(String name, Double price, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
+    public TicketType(String name, Double price, int durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.name = name;
         this.price = price;
+        this.durationDays = durationDays;
         this.tickets = tickets;
         this.stationStart = stationStart;
         this.stationEnd = stationEnd;
     }
 
     public TicketType() {
+
     }
 
     public Long getTicketTypeId() {
@@ -94,6 +97,14 @@ public class TicketType {
 
     public void setStationEnd(TrainStation stationEnd) {
         this.stationEnd = stationEnd;
+    }
+
+    public int getDurationDays() {
+        return durationDays;
+    }
+
+    public void setDurationDays(int durationDays) {
+        this.durationDays = durationDays;
     }
 }
 

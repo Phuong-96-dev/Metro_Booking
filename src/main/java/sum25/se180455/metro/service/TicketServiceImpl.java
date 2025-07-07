@@ -17,4 +17,21 @@ public class TicketServiceImpl implements TicketService {
     public void save(Ticket ticket) {
         ticketRepository.save(ticket);
     }
+
+    @Override
+    public List<Ticket> getUnpaidTickets(Long memberId) {
+        return ticketRepository.findByMember_MemberIdAndStatus(memberId, "payment");
+    }
+
+    @Override
+    public Ticket findById(Long TicketId) {
+        return ticketRepository.findById(TicketId).get();
+    }
+
+    @Override
+    public List<Ticket> getActiveTicketsByMemberId(Long memberId) {
+        return ticketRepository.findByMember_MemberIdAndStatus(memberId, "Active");
+    }
+
+
 }

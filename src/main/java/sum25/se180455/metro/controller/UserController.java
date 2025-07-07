@@ -1,15 +1,24 @@
 package sum25.se180455.metro.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import sum25.se180455.metro.pojo.Member;
+import sum25.se180455.metro.pojo.Payment;
+import sum25.se180455.metro.pojo.Ticket;
+import sum25.se180455.metro.repository.MemberRepository;
+import sum25.se180455.metro.repository.PaymentRepository;
+import sum25.se180455.metro.repository.TicketRepository;
+import sum25.se180455.metro.request.PaymentRequest;
 import sum25.se180455.metro.service.BlogService;
 import sum25.se180455.metro.service.MemberService;
+import sum25.se180455.metro.service.PaymentService;
+import sum25.se180455.metro.service.TicketService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -18,6 +27,10 @@ public class UserController {
     private MemberService memberService;
     @Autowired
     private BlogService blogService;
+    @Autowired
+    private TicketService ticketService;
+    @Autowired
+    private PaymentService paymentService;
 
     // profile
     @GetMapping("/profile")
@@ -88,5 +101,17 @@ public class UserController {
         memberService.updateRole(existingMember.getMemberId(), existingMember.getRole());
 
         return "redirect:/adminManage/managerMember?message=Member role updated successfully";
+    }
+
+    @GetMapping("/my-ticket")
+    public String viewMyTickets(HttpSession session, Model model) {
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/login";
+        }
+
+        List<Ticket> activeTickets = ticketService.getActiveTicketsByMemberId(member.getMemberId());
+        model.addAttribute("tickets", activeTickets);
+        return "member/myTicket"; // Trỏ đến file Thymeleaf `myTicket.html`
     }
 }

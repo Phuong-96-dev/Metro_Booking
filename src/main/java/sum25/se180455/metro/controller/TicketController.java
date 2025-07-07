@@ -17,6 +17,7 @@ import sum25.se180455.metro.service.TicketService;
 import sum25.se180455.metro.service.TicketTypeService;
 import sum25.se180455.metro.service.TrainScheduleService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class TicketController {
 
     @GetMapping("/ticket")
     public String showAllTicketTypes(Model model) {
-        List<TicketType> types = ticketTypeService.getTicketTypes();
+        List<TicketType> types = ticketTypeService.getAllTicketTypes();
         model.addAttribute("ticketTypes", types);
 
         return "ticket"; // lúc này ticket.html sẽ hiển thị ticketTypes
@@ -42,20 +43,35 @@ public class TicketController {
 
     @PostMapping("/ticket/buy")
     public String buyTicket(@RequestParam("ticketTypeId") Long ticketTypeId,
-                            HttpSession session,
-                            Model model) {
+                            HttpSession session) {
+
         Member member = (Member) session.getAttribute("member");
         if (member == null) {
             return "redirect:/login";
         }
 
-        TicketType ticketType = ticketTypeService.getTicketTypeById(ticketTypeId);
-        if (ticketType == null) {
+        Optional<TicketType> optionalTicketType = ticketTypeService.getTicketTypeById(ticketTypeId);
+        if (optionalTicketType.isEmpty()) {
             return "redirect:/ticket";
         }
 
-        // Không cần schedule
-        Ticket ticket = new Ticket("Đã mua", member, null, ticketType);
+        TicketType ticketType = optionalTicketType.get();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime dateEnd = null;
+
+        if (ticketType.getDurationDays() > 0) {
+            dateEnd = now.plusDays(ticketType.getDurationDays());
+        }
+
+        Ticket ticket = new Ticket();
+        ticket.setStatus("payment");
+        ticket.setDate_start(now);
+        ticket.setDate_end(dateEnd);
+        ticket.setPrice(ticketType.getPrice());
+        ticket.setMember(member);
+        ticket.setTicketType(ticketType);
+        // KHÔNG set schedule ở đây
+
         ticketService.save(ticket);
 
         return "redirect:/ticket";
