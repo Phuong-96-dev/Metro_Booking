@@ -1,0 +1,126 @@
+body {
+    font-family: "Segoe UI", "Roboto", sans-serif;
+}
+.container {
+    padding: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    background-color: #ffffff;
+    padding: 25px;
+}
+
+.profile-header {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 15px;
+}
+
+.profile-field {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 10px;
+}
+
+.profile-field i {
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
+.profile-field strong {
+    min-width: 120px;
+    font-weight: 500;
+    color: #333;
+}
+
+.profile-field span {
+    flex: 1;
+    background-color: #e9ecef;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.profile-field input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 0.95rem;
+}
+
+#saveBtn, #cancelBtn {
+    margin-right: 10px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+#saveBtn {
+    background-color: #27ae60;
+    border: none;
+    color: #fff;
+}
+
+#cancelBtn {
+    background-color: #7f8c8d;
+    border: none;
+    color: #fff;
+}
+
+#saveBtn:hover {
+    background-color: #219150;
+}
+
+#cancelBtn:hover {
+    background-color: #6c7a7a;
+}
+.btn-modern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-image: linear-gradient(to top, #3070d0 0%, #0b168e 100%);
+    border: solid 3px transparent;
+    background-clip: padding-box;
+    box-shadow: 0px 0px 0px 3px #ffffff00;
+    color: white;
+    min-height: 43px;
+    padding: 0 16px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.btn-modern:active {
+    transform: scale(0.92);
+    transition: all 100ms ease;
+}
+
+.btn-modern:hover {
+    box-shadow: 0px 0px 0px 3px #fdf3f3;
+}
+
+.btn-modern svg {
+    width: 16px;
+    height: 16px;
+    stroke: #fff;
+}
+.btn-group-horizontal {
+    display: flex;
+    justify-content: center;  /* căn giữa */
+    gap: 15px;
+    margin-top: 20px;
+}

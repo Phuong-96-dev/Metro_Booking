@@ -4,48 +4,83 @@
     <meta charset="UTF-8">
     <title>Thông tin cá nhân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/member/profile.css}" type="text/css">
 </head>
 <body>
 
 <!-- Navbar -->
 <div th:replace="common/navbar :: navbar"></div>
 
-<div class="container mt-5">
+<div class="container mt-2">
     <h2 class="mb-4">Thông tin cá nhân</h2>
 
     <div class="card" style="max-width: 600px;">
         <div class="card-body">
             <form id="profileForm" th:action="@{/update-profile}" method="post">
-                <h5 class="card-title">
-                    <span id="nameSpan" th:text="${member.name}">Tên người dùng</span>
-                    <input type="text" class="form-control d-none" id="nameInput" name="name" th:value="${member.name}">
-                </h5>
-                <p class="card-text">
-                    <strong>ID:</strong> <span th:text="${member.memberId}">1</span><br/>
+                <div class="profile-header d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-circle fs-4 text-primary"></i>
+                        <span id="nameSpan" th:text="${member.name}" class="fw-semibold fs-5">Tên người dùng</span>
+                        <input type="text" class="form-control d-none" id="nameInput" name="name" th:value="${member.name}">
+                    </div>
+<!--                    <button>-->
+<!--                        <svg class="btn btn-primary btn-sm" stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="#FFFFFF" height="24" width="24" viewBox="0 0 24 24">-->
+<!--                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>-->
+<!--                        </svg>-->
+<!--                        Edit-->
+<!--                    </button>-->
+                    <button type="button" id="editBtn" class="btn-modern">
+                        <svg stroke-linejoin="round" stroke-linecap="round" fill="none" stroke-width="2" stroke="#FFFFFF" height="24" width="24" viewBox="0 0 24 24">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                        </svg>
+                        Chỉnh sửa
+                    </button>
 
+
+                </div>
+                <div class="profile-field">
+                    <i class="bi bi-envelope"></i>
                     <strong>Email:</strong>
                     <span id="emailSpan" th:text="${member.email}">example@mail.com</span>
-                    <input type="email" class="form-control d-none" id="emailInput" name="email" th:value="${member.email}"><br/>
-
+                    <input type="email" class="form-control d-none" id="emailInput" name="email" th:value="${member.email}">
+                </div>
+                <div class="profile-field">
+                    <i class="bi bi-telephone"></i>
                     <strong>Phone:</strong>
                     <span id="phoneSpan" th:text="${member.phone}">0123456789</span>
-                    <input type="text" class="form-control d-none" id="phoneInput" name="phone" th:value="${member.phone}"><br/>
-
+                    <input type="text" class="form-control d-none" id="phoneInput" name="phone" th:value="${member.phone}">
+                </div>
+                <div class="profile-field">
+                    <i class="bi bi-credit-card-2-front"></i>
                     <strong>Student Card:</strong>
                     <span id="studentCardSpan" th:text="${member.studentCard}">SC001</span>
-                    <input type="text" class="form-control d-none" id="studentCardInput" name="studentCard" th:value="${member.studentCard}"><br/>
-
+                    <input type="text" class="form-control d-none" id="studentCardInput" name="studentCard" th:value="${member.studentCard}">
+                </div>
+                <div class="profile-field">
+                    <i class="bi bi-building"></i>
                     <strong>School:</strong>
                     <span id="schoolSpan" th:text="${member.schoolName}">FPT University</span>
-                    <input type="text" class="form-control d-none" id="schoolInput" name="schoolName" th:value="${member.schoolName}"><br/>
+                    <input type="text" class="form-control d-none" id="schoolInput" name="schoolName" th:value="${member.schoolName}">
+                </div>
 
-                    <strong>Role:</strong> <span th:text="${member.role}">MEMBER</span>
-                </p>
+                <div class="btn-group-horizontal">
+                    <button type="submit" id="saveBtn" class="btn-modern d-none">
+                        <svg fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Lưu
+                    </button>
 
-                <button type="button" id="editBtn" class="btn btn-primary">Chỉnh sửa thông tin</button>
-                <button type="submit" id="saveBtn" class="btn btn-success d-none">Lưu</button>
-                <button type="button" id="cancelBtn" class="btn btn-secondary d-none">Hủy</button>
+                    <button type="button" id="cancelBtn" class="btn-modern d-none">
+                        <svg fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M18 6L6 18M6 6l12 12"></path>
+                        </svg>
+                        Hủy
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -84,6 +119,7 @@
         cancelBtn.classList.add('d-none');
     });
 </script>
+<div th:replace="~{common/footer :: footer}"></div>
 
 </body>
 </html>
