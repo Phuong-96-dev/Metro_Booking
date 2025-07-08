@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
+<link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Thanh Toán</title>
+</head>
+<body>
+<div th:replace="~{common/navbar :: navbar}"></div>
+
+<h2>Danh sách vé chưa thanh toán</h2>
+
+<!-- Hiển thị thông báo nếu có -->
+<div th:if="${success}" style="color: green" th:text="${success}"></div>
+<div th:if="${error}" style="color: red" th:text="${error}"></div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Mã vé</th>
+        <th>Giá</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${unpaidTickets}">
+        <td th:text="${ticket.ticketId}">123</td>
+        <td th:text="${ticket.price}">50000</td>
+        <td th:text="${ticket.status}">Chưa thanh toán</td>
+        <td>
+            <form th:action="@{/payment}" method="post">
+                <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
+                <input type="hidden" name="memberId" th:value="${member.memberId}" />
+                <button type="submit">Thanh toán</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div th:replace="~{common/footer :: footer}"></div>
+
+</body>
+</html>

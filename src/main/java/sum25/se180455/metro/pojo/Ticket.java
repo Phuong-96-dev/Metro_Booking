@@ -16,6 +16,9 @@ public class Ticket {
 
     private LocalDateTime date_end;
 
+    private Double price;
+
+
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -32,20 +35,22 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(Long ticketId, String status, LocalDateTime date_start, LocalDateTime date_end, Member member, TrainSchedule schedule, TicketType ticketType) {
+    public Ticket(Long ticketId, String status, LocalDateTime date_start, LocalDateTime date_end, Double price, Member member, TrainSchedule schedule, TicketType ticketType) {
         this.ticketId = ticketId;
         this.status = status;
         this.date_start = date_start;
         this.date_end = date_end;
+        this.price = price;
         this.member = member;
         this.schedule = schedule;
         this.ticketType = ticketType;
     }
 
-    public Ticket(String status, LocalDateTime date_start, LocalDateTime date_end, Member member, TrainSchedule schedule, TicketType ticketType) {
+    public Ticket(String status, LocalDateTime date_start, LocalDateTime date_end, Double price, Member member, TrainSchedule schedule, TicketType ticketType) {
         this.status = status;
         this.date_start = date_start;
         this.date_end = date_end;
+        this.price = price;
         this.member = member;
         this.schedule = schedule;
         this.ticketType = ticketType;
@@ -106,5 +111,15 @@ public class Ticket {
     public void setTicketType(TicketType ticketType) {
         this.ticketType = ticketType;
     }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+
 }
 

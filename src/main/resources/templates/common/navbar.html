@@ -14,7 +14,7 @@
         <div class="menu-auth-container">
             <ul class="menu">
                 <li><a th:href="@{/}">Trang chủ</a></li>
-                <li><a th:href="@{/map}">Bản đồ</a></li>
+                <li><a th:href="@{/search-schedules}">Bản đồ</a></li>
                 <li><a th:href="@{/blog}">Tin tức</a></li>
                 <li><a th:href="@{/ticket}">Vé tàu</a></li>
             </ul>
@@ -31,9 +31,12 @@
                         Chào, <span th:text="${member.name}">User</span>
                     </button>
                     <div class="dropdown-content">
-                        <a th:href="@{/profile}">📄 Thông tin cá nhân</a>
-                        <a th:href="@{/my-tickets}">🎫 Vé của tôi</a>
-                        <a th:href="@{/logout}">🚪 Đăng xuất</a>
+
+
+                        <a th:href="@{/profile}">📄Thông tin cá nhân</a>
+                        <a th:href="@{/my-ticket}">🎫Vé của tôi</a>
+                        <a th:href="@{/payment}">Thanh toán</a>
+                        <a th:href="@{/logout}">🚪Đăng xuất</a>
                     </div>
                 </div>
             </div>

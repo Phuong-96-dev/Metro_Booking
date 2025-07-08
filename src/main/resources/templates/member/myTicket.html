@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
+<link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
+<head>
+    <meta charset="UTF-8">
+    <title>Vé của tôi</title>
+</head>
+<body>
+<div th:replace="~{common/navbar :: navbar}"></div>
+
+<h2>Danh sách vé đã thanh toán</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Mã vé</th>
+        <th>Giá</th>
+        <th>Trạng thái</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.ticketId}">1</td>
+        <td th:text="${ticket.price}">100000</td>
+        <td th:text="${ticket.status}">Active</td>
+    </tr>
+    </tbody>
+</table>
+<div th:replace="~{common/footer :: footer}"></div>
+
+</body>
+</html>

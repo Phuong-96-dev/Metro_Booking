@@ -18,27 +18,62 @@
 
 <!-- Navbar -->
 <div th:replace="~{common/navbar :: navbar}"></div>
-<h1>Kết quả Tra cứu Lịch Trình</h1>
-<table>
-    <tr>
-        <th>ID Lịch trình</th>
-        <th>Tàu</th>
-        <th>Thời gian khởi hành</th>
-        <th>Thời gian đến</th>
-        <th>Thời gian di chuyển (phút)</th>
-    </tr>
-    <tr th:each="result : ${results}">
-        <td th:text="${result.schedule.scheduleId}"></td>
-        <td th:text="${result.schedule.train != null} ? ${result.schedule.train.name} : 'Không có tàu'"></td>
-        <td th:text="${result.schedule.departTime}"></td>
-        <td th:text="${result.schedule.arrivalTime}"></td>
-        <td th:text="${result.travelMinutes}"></td>
-    </tr>
-</table>
-<a href="/search-schedules">Tra cứu lại</a>
+
+<div class="container mt-4">
+    <h1>Kết quả Tra cứu Lịch Trình</h1>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+        <tr>
+            <th>ID Lịch trình</th>
+            <th>Tàu</th>
+            <th>Thời gian khởi hành</th>
+            <th>Thời gian đến</th>
+            <th>Thời gian di chuyển (phút)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="result : ${results}">
+            <td th:text="${result.schedule.scheduleId}"></td>
+            <td th:text="${result.schedule.train != null} ? ${result.schedule.train.name} : 'Không có tàu'"></td>
+            <td th:text="${#temporals.format(result.schedule.departTime, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(result.schedule.arrivalTime, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${result.travelMinutes}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary mt-3" href="/search-schedules">← Tra cứu lại</a>
+
+    <!-- Tuyến xe buýt tại ga đến -->
+    <div class="mt-5">
+        <h3 th:if="${endStation != null}">Tuyến xe buýt tại ga đến: <span th:text="${endStation.name}"></span></h3>
+
+        <div th:if="${busRoutes != null}">
+            <div th:if="${busRoutes.isEmpty()}">
+                <p>Không có tuyến xe buýt nào tại ga này.</p>
+            </div>
+            <ul th:if="${!busRoutes.isEmpty()}">
+                <li th:each="bus : ${busRoutes}" class="mb-3">
+                    <h5 th:text="'Tuyến: ' + ${bus.name} + ' (' + ${bus.busStatus} + ')'"></h5>
+                    <p><strong>Xuất phát từ ga:</strong> <span th:text="${bus.station.name}"></span></p>
+                    <p><strong>Địa chỉ tuyến:</strong> <span th:text="${bus.location}"></span></p>
+
+                    <p><strong>Các điểm đến:</strong></p>
+                    <ul>
+                        <li th:each="dest : ${bus.destinations}">
+                            <span th:text="'→ ' + ${dest.destination}"></span><br/>
+                            <span th:text="'Thời gian dự kiến: ' + ${dest.estimatedMinutes} + ' phút'"></span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

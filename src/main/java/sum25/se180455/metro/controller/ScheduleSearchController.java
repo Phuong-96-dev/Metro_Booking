@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import sum25.se180455.metro.pojo.BusRoute;
 import sum25.se180455.metro.pojo.TrainSchedule;
 import sum25.se180455.metro.pojo.TrainStation;
+import sum25.se180455.metro.service.BusRouteService;
 import sum25.se180455.metro.service.TrainScheduleService;
 import sum25.se180455.metro.service.TrainStationService;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,11 +21,15 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/search-schedules")
 public class ScheduleSearchController {
+
     @Autowired
     private TrainScheduleService trainScheduleService;
 
     @Autowired
     private TrainStationService trainStationService;
+
+    @Autowired
+    private BusRouteService busRouteService; // ✅ thêm để dùng
 
     @GetMapping
     public String showSearchForm(Model model) {
@@ -33,8 +38,11 @@ public class ScheduleSearchController {
     }
 
     @PostMapping
-    public String searchSchedules(@RequestParam Long startStationId, @RequestParam Long endStationId,
-                                  @RequestParam LocalDateTime dateTime, Model model) {
+    public String searchSchedules(@RequestParam Long startStationId,
+                                  @RequestParam Long endStationId,
+                                  @RequestParam LocalDateTime dateTime,
+                                  Model model) {
+
         TrainStation startStation = trainStationService.getTrainStationById(startStationId).orElse(null);
         TrainStation endStation = trainStationService.getTrainStationById(endStationId).orElse(null);
 
@@ -58,13 +66,20 @@ public class ScheduleSearchController {
                 })
                 .collect(Collectors.toList());
 
+        // ✅ Lấy các tuyến xe buýt tại ga đến
+        List<BusRoute> busRoutesAtEndStation = busRouteService.findBusRoutesByStation(endStationId);
+
+        // Truyền dữ liệu vào model
         model.addAttribute("results", results);
         model.addAttribute("stations", trainStationService.getAllTrainStations());
+        model.addAttribute("busRoutes", busRoutesAtEndStation); // ✅ danh sách tuyến bus tại ga đến
+        model.addAttribute("endStation", endStation); // ✅ nếu muốn in tên ga đến
+
         return "train/schedule-search-results";
     }
 
+    // Hàm kiểm tra lịch trình có hợp lệ không
     private boolean isValidSchedule(TrainSchedule schedule, TrainStation startStation, TrainStation endStation, LocalDateTime dateTime) {
-        // Kiểm tra lịch trình có chứa cả hai ga theo đúng thứ tự
         boolean isForward = schedule.getStartStation().getName().equals("Bến Thành");
         int startPos = startStation.getPosition();
         int endPos = endStation.getPosition();
@@ -79,6 +94,8 @@ public class ScheduleSearchController {
                     schedule.getDepartTime().toLocalDate().equals(dateTime.toLocalDate());
         }
     }
+
+    // Class chứa kết quả lịch trình + thời gian
     public static class ScheduleResult {
         private TrainSchedule schedule;
         private long travelMinutes;
@@ -88,8 +105,12 @@ public class ScheduleSearchController {
             this.travelMinutes = travelMinutes;
         }
 
-        public TrainSchedule getSchedule() { return schedule; }
-        public long getTravelMinutes() { return travelMinutes; }
+        public TrainSchedule getSchedule() {
+            return schedule;
+        }
+
+        public long getTravelMinutes() {
+            return travelMinutes;
+        }
     }
 }
-

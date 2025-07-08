@@ -17,6 +17,7 @@
         private String schoolName;
         private String password;
         private String role;
+        private String status; // Default status
 
         @OneToMany(mappedBy = "member")
         private List<Payment> payments;
@@ -30,9 +31,39 @@
         @OneToMany(mappedBy = "admin")
         private List<Train> trains;
 
-        public Member() {
+        public Member(String name, String studentCard, String email, String phone, String schoolName, String password, String role, String status, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<Train> trains) {
+            this.name = name;
+            this.studentCard = studentCard;
+            this.email = email;
+            this.phone = phone;
+            this.schoolName = schoolName;
+            this.password = password;
+            this.role = role;
+            this.status = status;
+            this.payments = payments;
+            this.tickets = tickets;
+            this.blogs = blogs;
+            this.trains = trains;
         }
 
+        public Member(Long memberId, String name, String studentCard, String email, String phone, String schoolName, String password, String role, String status, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<Train> trains) {
+            this.memberId = memberId;
+            this.name = name;
+            this.studentCard = studentCard;
+            this.email = email;
+            this.phone = phone;
+            this.schoolName = schoolName;
+            this.password = password;
+            this.role = role;
+            this.status = status;
+            this.payments = payments;
+            this.tickets = tickets;
+            this.blogs = blogs;
+            this.trains = trains;
+        }
+
+        public Member() {
+        }
 
         public Long getMemberId() {
             return memberId;
@@ -106,6 +137,14 @@
             this.role = role;
         }
 
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public List<Payment> getPayments() {
             return payments;
         }
@@ -129,4 +168,5 @@
         public void setBlogs(List<Blog> blogs) {
             this.blogs = blogs;
         }
+
     }
