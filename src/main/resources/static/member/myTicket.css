@@ -1,0 +1,101 @@
+/* src/main/resources/static/member/myTicket.css */
+
+/* Container chính */
+.myticket-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề */
+.myticket-title {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Bảng */
+.myticket-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Đầu bảng */
+.myticket-table thead {
+    background-color: #007bff; /* Màu xanh đặc trưng cho ứng dụng đặt vé */
+    color: #ffffff;
+}
+
+.myticket-table th {
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+/* Thân bảng */
+.myticket-table td {
+    padding: 15px;
+    font-size: 0.95rem;
+    color: #333333;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Hiệu ứng hover */
+.myticket-table tbody tr:hover {
+    background-color: #f1f3f5;
+    transition: background-color 0.3s ease;
+}
+
+/* Badge trạng thái */
+.myticket-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.myticket-active {
+    background-color: #28a745; /* Xanh cho trạng thái ACTIVE */
+    color: #ffffff;
+}
+
+.myticket-inactive {
+    background-color: #dc3545; /* Đỏ cho trạng thái không ACTIVE */
+    color: #ffffff;
+}
+
+/* Thông báo khi không có vé */
+.myticket-empty {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .myticket-container {
+        padding: 15px;
+        margin: 20px;
+    }
+
+    .myticket-table th,
+    .myticket-table td {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .myticket-title {
+        font-size: 1.5rem;
+    }
+}
