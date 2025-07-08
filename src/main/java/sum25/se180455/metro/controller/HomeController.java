@@ -33,8 +33,17 @@ public class HomeController {
                         @RequestParam String password) {
         Member member = memberService.login(email, password);
         if (member != null) {
+            if (!"ACTIVE".equalsIgnoreCase(member.getStatus())) {
+                return "redirect:/login?message=Tài khoản đã bị khóa";
+            }
+
             session.setAttribute("member", member);
-            return "redirect:/?message=Login successful";
+
+            if ("ADMIN".equalsIgnoreCase(member.getRole())) {
+                return "redirect:/admindashboard?message=Welcome admin";
+            } else {
+                return "redirect:/?message=Login successful";
+            }
         } else {
             return "redirect:/login?message=Invalid email or password";
         }
@@ -42,24 +51,45 @@ public class HomeController {
 
     @GetMapping("/register")
     public String registerPage(Model model) {
-        Member member = new Member();
-        member.setRole("MEMBER");
-        model.addAttribute("member", member);
+        Member newMember = new Member();
+        newMember.setRole("MEMBER");
+        model.addAttribute("newMember", newMember);
         return "register";
     }
 
     @PostMapping("/register")
-    public String processRegister(@ModelAttribute Member member) {
-        member.setRole("MEMBER");
-        memberService.register(member);
-        return "redirect:/success";
+    public String processRegister(@ModelAttribute("newMember") Member newMember) {
+        if (newMember == null) {
+            System.out.println("Member is null. Possibly form binding failed.");
+            return "redirect:/register?error=Member is null";
+        }
+
+        System.out.println("Member info:");
+        System.out.println("Name: " + newMember.getName());
+        System.out.println("Email: " + newMember.getEmail());
+        System.out.println("Phone: " + newMember.getPhone());
+        System.out.println("Password: " + newMember.getPassword());
+
+        newMember.setRole("MEMBER");
+        memberService.register(newMember);
+        return "redirect:/login?message=Registration successful, please login";
     }
 
 
+//    @GetMapping("/ticket")
+//    public String ticketPage() {
+//        return "ticket";
+//    }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/?message=Logged out";
     }
+    // more
+    @GetMapping("/more")
+    public String morePage() {
+        return "more";
+    }
+
 }

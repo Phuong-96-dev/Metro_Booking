@@ -125,6 +125,7 @@ body {
     transition: all 0.3s ease;
 }
 
+
 .dropdown-content a:hover {
     background-color: #e9ecef; /* Màu nền nhạt khi hover */
     color: #0B4C8A; /* Màu chữ đậm hơn */
