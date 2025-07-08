@@ -29,12 +29,12 @@ public class ScheduleSearchController {
     private TrainStationService trainStationService;
 
     @Autowired
-    private BusRouteService busRouteService; // ✅ thêm để dùng
+    private BusRouteService busRouteService;
 
     @GetMapping
     public String showSearchForm(Model model) {
         model.addAttribute("stations", trainStationService.getAllTrainStations());
-        return "train/schedule-search-form";
+        return "train/schedule-search"; // Updated to point to the combined template
     }
 
     @PostMapping
@@ -49,7 +49,7 @@ public class ScheduleSearchController {
         if (startStation == null || endStation == null || startStation.equals(endStation)) {
             model.addAttribute("error", "Ga bắt đầu hoặc kết thúc không hợp lệ.");
             model.addAttribute("stations", trainStationService.getAllTrainStations());
-            return "train/schedule-search-form";
+            return "train/schedule-search"; // Updated to point to the combined template
         }
 
         // Tìm lịch trình phù hợp
@@ -66,16 +66,16 @@ public class ScheduleSearchController {
                 })
                 .collect(Collectors.toList());
 
-        // ✅ Lấy các tuyến xe buýt tại ga đến
+        // Lấy các tuyến xe buýt tại ga đến
         List<BusRoute> busRoutesAtEndStation = busRouteService.findBusRoutesByStation(endStationId);
 
         // Truyền dữ liệu vào model
         model.addAttribute("results", results);
         model.addAttribute("stations", trainStationService.getAllTrainStations());
-        model.addAttribute("busRoutes", busRoutesAtEndStation); // ✅ danh sách tuyến bus tại ga đến
-        model.addAttribute("endStation", endStation); // ✅ nếu muốn in tên ga đến
+        model.addAttribute("busRoutes", busRoutesAtEndStation);
+        model.addAttribute("endStation", endStation);
 
-        return "train/schedule-search-results";
+        return "train/schedule-search"; // Updated to point to the combined template
     }
 
     // Hàm kiểm tra lịch trình có hợp lệ không

@@ -17,6 +17,8 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{common/navbar :: navbar}"></div>
+<h2>Xem danh sách các tàu :<a href="/trains">View</a></h2>
+<h2>Xem danh sách các ga metro:<a href="/train-stations">View</a></h2>
 <h1>Train Schedules</h1>
 <a href="/train-schedules/add">Add New Schedule</a>
 <table>
@@ -44,6 +46,7 @@
     </td>
   </tr>
 </table>
+<a href="/admindashboard" class="btn btn-secondary mt-3">Back</a>
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>
 
