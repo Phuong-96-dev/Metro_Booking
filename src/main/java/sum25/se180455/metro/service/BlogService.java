@@ -18,6 +18,8 @@ public interface BlogService {
     // delete
     public void deleteBlog(Long blogId);
 
+    // count
+    public int countBlogs();
     // view
     public List<Blog> findAllBlogsOrderByDateDesc();
 }

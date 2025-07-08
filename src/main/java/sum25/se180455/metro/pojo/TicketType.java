@@ -13,33 +13,40 @@ public class TicketType {
 
     private String name;
     private Double price;
-    private String description;
+    private int durationDays;
 
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "train_station_id")
-    private TrainStation trainStation;
+    @ManyToOne
+    @JoinColumn(name = "station_start_id")
+    private TrainStation stationStart;
 
-    public TicketType() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "station_end_id")
+    private TrainStation stationEnd;
 
-    public TicketType(Long ticketTypeId, String name, Double price, String description, List<Ticket> tickets, TrainStation trainStation) {
+    public TicketType(Long ticketTypeId, String name, Double price, int durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.ticketTypeId = ticketTypeId;
         this.name = name;
         this.price = price;
-        this.description = description;
+        this.durationDays = durationDays;
         this.tickets = tickets;
-        this.trainStation = trainStation;
+        this.stationStart = stationStart;
+        this.stationEnd = stationEnd;
     }
 
-    public TicketType(String name, Double price, String description, List<Ticket> tickets, TrainStation trainStation) {
+    public TicketType(String name, Double price, int durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.name = name;
         this.price = price;
-        this.description = description;
+        this.durationDays = durationDays;
         this.tickets = tickets;
-        this.trainStation = trainStation;
+        this.stationStart = stationStart;
+        this.stationEnd = stationEnd;
+    }
+
+    public TicketType() {
+
     }
 
     public Long getTicketTypeId() {
@@ -66,13 +73,7 @@ public class TicketType {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public List<Ticket> getTickets() {
         return tickets;
@@ -82,12 +83,28 @@ public class TicketType {
         this.tickets = tickets;
     }
 
-    public TrainStation getTrainStation() {
-        return trainStation;
+    public TrainStation getStationStart() {
+        return stationStart;
     }
 
-    public void setTrainStation(TrainStation trainStation) {
-        this.trainStation = trainStation;
+    public void setStationStart(TrainStation stationStart) {
+        this.stationStart = stationStart;
+    }
+
+    public TrainStation getStationEnd() {
+        return stationEnd;
+    }
+
+    public void setStationEnd(TrainStation stationEnd) {
+        this.stationEnd = stationEnd;
+    }
+
+    public int getDurationDays() {
+        return durationDays;
+    }
+
+    public void setDurationDays(int durationDays) {
+        this.durationDays = durationDays;
     }
 }
 

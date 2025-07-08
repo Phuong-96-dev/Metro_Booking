@@ -17,6 +17,7 @@
         private String schoolName;
         private String password;
         private String role;
+        private String status; // Default status
 
         @OneToMany(mappedBy = "member")
         private List<Payment> payments;
@@ -33,7 +34,7 @@
         public Member() {
         }
 
-        public Member(Long memberId, String name, String studentCard, String email, String phone, String schoolName, String password, String role, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<TrainSchedule> trainSchedules) {
+        public Member(Long memberId, String name, String studentCard, String email, String phone, String schoolName, String password, String role, String status, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<TrainSchedule> trainSchedules) {
             this.memberId = memberId;
             this.name = name;
             this.studentCard = studentCard;
@@ -42,13 +43,14 @@
             this.schoolName = schoolName;
             this.password = password;
             this.role = role;
+            this.status = status;
             this.payments = payments;
             this.tickets = tickets;
             this.blogs = blogs;
             this.trainSchedules = trainSchedules;
         }
 
-        public Member(String name, String studentCard, String email, String phone, String schoolName, String password, String role, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<TrainSchedule> trainSchedules) {
+        public Member(String name, String studentCard, String email, String phone, String schoolName, String password, String role, String status, List<Payment> payments, List<Ticket> tickets, List<Blog> blogs, List<TrainSchedule> trainSchedules) {
             this.name = name;
             this.studentCard = studentCard;
             this.email = email;
@@ -56,6 +58,7 @@
             this.schoolName = schoolName;
             this.password = password;
             this.role = role;
+            this.status = status;
             this.payments = payments;
             this.tickets = tickets;
             this.blogs = blogs;
@@ -126,6 +129,14 @@
             this.role = role;
         }
 
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public List<Payment> getPayments() {
             return payments;
         }
@@ -157,4 +168,7 @@
         public void setTrainSchedules(List<TrainSchedule> trainSchedules) {
             this.trainSchedules = trainSchedules;
         }
+
+
+
     }

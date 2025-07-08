@@ -74,4 +74,3 @@ public class BusRoute {
         this.station = station;
     }
 }
-

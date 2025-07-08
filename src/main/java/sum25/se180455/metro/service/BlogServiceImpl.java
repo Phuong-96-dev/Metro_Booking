@@ -65,6 +65,11 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public int countBlogs() {
+        return (int) blogRepository.count();
+    }
+
+    @Override
     public List<Blog> findAllBlogsOrderByDateDesc() {
         return blogRepository.findAllByOrderByPostingDateDesc();
     }
