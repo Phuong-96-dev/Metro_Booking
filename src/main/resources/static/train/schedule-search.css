@@ -1,0 +1,96 @@
+/* Container styling */
+.search-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #e9ecef;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Form group styling */
+.search-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevents overflow */
+}
+
+.search-group label {
+    font-size: 0.9rem;
+    color: #495057;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.search-group select,
+.search-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    color: #495057;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.search-group select:focus,
+.search-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.search-group select option {
+    color: #495057;
+}
+
+/* Button styling */
+.search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 100%; /* Matches input height */
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+/* Error message styling */
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .search-group {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+}

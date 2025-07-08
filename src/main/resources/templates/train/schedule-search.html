@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Tra cứu Lịch Trình Tàu</title>
     <style>
@@ -9,7 +10,7 @@
             padding: 5px;
         }
     </style>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" th:href="@{/train/schedule-search.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/common/navbar.css}">
     <link rel="stylesheet" th:href="@{/common/footer.css}">
@@ -25,9 +26,9 @@
     <div th:if="${error}" th:text="${error}" style="color: red;" class="mb-3"></div>
 
     <!-- Search form -->
-    <form th:action="@{/search-schedules}" method="post" class="mb-4">
-        <div class="mb-3">
-            <label for="startStationId" class="form-label">Ga bắt đầu:</label>
+    <form th:action="@{/search-schedules}" method="post" class="search-container">
+        <div class="search-group">
+            <label for="startStationId">Ga bắt đầu:</label>
             <select name="startStationId" id="startStationId" class="form-select" required>
                 <option value="">Chọn Ga Bắt Đầu</option>
                 <option th:each="station : ${stations}"
@@ -35,8 +36,8 @@
                         th:text="${station.name}"></option>
             </select>
         </div>
-        <div class="mb-3">
-            <label for="endStationId" class="form-label">Ga kết thúc:</label>
+        <div class="search-group">
+            <label for="endStationId">Ga kết thúc:</label>
             <select name="endStationId" id="endStationId" class="form-select" required>
                 <option value="">Chọn Ga Kết Thúc</option>
                 <option th:each="station : ${stations}"
@@ -44,11 +45,13 @@
                         th:text="${station.name}"></option>
             </select>
         </div>
-        <div class="mb-3">
-            <label for="dateTime" class="form-label">Ngày giờ:</label>
+        <div class="search-group">
+            <label for="dateTime">Ngày đi:</label>
             <input type="datetime-local" name="dateTime" id="dateTime" class="form-control" required />
         </div>
-        <button type="submit" class="btn btn-primary">Tra cứu</button>
+        <div class="search-group">
+            <button type="submit" class="search-button">Tra cứu</button>
+        </div>
     </form>
 
     <!-- Search results -->
@@ -57,7 +60,6 @@
         <table class="table table-bordered mt-3">
             <thead class="table-light">
             <tr>
-                <th>ID Lịch trình</th>
                 <th>Tàu</th>
                 <th>Thời gian khởi hành</th>
                 <th>Thời gian đến</th>
@@ -66,7 +68,6 @@
             </thead>
             <tbody>
             <tr th:each="result : ${results}">
-                <td th:text="${result.schedule.scheduleId}"></td>
                 <td th:text="${result.schedule.train != null} ? ${result.schedule.train.name} : 'Không có tàu'"></td>
                 <td th:text="${#temporals.format(result.schedule.departTime, 'dd/MM/yyyy HH:mm')}"></td>
                 <td th:text="${#temporals.format(result.schedule.arrivalTime, 'dd/MM/yyyy HH:mm')}"></td>
