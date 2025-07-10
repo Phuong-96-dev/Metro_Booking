@@ -16,14 +16,11 @@
 <form th:action="@{/train-schedules}" method="post" th:object="${schedule}">
     <input type="hidden" th:field="*{scheduleId}"/>
 
-    <label>Thời gian bắt đầu:</label>
-    <input type="datetime-local" th:field="*{startTime}" required/><br>
+    <label>Giờ khởi hành:</label>
+    <input type="time" th:field="*{departTime}" required/><br>
 
-    <label>Thời gian khởi hành:</label>
-    <input type="datetime-local" th:field="*{departTime}" required/><br>
-
-    <label>Thời gian đến:</label>
-    <input type="datetime-local" th:field="*{arrivalTime}" required/><br>
+    <label>Giờ đến:</label>
+    <input type="time" th:field="*{arrivalTime}" required/><br>
 
     <label>Hướng đi:</label>
     <select name="startStationId" id="startStation" onchange="updateEndStation()" required>

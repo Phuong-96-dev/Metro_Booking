@@ -97,7 +97,6 @@ public class TrainScheduleController {
         return "redirect:/train-schedules";
     }
 
-
     @GetMapping("/delete/{id}")
     public String deleteSchedule(@PathVariable Long id) {
         trainScheduleService.deleteTrainSchedule(id);
