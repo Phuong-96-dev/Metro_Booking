@@ -10,24 +10,25 @@
 <body>
 <div th:replace="~{common/navbar :: navbar}"></div>
 <div class="myticket-container">
-    <h2 class="myticket-title">Danh sách vé đã thanh toán</h2>
+    <h2 class="myticket-title">Danh sách vé</h2>
+
     <table class="myticket-table">
         <thead>
     <tr>
         <th>Loại vé</th>
         <th>HSD</th>
-        <th>Tên chuyến</th>
         <th>Mã vé</th>
         <th>Trạng thái</th>
     </tr>
     </thead>
-    <tbody>
-    <tr th:each="ticket : ${tickets}">
-        <td th:text="${ticket.ticketId}">1</td>
-        <td th:text="${ticket.price}">100000</td>
-        <td th:text="${ticket.status}">Active</td>
-    </tr>
-    </tbody>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+            <td th:text="${ticket.ticketType != null ? ticket.ticketType.name : '---'}">Loại vé</td>
+            <td th:text="${ticket.date_end != null ? #temporals.format(ticket.date_end, 'dd-MM-yyyy') : '---'}">HSD</td>
+            <td th:text="${ticket.ticketId}">Mã vé</td>
+            <td th:text="${ticket.status}">Trạng thái</td>
+        </tr>
+        </tbody>
 </table>
 </div>
 <div th:replace="~{common/footer :: footer}"></div>
