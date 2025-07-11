@@ -16,23 +16,29 @@ public class Feedback {
     @Column(name = "rating")
     private Double rating;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id") // Tên cột khóa ngoại trong bảng feedback
+    private Member member;
+
 
     public Feedback() {
     }
 
-    public Feedback(Long feedbackId, String title, String content, LocalDate postingDate, Double rating) {
+    public Feedback(Long feedbackId, String title, String content, LocalDate postingDate, Double rating, Member member) {
         this.feedbackId = feedbackId;
         this.title = title;
         this.content = content;
         this.postingDate = postingDate;
         this.rating = rating;
+        this.member = member;
     }
 
-    public Feedback(String title, String content, LocalDate postingDate, Double rating) {
+    public Feedback(String title, String content, LocalDate postingDate, Double rating, Member member) {
         this.title = title;
         this.content = content;
         this.postingDate = postingDate;
         this.rating = rating;
+        this.member = member;
     }
 
     public Long getFeedbackId() {
@@ -73,5 +79,13 @@ public class Feedback {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

@@ -23,4 +23,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     public List<Feedback> findAllBlogsOrderByDateDesc() {
         return feedbackRepository.findAllByOrderByPostingDateDesc();
     }
+
+    @Override
+    public List<Feedback> findAllFeedbacks() {
+        return feedbackRepository.findAll(); // hoặc custom method nếu có
+    }
 }
