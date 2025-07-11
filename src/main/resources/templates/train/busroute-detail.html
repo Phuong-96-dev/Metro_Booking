@@ -17,45 +17,128 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{common/navbar :: navbar}"></div>
-<h1>Bus Route Detail</h1>
-<div th:if="${bus != null}">
-  <h2>Bus Route Information</h2>
-  <p>
-    ID: <span th:text="${bus.busId}"></span><br>
-    Name: <span th:text="${bus.name}"></span><br>
-    Location: <span th:text="${bus.location}"></span><br>
-    Status: <span th:text="${bus.busStatus}"></span><br>
-  </p>
-  <h3>Station Information</h3>
-  <p th:if="${bus.station != null}">
-    Station ID: <span th:text="${bus.station.stationId}"></span><br>
-    Name: <span th:text="${bus.station.name}"></span><br>
-    Arrival Time: <span th:text="${bus.station.arrivalTime}"></span><br>
-    Note: <span th:text="${bus.station.note}"></span><br>
-    Position: <span th:text="${bus.station.position}"></span><br>
-  </p>
-  <p th:unless="${bus.station != null}">No Station Assigned</p>
-  <h3>Destinations</h3>
-  <table th:if="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}">
-    <tr>
-      <th>Destination ID</th>
-      <th>Destination Name</th>
-      <th>Estimated Minutes</th>
-      <th>Bus Route ID</th>
-    </tr>
-    <tr th:each="destination : ${bus.destinations}">
-      <td th:text="${destination.id}"></td>
-      <td th:text="${destination.destination}"></td>
-      <td th:text="${destination.estimatedMinutes}"></td>
-      <td th:text="${destination.busRoute?.busId}"></td>
-    </tr>
-  </table>
-  <p th:unless="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}">No Destinations Available</p>
+
+<div class="container mt-4">
+  <h1>Bus Route Detail</h1>
+  <div th:if="${bus != null}">
+    <h2>Bus Route Information</h2>
+    <p>
+      ID: <span th:text="${bus.busId}"></span><br>
+      Name: <span th:text="${bus.name}"></span><br>
+      Location: <span th:text="${bus.location}"></span><br>
+      Status: <span th:text="${bus.busStatus}"></span><br>
+    </p>
+    <h3>Station Information</h3>
+    <p th:if="${bus.station != null}">
+      Station ID: <span th:text="${bus.station.stationId}"></span><br>
+      Name: <span th:text="${bus.station.name}"></span><br>
+      Arrival Time: <span th:text="${bus.station.arrivalTime}"></span><br>
+      Note: <span th:text="${bus.station.note}"></span><br>
+      Position: <span th:text="${bus.station.position}"></span><br>
+    </p>
+    <p th:unless="${bus.station != null}">No Station Assigned</p>
+
+    <h3>Destinations</h3>
+    <!-- Button to open modal for creating new destination -->
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#destinationModal"
+            th:attr="data-mode='create',data-bus-id=${bus.busId}">
+      Add New Destination
+    </button>
+
+    <table th:if="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}" class="table table-bordered">
+      <thead class="table-light">
+      <tr>
+        <th>Destination ID</th>
+        <th>Destination Name</th>
+        <th>Estimated Minutes</th>
+        <th>Bus Route ID</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="destination : ${bus.destinations}">
+        <td th:text="${destination.id}"></td>
+        <td th:text="${destination.destination}"></td>
+        <td th:text="${destination.estimatedMinutes}"></td>
+        <td th:text="${destination.busRoute?.busId}"></td>
+        <td>
+          <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#destinationModal"
+                  th:attr="data-mode='edit',data-destination-id=${destination.id},data-destination-name=${destination.destination},data-estimated-minutes=${destination.estimatedMinutes},data-bus-id=${bus.busId}">
+            Edit
+          </button>
+          <form th:action="@{/bus-routes/{busId}/destinations/delete/{id}(busId=${bus.busId},id=${destination.id})}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this destination?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <p th:unless="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}">No Destinations Available</p>
+  </div>
+  <p th:unless="${bus != null}">Bus Route not found</p>
+
+  <a href="/bus-routes" class="btn btn-secondary mt-3">Back to List</a>
 </div>
-<p th:unless="${bus != null}">Bus Route not found</p>
-<a href="/bus-routes">Back to List</a>
+
+<!-- Modal for creating/editing destination -->
+<div class="modal fade" id="destinationModal" tabindex="-1" aria-labelledby="destinationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="destinationModalLabel">Add/Edit Destination</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="destinationForm" th:action="@{/bus-routes/{busId}/destinations/create(busId=${bus.busId})}" method="post">
+          <input type="hidden" name="destinationId" id="destinationId">
+          <div class="mb-3">
+            <label for="destinationName" class="form-label">Destination Name</label>
+            <input type="text" class="form-control" id="destinationName" name="destination" required>
+          </div>
+          <div class="mb-3">
+            <label for="estimatedMinutes" class="form-label">Estimated Minutes</label>
+            <input type="number" class="form-control" id="estimatedMinutes" name="estimatedMinutes" required min="1">
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // JavaScript to handle modal for create/edit
+  document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('destinationModal');
+    modal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const mode = button.getAttribute('data-mode');
+      const busId = button.getAttribute('data-bus-id');
+      const form = document.getElementById('destinationForm');
+      const modalTitle = modal.querySelector('.modal-title');
+      const destinationIdInput = document.getElementById('destinationId');
+      const destinationNameInput = document.getElementById('destinationName');
+      const estimatedMinutesInput = document.getElementById('estimatedMinutes');
+
+      if (mode === 'edit') {
+        modalTitle.textContent = 'Edit Destination';
+        form.action = `/bus-routes/${busId}/destinations/edit/${button.getAttribute('data-destination-id')}`;
+        destinationIdInput.value = button.getAttribute('data-destination-id');
+        destinationNameInput.value = button.getAttribute('data-destination-name');
+        estimatedMinutesInput.value = button.getAttribute('data-estimated-minutes');
+      } else {
+        modalTitle.textContent = 'Add New Destination';
+        form.action = `/bus-routes/${busId}/destinations/create`;
+        destinationIdInput.value = '';
+        destinationNameInput.value = '';
+        estimatedMinutesInput.value = '';
+      }
+    });
+  });
+</script>
 </body>
 </html>
