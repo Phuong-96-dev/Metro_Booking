@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sum25.se180455.metro.pojo.BusRoute;
 import sum25.se180455.metro.pojo.TrainSchedule;
 import sum25.se180455.metro.pojo.TrainStation;
+import sum25.se180455.metro.request.ScheduleResult;
 import sum25.se180455.metro.service.BusRouteService;
 import sum25.se180455.metro.service.TrainScheduleService;
 import sum25.se180455.metro.service.TrainStationService;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,17 +52,32 @@ public class ScheduleSearchController {
             return "train/schedule-search";
         }
 
-        // Find matching schedules
-        List<TrainSchedule> schedules = trainScheduleService.getAllTrainSchedules().stream()
-                .filter(schedule -> isValidSchedule(schedule, startStation, endStation))
-                .collect(Collectors.toList());
-
         // Calculate travel time
-        List<ScheduleResult> results = schedules.stream()
+        int stationCount = Math.abs(startStation.getPosition() - endStation.getPosition());
+        long travelMinutes = stationCount * 3; // 3 minutes per station
+
+        // Find matching schedules
+        List<ScheduleResult> results = trainScheduleService.getAllTrainSchedules().stream()
+                .filter(schedule -> isValidSchedule(schedule, startStation, endStation))
                 .map(schedule -> {
-                    int stationCount = Math.abs(startStation.getPosition() - endStation.getPosition());
-                    long travelMinutes = stationCount * 2; // Assume 2 minutes per station
-                    return new ScheduleResult(schedule, travelMinutes);
+                    // Calculate specific departure and arrival times
+                    boolean isForward = schedule.getStartStation().getName().equals("Bến Thành");
+                    LocalTime departTime;
+                    LocalTime arrivalTime;
+
+                    if (isForward) {
+                        int startOffset = startStation.getPosition() - schedule.getStartStation().getPosition();
+                        int endOffset = endStation.getPosition() - schedule.getStartStation().getPosition();
+                        departTime = schedule.getDepartTime().plusMinutes(startOffset * 3);
+                        arrivalTime = schedule.getDepartTime().plusMinutes(endOffset * 3);
+                    } else {
+                        int startOffset = schedule.getStartStation().getPosition() - startStation.getPosition();
+                        int endOffset = schedule.getStartStation().getPosition() - endStation.getPosition();
+                        departTime = schedule.getDepartTime().plusMinutes(startOffset * 3);
+                        arrivalTime = schedule.getDepartTime().plusMinutes(endOffset * 3);
+                    }
+
+                    return new ScheduleResult(schedule, departTime, arrivalTime, travelMinutes);
                 })
                 .collect(Collectors.toList());
 
@@ -71,7 +88,11 @@ public class ScheduleSearchController {
         model.addAttribute("results", results);
         model.addAttribute("stations", trainStationService.getAllTrainStations());
         model.addAttribute("busRoutes", busRoutesAtEndStation);
+        model.addAttribute("startStation", startStation);
         model.addAttribute("endStation", endStation);
+        model.addAttribute("startStationId", startStationId);
+        model.addAttribute("endStationId", endStationId);
+        model.addAttribute("travelMinutes", travelMinutes);
 
         return "train/schedule-search";
     }
@@ -88,25 +109,6 @@ public class ScheduleSearchController {
         } else {
             return startPos >= endPos && startPos <= schedule.getStartStation().getPosition() &&
                     endPos >= schedule.getEndStation().getPosition();
-        }
-    }
-
-    // Class for schedule result + travel time
-    public static class ScheduleResult {
-        private TrainSchedule schedule;
-        private long travelMinutes;
-
-        public ScheduleResult(TrainSchedule schedule, long travelMinutes) {
-            this.schedule = schedule;
-            this.travelMinutes = travelMinutes;
-        }
-
-        public TrainSchedule getSchedule() {
-            return schedule;
-        }
-
-        public long getTravelMinutes() {
-            return travelMinutes;
         }
     }
 }

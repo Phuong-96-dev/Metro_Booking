@@ -11,6 +11,7 @@ import sum25.se180455.metro.service.TrainScheduleService;
 import sum25.se180455.metro.service.TrainService;
 import sum25.se180455.metro.service.TrainStationService;
 
+import java.time.LocalTime;
 import java.util.*;
 
 @Controller
@@ -74,11 +75,13 @@ public class TrainScheduleController {
             return reloadForm(model, schedule);
         }
 
-        if (schedule.getDepartTime() != null && schedule.getArrivalTime() != null &&
-                schedule.getDepartTime().isAfter(schedule.getArrivalTime())) {
-            model.addAttribute("error", "Thời gian khởi hành phải trước thời gian đến.");
+        if (schedule.getDepartTime() == null) {
+            model.addAttribute("error", "Vui lòng nhập giờ khởi hành.");
             return reloadForm(model, schedule);
         }
+
+        // Tự động tính giờ đến: giờ khởi hành + 39 phút
+        schedule.setArrivalTime(schedule.getDepartTime().plusMinutes(39));
 
         if (schedule.getTrain() == null || schedule.getTrain().getTrainId() == null) {
             model.addAttribute("error", "Vui lòng chọn tàu.");

@@ -16,38 +16,48 @@
 <form th:action="@{/train-schedules}" method="post" th:object="${schedule}">
     <input type="hidden" th:field="*{scheduleId}"/>
 
-    <label>Giờ khởi hành:</label>
-    <input type="time" th:field="*{departTime}" required/><br>
+    <div class="mb-3">
+        <label for="departTime" class="form-label">Giờ khởi hành:</label>
+        <input type="time" id="departTime" th:field="*{departTime}" class="form-control" required
+               onchange="updateArrivalTime()"/>
+    </div>
 
-    <label>Giờ đến:</label>
-    <input type="time" th:field="*{arrivalTime}" required/><br>
+    <div class="mb-3">
+        <label for="arrivalTimeDisplay" class="form-label">Giờ đến:</label>
+        <input type="text" id="arrivalTimeDisplay" class="form-control" readonly
+               th:value="${schedule.departTime != null ? #temporals.format(schedule.departTime.plusMinutes(39), 'hh:mm a') : ''}"/>
+    </div>
 
-    <label>Hướng đi:</label>
-    <select name="startStationId" id="startStation" onchange="updateEndStation()" required>
-        <option value="">Chọn Hướng Đi</option>
-        <option value="1" th:selected="${schedule.startStation != null and schedule.startStation.stationId == 1}">
-            Bến Thành → Bến xe Suối Tiên
-        </option>
-        <option value="14" th:selected="${schedule.startStation != null and schedule.startStation.stationId == 14}">
-            Bến xe Suối Tiên → Bến Thành
-        </option>
-    </select><br>
+    <div class="mb-3">
+        <label for="startStation" class="form-label">Hướng đi:</label>
+        <select name="startStationId" id="startStation" onchange="updateEndStation()" class="form-select" required>
+            <option value="">Chọn Hướng Đi</option>
+            <option value="1" th:selected="${schedule.startStation != null and schedule.startStation.stationId == 1}">
+                Bến Thành → Bến xe Suối Tiên
+            </option>
+            <option value="14" th:selected="${schedule.startStation != null and schedule.startStation.stationId == 14}">
+                Bến xe Suối Tiên → Bến Thành
+            </option>
+        </select>
+    </div>
 
     <input type="hidden" name="endStationId" id="endStation"
            th:value="${schedule.endStation != null ? schedule.endStation.stationId : ''}"/>
 
-    <label>Tàu:</label>
-    <select th:field="*{train}" required>
-        <option value="">Chọn Tàu</option>
-        <option th:each="train : ${trains}"
-                th:value="${train.trainId}"
-                th:text="${train.name}"
-                th:selected="${schedule.train != null and schedule.train.trainId == train.trainId}"></option>
-    </select><br>
+    <div class="mb-3">
+        <label for="train" class="form-label">Tàu:</label>
+        <select th:field="*{train}" id="train" class="form-select" required>
+            <option value="">Chọn Tàu</option>
+            <option th:each="train : ${trains}"
+                    th:value="${train.trainId}"
+                    th:text="${train.name}"
+                    th:selected="${schedule.train != null and schedule.train.trainId == train.trainId}"></option>
+        </select>
+    </div>
 
-    <button type="submit">Lưu</button>
+    <button type="submit" class="btn btn-primary">Lưu</button>
 </form>
-<a href="/train-schedules">Quay lại Danh sách</a>
+<a href="/train-schedules" class="btn btn-secondary mt-3">Quay lại Danh sách</a>
 
 <script>
     function updateEndStation() {
@@ -62,7 +72,27 @@
         }
     }
 
-    window.onload = updateEndStation;
+    function updateArrivalTime() {
+        const departTimeInput = document.getElementById("departTime").value;
+        const arrivalTimeDisplay = document.getElementById("arrivalTimeDisplay");
+        if (departTimeInput) {
+            const [hours, minutes] = departTimeInput.split(':').map(Number);
+            const date = new Date();
+            date.setHours(hours);
+            date.setMinutes(minutes + 39);
+            let formattedHours = date.getHours() % 12 || 12; // Chuyển sang định dạng 12 giờ
+            const formattedMinutes = String(date.getMinutes()).padStart(2, '0');
+            const ampm = date.getHours() >= 12 ? 'CH' : 'SA';
+            arrivalTimeDisplay.value = `${formattedHours}:${formattedMinutes} ${ampm}`;
+        } else {
+            arrivalTimeDisplay.value = "";
+        }
+    }
+
+    window.onload = function() {
+        updateEndStation();
+        updateArrivalTime();
+    };
 </script>
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>

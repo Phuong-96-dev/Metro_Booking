@@ -33,7 +33,8 @@
                 <option value="">Chọn Ga Bắt Đầu</option>
                 <option th:each="station : ${stations}"
                         th:value="${station.stationId}"
-                        th:text="${station.name}"></option>
+                        th:text="${station.name}"
+                        th:selected="${station.stationId == startStationId}"></option>
             </select>
         </div>
         <div class="search-group">
@@ -42,7 +43,8 @@
                 <option value="">Chọn Ga Kết Thúc</option>
                 <option th:each="station : ${stations}"
                         th:value="${station.stationId}"
-                        th:text="${station.name}"></option>
+                        th:text="${station.name}"
+                        th:selected="${station.stationId == endStationId}"></option>
             </select>
         </div>
         <div class="search-group">
@@ -53,21 +55,24 @@
     <!-- Search results -->
     <div th:if="${results != null}">
         <h2>Kết quả Tra cứu Lịch Trình</h2>
+        <p th:if="${travelMinutes != null}">
+            Thời gian di chuyển từ <span th:text="${startStation.name}"></span> đến
+            <span th:text="${endStation.name}"></span>:
+            <span th:text="${travelMinutes} + ' phút'"></span>
+        </p>
         <table class="table table-bordered mt-3">
             <thead class="table-light">
             <tr>
                 <th>Tàu</th>
                 <th>Giờ khởi hành</th>
                 <th>Giờ đến</th>
-                <th>Thời gian di chuyển (phút)</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="result : ${results}">
                 <td th:text="${result.schedule.train != null} ? ${result.schedule.train.name} : 'Không có tàu'"></td>
-                <td th:text="${#temporals.format(result.schedule.departTime, 'HH:mm')}"></td>
-                <td th:text="${#temporals.format(result.schedule.arrivalTime, 'HH:mm')}"></td>
-                <td th:text="${result.travelMinutes}"></td>
+                <td th:text="${#temporals.format(result.departTime, 'HH:mm')}"></td>
+                <td th:text="${#temporals.format(result.arrivalTime, 'HH:mm')}"></td>
             </tr>
             </tbody>
         </table>
@@ -82,7 +87,6 @@
                 <ul th:if="${!busRoutes.isEmpty()}">
                     <li th:each="bus : ${busRoutes}" class="mb-3">
                         <h5 th:text="'Tuyến: ' + ${bus.name} + ' (' + ${bus.busStatus} + ')'"></h5>
-                        <p><strong>Xuất phát từ ga:</strong> <span th:text="${bus.station.name}"></span></p>
                         <p><strong>Địa chỉ tuyến:</strong> <span th:text="${bus.location}"></span></p>
                         <p><strong>Các điểm đến:</strong></p>
                         <ul>
