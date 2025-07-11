@@ -14,22 +14,33 @@
 
     <table class="myticket-table">
         <thead>
-    <tr>
-        <th>Loại vé</th>
-        <th>HSD</th>
-        <th>Mã vé</th>
-        <th>Trạng thái</th>
-    </tr>
-    </thead>
+        <tr>
+            <th>Loại vé</th>
+            <th>HSD</th>
+            <th>Mã vé</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th> <!-- Cột mới -->
+        </tr>
+        </thead>
         <tbody>
         <tr th:each="ticket : ${tickets}">
             <td th:text="${ticket.ticketType != null ? ticket.ticketType.name : '---'}">Loại vé</td>
             <td th:text="${ticket.date_end != null ? #temporals.format(ticket.date_end, 'dd-MM-yyyy') : '---'}">HSD</td>
             <td th:text="${ticket.ticketId}">Mã vé</td>
             <td th:text="${ticket.status}">Trạng thái</td>
+            <td>
+                <form th:action="@{/ticket/use}" method="post">
+                    <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
+                    <button type="submit"
+                            th:disabled="${ticket.status == 'Đã dùng'}"
+                            class="btn btn-primary"
+                            th:text="${ticket.status == 'Đã dùng'} ? 'Đã dùng' : 'Dùng vé'">
+                    </button>
+                </form>
+            </td>
         </tr>
         </tbody>
-</table>
+    </table>
 </div>
 <div th:replace="~{common/footer :: footer}"></div>
 

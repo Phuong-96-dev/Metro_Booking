@@ -13,4 +13,5 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     int countByStatus(String status);
     List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status);
 
+
 }

@@ -114,7 +114,7 @@ public class UserController {
         }
 
         Long memberId = member.getMemberId();
-        String status = "ACTIVE";
+        String status = "Hoạt động";
 
         // Lấy tất cả vé ACTIVE của member
         List<Ticket> activeTickets = ticketService.findByMember_MemberIdAndStatus(memberId, status);
@@ -125,7 +125,7 @@ public class UserController {
 
         for (Ticket ticket : activeTickets) {
             if (ticket.getDate_end() != null && ticket.getDate_end().isBefore(now)) {
-                ticket.setStatus("EXPIRED");
+                ticket.setStatus("Hết hạn");
                 ticketService.save(ticket); // Cập nhật trạng thái trong DB
                 expiredTickets.add(ticket);
             }

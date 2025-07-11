@@ -47,7 +47,7 @@ public class PaymentController {
             // Kiểm tra vé thuộc về user và trạng thái chưa Active
             if (ticket != null
                     && ticket.getMember().getMemberId().equals(member.getMemberId())
-                    && !"Active".equalsIgnoreCase(ticket.getStatus())) {
+                    && !"Hoạt động".equalsIgnoreCase(ticket.getStatus())) {
 
                 model.addAttribute("ticket", ticket);
             } else {
@@ -81,13 +81,13 @@ public class PaymentController {
         }
 
         if (!ticket.getMember().getMemberId().equals(member.getMemberId())
-                || "ACTIVE".equalsIgnoreCase(ticket.getStatus())) {
+                || "Hoạt động".equalsIgnoreCase(ticket.getStatus())) {
             redirectAttributes.addFlashAttribute("error", "Vé không hợp lệ hoặc đã thanh toán.");
             return "redirect:/ticket";
         }
 
         // Cập nhật trạng thái vé
-        ticket.setStatus("ACTIVE");
+        ticket.setStatus("Hoạt động");
         ticketService.save(ticket);
 
         // Tạo payment và lưu
@@ -96,13 +96,13 @@ public class PaymentController {
         payment.setMember(member);
         payment.setPrice(ticket.getPrice());
         payment.setPaymentMethod(paymentMethod);
-        payment.setStatus("SUCCESS");
+        payment.setStatus("Đã thanh toán");
         payment.setPaymentDate(LocalDate.now());
 
         paymentService.save(payment);
 
 
-        redirectAttributes.addFlashAttribute("success", "Thanh toán thành công!");
+        redirectAttributes.addFlashAttribute("Đã thanh toán", "Thanh toán thành công!");
         return "redirect:/myTicket";
 
 

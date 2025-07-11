@@ -92,8 +92,8 @@
 <h3>Thêm loại vé mới</h3>
 <form th:action="@{/adminManage/manageTicketType/create}" method="post">
     <!-- Tên vé cố định -->
-    <p>Loại vé: <strong>Vé 1 lần</strong></p>
-    <input type="hidden" name="name" value="Vé 1 lần" />
+    <p>Loại vé: <strong>Vé lượt</strong></p>
+    <input type="hidden" name="name" value="Vé lượt" />
 
     <!-- Giá có thể điều chỉnh -->
     <label>Giá:
@@ -140,15 +140,15 @@
         <td>
             <input type="number" name="price" th:value="${ticket.price}" required />
         </td>
-        <td th:if="${ticket.name != 'Vé 1 lần'}">
+        <td th:if="${ticket.name != 'Vé lượt'}">
             <input type="number" name="durationDays" th:value="${ticket.durationDays}" required />
         </td>
 
-        <td th:if="${ticket.name == 'Vé 1 lần'}">-</td>
+        <td th:if="${ticket.name == 'Vé lượt'}">-</td>
 
         <td>
             <select name="stationStartId"
-                    th:if="${ticket.name == 'Vé 1 lần'}">
+                    th:if="${ticket.name == 'Vé lượt'}">
                 <option value="" th:if="${ticket.stationStart == null}" selected>Chưa có</option>
                 <option th:each="s : ${stations}"
                         th:value="${s.stationId}"
@@ -156,13 +156,13 @@
                         th:selected="${ticket.stationStart != null and s.stationId == ticket.stationStart.stationId}">
                 </option>
             </select>
-            <span th:if="${ticket.name != 'Vé 1 lần'}">-</span>
+            <span th:if="${ticket.name != 'Vé lượt'}">-</span>
         </td>
 
         <!-- Ga đến -->
         <td>
             <select name="stationEndId"
-                    th:if="${ticket.name == 'Vé 1 lần'}">
+                    th:if="${ticket.name == 'Vé lượt'}">
                 <option value="" th:if="${ticket.stationEnd == null}" selected>Chưa có</option>
                 <option th:each="s : ${stations}"
                         th:value="${s.stationId}"
@@ -170,7 +170,7 @@
                         th:selected="${ticket.stationEnd != null and s.stationId == ticket.stationEnd.stationId}">
                 </option>
             </select>
-            <span th:if="${ticket.name != 'Vé 1 lần'}">-</span>
+            <span th:if="${ticket.name != 'Vé lượt'}">-</span>
         </td>
         <td class="action-buttons">
             <button type="submit">Lưu</button>

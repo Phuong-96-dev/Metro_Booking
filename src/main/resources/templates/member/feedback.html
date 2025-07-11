@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gửi bài viết / phản hồi</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/member/feedback.css}">
+</head>
+<body>
+<div th:replace="~{common/navbar :: navbar}"></div>
+
+<div class="container">
+    <h2>Gửi bài viết / phản hồi</h2>
+    <form th:action="@{/feedback/send}" method="post">
+        <div>
+            <label>Tiêu đề:</label>
+            <input type="text" name="title" required>
+        </div>
+        <div>
+            <label>Nội dung:</label>
+            <textarea name="content" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Gửi</button>
+    </form>
+</div>
+
+<div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
