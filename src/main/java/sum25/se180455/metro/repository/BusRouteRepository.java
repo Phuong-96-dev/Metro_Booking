@@ -11,4 +11,7 @@ import java.util.List;
 @Repository
 public interface BusRouteRepository extends JpaRepository<BusRoute,Long> {
     List<BusRoute> findByStation_StationId(Long stationId);
+    int countByBusStatus(String busStatus);
+
+
 }

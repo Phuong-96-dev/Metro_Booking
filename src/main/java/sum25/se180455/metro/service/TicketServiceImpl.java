@@ -43,4 +43,9 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findById(TicketId).orElse(null);
     }
 
+    @Override
+    public int countByStatus(String status) {
+        return ticketRepository.countByStatus(status);
+    }
+
 }

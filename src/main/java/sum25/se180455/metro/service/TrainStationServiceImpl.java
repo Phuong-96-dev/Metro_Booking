@@ -29,4 +29,8 @@ public class TrainStationServiceImpl implements TrainStationService {
     public TrainStation getStationById(Long id) {
         return trainStationRepository.getOne(id);
     }
+    @Override
+    public long count() {
+        return trainStationRepository.count();
+    }
 }

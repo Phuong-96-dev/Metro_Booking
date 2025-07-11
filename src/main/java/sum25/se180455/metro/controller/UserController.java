@@ -2,6 +2,7 @@ package sum25.se180455.metro.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,15 +14,13 @@ import sum25.se180455.metro.repository.MemberRepository;
 import sum25.se180455.metro.repository.PaymentRepository;
 import sum25.se180455.metro.repository.TicketRepository;
 import sum25.se180455.metro.request.PaymentRequest;
-import sum25.se180455.metro.service.BlogService;
-import sum25.se180455.metro.service.MemberService;
-import sum25.se180455.metro.service.PaymentService;
-import sum25.se180455.metro.service.TicketService;
+import sum25.se180455.metro.service.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -33,6 +32,13 @@ public class UserController {
     private TicketService ticketService;
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private BusRouteService busRouteService;
+    @Autowired
+    private RenueService revenueService;
+    @Autowired
+    private TrainStationService trainStationService;
 
     // profile
     @GetMapping("/profile")
@@ -60,12 +66,59 @@ public class UserController {
 
         return "redirect:/profile?message=Profile updated successfully";
     }
+
     @GetMapping("/admindashboard")
-    public String adminDashboard(Model model) {
+    public String adminDashboard(
+            @RequestParam(value = "type", defaultValue = "month") String type,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            Model model) {
+
         int memberCount = memberService.countMembersByRoleAndStatus("MEMBER", "ACTIVE");
-        model.addAttribute("memberCount", memberCount);
         int blogCount = blogService.countBlogs();
+        int busCount = busRouteService.countByBusStatus("ACTIVE");
+        long trainStationCount = trainStationService.count();
+        int ticketCount = ticketService.countByStatus("ACTIVE");
+
+        model.addAttribute("memberCount", memberCount);
         model.addAttribute("blogCount", blogCount);
+        model.addAttribute("busCount", busCount);
+        model.addAttribute("trainStationCount", trainStationCount);
+        model.addAttribute("ticketCount", ticketCount);
+
+        double totalRevenue = revenueService.getTotalRevenue();
+        model.addAttribute("totalRevenue", totalRevenue);
+
+        Map<String, Double> revenueByType = revenueService.getRevenueByTicketType();
+        model.addAttribute("ticketTypeNames", new ArrayList<>(revenueByType.keySet()));
+        model.addAttribute("ticketTypeRevenues", new ArrayList<>(revenueByType.values()));
+
+        Map<String, Double> revenueTimeMap;
+        switch (type) {
+            case "day":
+                if (startDate != null && endDate != null) {
+                    revenueTimeMap = revenueService.getDailyRevenue(startDate, endDate);
+                } else {
+                    // fallback: lấy 7 ngày gần nhất
+                    LocalDate end = LocalDate.now();
+                    LocalDate start = end.minusDays(6);
+                    revenueTimeMap = revenueService.getDailyRevenue(start, end);
+                }
+                break;
+            case "year":
+                revenueTimeMap = revenueService.getYearlyRevenue();
+                break;
+            default:
+                revenueTimeMap = revenueService.getMonthlyRevenueCurrentYear();
+                break;
+        }
+
+        model.addAttribute("months", new ArrayList<>(revenueTimeMap.keySet()));
+        model.addAttribute("monthlyRevenue", new ArrayList<>(revenueTimeMap.values()));
+        model.addAttribute("selectedType", type);
+        model.addAttribute("selectedStartDate", startDate);
+        model.addAttribute("selectedEndDate", endDate);
+
         return "admindashboard";
     }
     // Admin dashboard
