@@ -3,6 +3,7 @@ package sum25.se180455.metro.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.pojo.TicketType;
 import sum25.se180455.metro.repository.TicketTypeRepository;
 
@@ -50,8 +51,21 @@ public class TicketTypeServiceImpl implements TicketTypeService {
        return ticketTypeRepository.save(ticketType);
     }
 
-    public Optional<TicketType> findTicketTypeByStations(Long startStationId, Long endStationId) {
+
+    @Override
+    public List<TicketType> findByStartAndEnd(Long startStationId, Long endStationId) {
         return ticketTypeRepository.findByStationStart_StationIdAndStationEnd_StationId(startStationId, endStationId);
     }
+
+    @Override
+    public List<TicketType> findByStart(Long startStationId) {
+        return ticketTypeRepository.findByStationStart_StationId(startStationId);
+    }
+
+    @Override
+    public List<TicketType> findByEnd(Long endStationId) {
+        return ticketTypeRepository.findByStationEnd_StationId(endStationId);
+    }
+
 
 }

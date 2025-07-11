@@ -9,7 +9,7 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
-
+    @Column(name = "status", columnDefinition = "NVARCHAR(255)")
     private String status;
 
     private LocalDateTime date_start;

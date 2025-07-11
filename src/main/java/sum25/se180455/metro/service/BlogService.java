@@ -22,4 +22,6 @@ public interface BlogService {
     public int countBlogs();
     // view
     public List<Blog> findAllBlogsOrderByDateDesc();
+
+    Blog createBlog(Blog blog);
 }

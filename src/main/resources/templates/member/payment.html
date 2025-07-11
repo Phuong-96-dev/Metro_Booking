@@ -29,7 +29,7 @@
         <div class="info-box" th:if="${ticket.ticketType != null and ticket.ticketType.durationDays == null}">
 
 
-        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé 1 lần</span></p>
+        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé lượt</span></p>
             <p><strong>Ngày đi:</strong> <span th:text="${ticket.getDate_start()}">01/07/2025</span></p>
 
             <p><strong>Giá vé:</strong>

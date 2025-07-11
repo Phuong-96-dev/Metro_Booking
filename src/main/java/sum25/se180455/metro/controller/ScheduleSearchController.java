@@ -83,9 +83,8 @@ public class ScheduleSearchController {
                     }
 
                     // Find ticketTypeId for the start/end station pair
-                    Long ticketTypeId = ticketTypeService.findTicketTypeByStations(startStationId, endStationId)
-                            .map(TicketType::getTicketTypeId)
-                            .orElse(null);
+                    List<TicketType> ticketTypes = ticketTypeService.findByStartAndEnd(startStationId, endStationId);
+                    Long ticketTypeId = ticketTypes.isEmpty() ? null : ticketTypes.get(0).getTicketTypeId();
 
                     return new ScheduleResult(schedule, departTime, arrivalTime, travelMinutes, ticketTypeId);
                 })

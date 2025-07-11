@@ -38,6 +38,13 @@ public class BlogServiceImpl implements BlogService {
         return blogRepository.save(blog);
     }
 
+    @Override
+    public Blog createBlog(Blog blog) {
+        blog.setPostingDate(LocalDate.now());
+        blog.setAdmin(null); // người dùng, không có admin
+        return blogRepository.save(blog);
+    }
+
 
 
 

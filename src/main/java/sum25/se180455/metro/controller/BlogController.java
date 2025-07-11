@@ -9,6 +9,7 @@ import sum25.se180455.metro.pojo.Blog;
 import sum25.se180455.metro.service.BlogService;
 import sum25.se180455.metro.pojo.Member;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -18,10 +19,10 @@ public class BlogController {
 
 
     // Blog page
-    @GetMapping("/blog")
+    @GetMapping("/feedback")
     public String blogPage(Model model) {
         model.addAttribute("blogs", blogService.findAllBlogsOrderByDateDesc());
-        return "blog"; // trỏ tới file blog.html
+        return "member/feedback"; // trỏ tới file feedback.html
     }
 
     // Manage blog page
@@ -56,5 +57,32 @@ public class BlogController {
         blogService.deleteBlog(id);
         return "redirect:/adminManage/manageBlog";
     }
+
+
+
+
+    // Trang gửi bài viết từ người dùng (hoặc phản hồi)
+    @GetMapping("/feedback/send")
+    public String sendBlogForm() {
+        return "feedback"; // dùng chung feedback.html
+    }
+
+    // Xử lý gửi bài viết từ người dùng
+    @PostMapping("/feedback/send")
+    public String sendBlog(@RequestParam String title,
+                           @RequestParam String content) {
+
+        Blog blog = new Blog();
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setPostingDate(LocalDate.now());
+        blog.setAdmin(null); // Không phải bài admin
+
+        blogService.createBlog(blog); // không truyền adminId
+
+        return "redirect:/myTicket?success";
+    }
+
+
 
 }

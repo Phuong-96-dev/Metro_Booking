@@ -14,6 +14,7 @@ public class Payment {
     private LocalDate paymentDate;
     private Double price;
     private String paymentMethod;
+    @Column(name = "status", columnDefinition = "NVARCHAR(255)")
     private String status;
 
     @ManyToOne
