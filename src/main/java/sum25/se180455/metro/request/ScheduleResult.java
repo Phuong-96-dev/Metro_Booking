@@ -9,12 +9,21 @@ public class ScheduleResult {
     private LocalTime departTime;
     private LocalTime arrivalTime;
     private long travelMinutes;
+    private Long ticketTypeId;
 
     public ScheduleResult(TrainSchedule schedule, LocalTime departTime, LocalTime arrivalTime, long travelMinutes) {
         this.schedule = schedule;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
         this.travelMinutes = travelMinutes;
+    }
+
+    public ScheduleResult(TrainSchedule schedule, LocalTime departTime, LocalTime arrivalTime, long travelMinutes, Long ticketTypeId) {
+        this.schedule = schedule;
+        this.departTime = departTime;
+        this.arrivalTime = arrivalTime;
+        this.travelMinutes = travelMinutes;
+        this.ticketTypeId = ticketTypeId;
     }
 
     public TrainSchedule getSchedule() {
@@ -31,5 +40,9 @@ public class ScheduleResult {
 
     public long getTravelMinutes() {
         return travelMinutes;
+    }
+
+    public Long getTicketTypeId() {
+        return ticketTypeId;
     }
 }

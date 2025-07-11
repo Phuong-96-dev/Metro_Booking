@@ -50,5 +50,8 @@ public class TicketTypeServiceImpl implements TicketTypeService {
        return ticketTypeRepository.save(ticketType);
     }
 
+    public Optional<TicketType> findTicketTypeByStations(Long startStationId, Long endStationId) {
+        return ticketTypeRepository.findByStationStart_StationIdAndStationEnd_StationId(startStationId, endStationId);
+    }
 
 }

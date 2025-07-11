@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sum25.se180455.metro.pojo.BusRoute;
+import sum25.se180455.metro.pojo.TicketType;
 import sum25.se180455.metro.pojo.TrainSchedule;
 import sum25.se180455.metro.pojo.TrainStation;
 import sum25.se180455.metro.request.ScheduleResult;
 import sum25.se180455.metro.service.BusRouteService;
+import sum25.se180455.metro.service.TicketTypeService;
 import sum25.se180455.metro.service.TrainScheduleService;
 import sum25.se180455.metro.service.TrainStationService;
 
@@ -31,6 +33,9 @@ public class ScheduleSearchController {
 
     @Autowired
     private BusRouteService busRouteService;
+
+    @Autowired
+    private TicketTypeService ticketTypeService;
 
     @GetMapping
     public String showSearchForm(Model model) {
@@ -77,7 +82,12 @@ public class ScheduleSearchController {
                         arrivalTime = schedule.getDepartTime().plusMinutes(endOffset * 3);
                     }
 
-                    return new ScheduleResult(schedule, departTime, arrivalTime, travelMinutes);
+                    // Find ticketTypeId for the start/end station pair
+                    Long ticketTypeId = ticketTypeService.findTicketTypeByStations(startStationId, endStationId)
+                            .map(TicketType::getTicketTypeId)
+                            .orElse(null);
+
+                    return new ScheduleResult(schedule, departTime, arrivalTime, travelMinutes, ticketTypeId);
                 })
                 .collect(Collectors.toList());
 

@@ -11,5 +11,6 @@ public interface TicketTypeService {
     public TicketType updateTicketTypeById(Long ticketTypeId, TicketType updatedTicketType);
     public void deleteTicketTypeById(Long ticketTypeId);
     public  TicketType createTicketType(TicketType ticketType);
+    public Optional<TicketType> findTicketTypeByStations(Long startStationId, Long endStationId);
 
 }
