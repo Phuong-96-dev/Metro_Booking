@@ -10,15 +10,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sum25.se180455.metro.pojo.Member;
 import sum25.se180455.metro.service.MemberService;
+import sum25.se180455.metro.service.TrainStationService;
+
 @Controller
 public class HomeController {
 
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private TrainStationService trainStationService;
 
     @GetMapping("/")
-    public String homePage() {
+    public String homePage(Model model) {
+        model.addAttribute("stations", trainStationService.getAllTrainStations());
         return "index";
     }
 
