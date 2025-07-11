@@ -13,6 +13,7 @@ public class TicketType {
     @Column(name = "name", columnDefinition = "NVARCHAR(100)")
     private String name;
     private Double price;
+
     private Integer durationDays;
 
     @OneToMany(mappedBy = "ticketType")

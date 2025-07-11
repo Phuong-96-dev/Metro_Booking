@@ -7,5 +7,9 @@ import java.util.Optional;
 
 public interface TicketTypeService {
     List<TicketType> getAllTicketTypes();
-    Optional<TicketType> getTicketTypeById(Long id);
+    Optional<TicketType> getTicketTypeById(Long ticketTypeId);
+    public TicketType updateTicketTypeById(Long ticketTypeId, TicketType updatedTicketType);
+    public void deleteTicketTypeById(Long ticketTypeId);
+    public  TicketType createTicketType(TicketType ticketType);
+
 }

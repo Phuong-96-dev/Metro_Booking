@@ -24,4 +24,9 @@ public class TrainStationServiceImpl implements TrainStationService {
     public Optional<TrainStation> getTrainStationByName(String name) {
         return trainStationRepository.findByName(name);
     }
+
+    @Override
+    public TrainStation getStationById(Long id) {
+        return trainStationRepository.getOne(id);
+    }
 }
