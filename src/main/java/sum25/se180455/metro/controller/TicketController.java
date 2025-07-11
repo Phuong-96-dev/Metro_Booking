@@ -123,15 +123,22 @@ public class TicketController {
     public String useTicket(@RequestParam Long ticketId, HttpSession session) {
         Ticket ticket = ticketService.getTicketById(ticketId);
 
-        if (ticket != null
-                && ticket.getTicketType() != null
-                && "Vé lượt".equals(ticket.getTicketType().getName())
-                && !"Đã dùng".equals(ticket.getStatus())) {
+        if (ticket != null && ticket.getTicketType() != null) {
+            String ticketName = ticket.getTicketType().getName();
+            String currentStatus = ticket.getStatus();
 
-            ticket.setStatus("Đang sử dụng");
-            ticketService.save(ticket); // Chỉ cập nhật nếu là "Vé lượt"
+            // Chỉ xử lý nếu vé chưa bị "Hết hạn" hoặc "Đã dùng"
+            if (!"Hết hạn".equals(currentStatus)) {
+                if ("Vé lượt".equals(ticketName)) {
+                    ticket.setStatus("Hết hạn");
+                } else {
+                    ticket.setStatus("Đang sử dụng");
+                }
+                ticketService.save(ticket);
+            }
         }
 
         return "redirect:/feedback";
     }
+
 }
