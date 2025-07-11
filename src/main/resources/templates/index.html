@@ -28,20 +28,26 @@
 
     <!-- Form tìm chuyến tàu -->
     <div class="card mt-5 p-4">
-        <form class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label">Ga đi</label>
-                <input type="text" class="form-control" placeholder="Nhập ga đi">
+        <form th:action="@{/search-schedules}" method="post" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label for="startStationId" class="form-label">Ga đi</label>
+                <select name="startStationId" id="startStationId" class="form-select" required>
+                    <option value="">Chọn Ga Bắt Đầu</option>
+                    <option th:each="station : ${stations}"
+                            th:value="${station.stationId}"
+                            th:text="${station.name}"></option>
+                </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Ga đến</label>
-                <input type="text" class="form-control" placeholder="Nhập ga đến">
+            <div class="col-md-5">
+                <label for="endStationId" class="form-label">Ga đến</label>
+                <select name="endStationId" id="endStationId" class="form-select" required>
+                    <option value="">Chọn Ga Kết Thúc</option>
+                    <option th:each="station : ${stations}"
+                            th:value="${station.stationId}"
+                            th:text="${station.name}"></option>
+                </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Ngày đi</label>
-                <input type="date" class="form-control">
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <button type="submit" class="btn btn-warning w-100">Tìm chuyến tàu</button>
             </div>
         </form>
