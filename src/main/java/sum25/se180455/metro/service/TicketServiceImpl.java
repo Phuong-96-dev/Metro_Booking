@@ -28,8 +28,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status) {
-        return ticketRepository.findByMember_MemberIdAndStatus(memberId, status);
+    public List<Ticket> findByMember_MemberId(Long memberId) {
+        return ticketRepository.findByMember_MemberId(memberId);
     }
 
 

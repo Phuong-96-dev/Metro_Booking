@@ -32,9 +32,9 @@
                 <form th:action="@{/ticket/use}" method="post">
                     <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
                     <button type="submit"
-                            th:disabled="${ticket.status == 'Đã dùng'}"
+                            th:disabled="${ticket.status == 'Đang sử dụng'}"
                             class="btn btn-primary"
-                            th:text="${ticket.status == 'Đã dùng'} ? 'Đã dùng' : 'Dùng vé'">
+                            th:text="${ticket.status == 'Đang sử dụng'} ? 'Đang sử dụng' : 'Dùng vé'">
                     </button>
                 </form>
             </td>

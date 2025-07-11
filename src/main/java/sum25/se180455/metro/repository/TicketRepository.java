@@ -11,7 +11,7 @@ import java.util.List;
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
     // count tickets dashboard
     int countByStatus(String status);
-    List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status);
+    List<Ticket> findByMember_MemberId(Long memberId);
 
 
 }
