@@ -4,6 +4,7 @@
     <title>Gửi bài viết / phản hồi</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/member/feedback.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 <div th:replace="~{common/navbar :: navbar}"></div>
@@ -18,6 +19,17 @@
         <div>
             <label>Nội dung:</label>
             <textarea name="content" rows="5" required></textarea>
+        </div>
+        <div>
+            <label>Mức độ hài lòng (1-5):</label>
+            <select name="rating" required>
+                <option value="">-- Chọn mức độ --</option>
+                <option value="1">1 - Rất không hài lòng</option>
+                <option value="2">2 - Không hài lòng</option>
+                <option value="3">3 - Bình thường</option>
+                <option value="4">4 - Hài lòng</option>
+                <option value="5">5 - Rất hài lòng</option>
+            </select>
         </div>
         <button type="submit" class="btn btn-primary">Gửi</button>
     </form>

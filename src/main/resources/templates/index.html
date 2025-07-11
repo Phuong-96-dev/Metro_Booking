@@ -61,39 +61,30 @@
     <!-- Đánh giá -->
     <div class="mt-5">
         <h4>Đánh giá của khách hàng sử dụng dịch vụ đặt vé tàu METRO</h4>
-        <p>Xếp hạng <strong>4.8/5</strong> &nbsp;|&nbsp; Đánh giá <strong>50 lượt</strong></p>
+        <p>
+            Xếp hạng <strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)} + '/5'"></strong>
+            &nbsp;|&nbsp;
+            Đánh giá <strong th:text="${totalFeedback} + ' lượt'"></strong>
+        </p>
 
         <div class="row mt-3">
-            <div class="col-md-4">
-                <div class="card p-3">
-                    <i class="fa fa-star text-warning"></i> <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i> <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <p class="mt-2">Dịch vụ rất tốt và nhanh chóng, đặt vé dễ dàng!</p>
-                    <small>Khách hàng: Ngọc Lan</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3">
-                    <i class="fa fa-star text-warning"></i> <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i> <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star-half-alt text-warning"></i>
-                    <p class="mt-2">Trải nghiệm tốt, sẽ tiếp tục sử dụng!</p>
-                    <small>Khách hàng: Sáng Nguyễn</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3">
-                    <i class="fa fa-star text-warning"></i> <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i> <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <p class="mt-2">Metro luôn đúng giờ, rất hài lòng.</p>
-                    <small>Khách hàng: Hoàng Minh</small>
+            <div class="col-md-4 mb-3" th:each="fb : ${feedbacks}">
+                <div class="card p-3 h-100">
+                    <div>
+                    <span th:each="i : ${#numbers.sequence(1, T(java.lang.Math).floor(fb.rating))}">
+                        <i class="fa fa-star text-warning"></i>
+                    </span>
+                        <span th:if="${fb.rating % 1 >= 0.5}">
+                        <i class="fa fa-star-half-alt text-warning"></i>
+                    </span>
+                    </div>
+                    <h6 class="mt-2" th:text="${fb.title}">Tiêu đề</h6>
+                    <p th:text="${fb.content}">Nội dung feedback</p>
+                    <small th:text="'Ngày đăng: ' + ${fb.postingDate}">Ngày đăng</small>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>

@@ -17,13 +17,13 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
-
-    // Blog page
-    @GetMapping("/feedback")
+    @GetMapping("/blog")
     public String blogPage(Model model) {
         model.addAttribute("blogs", blogService.findAllBlogsOrderByDateDesc());
-        return "member/feedback"; // trỏ tới file feedback.html
+        return "blog"; // trỏ tới file feedback.html
     }
+    // Blog page
+
 
     // Manage blog page
     @GetMapping("/adminManage/manageBlog")
@@ -61,27 +61,8 @@ public class BlogController {
 
 
 
-    // Trang gửi bài viết từ người dùng (hoặc phản hồi)
-    @GetMapping("/feedback/send")
-    public String sendBlogForm() {
-        return "feedback"; // dùng chung feedback.html
-    }
 
-    // Xử lý gửi bài viết từ người dùng
-    @PostMapping("/feedback/send")
-    public String sendBlog(@RequestParam String title,
-                           @RequestParam String content) {
 
-        Blog blog = new Blog();
-        blog.setTitle(title);
-        blog.setContent(content);
-        blog.setPostingDate(LocalDate.now());
-        blog.setAdmin(null); // Không phải bài admin
-
-        blogService.createBlog(blog); // không truyền adminId
-
-        return "redirect:/myTicket?success";
-    }
 
 
 
