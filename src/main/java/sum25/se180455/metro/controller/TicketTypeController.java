@@ -81,7 +81,7 @@ public class TicketTypeController {
 
         // Tạo vé mới với tên cố định và durationDays là null
         TicketType ticket = new TicketType();
-        ticket.setName("Vé 1 lần");
+        ticket.setName("Vé lượt");
         ticket.setPrice(price); // ✅ lấy từ người dùng
         ticket.setDurationDays(null); // ✅ cố định null
         ticket.setStationStart(stationStart);
@@ -90,6 +90,10 @@ public class TicketTypeController {
         ticketTypeService.createTicketType(ticket);
         return "redirect:/adminManage/manageTicketType";
     }
+
+
+
+
 
 
 

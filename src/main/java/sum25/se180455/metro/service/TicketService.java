@@ -12,4 +12,5 @@ public interface TicketService {
     public Ticket findById(Long TicketId);
     List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status);
     Optional<Ticket> findByTicketId(Long TicketId);
+    Ticket getTicketById(Long TicketId);
 }
