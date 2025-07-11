@@ -1,4 +1,5 @@
 package sum25.se180455.metro.controller;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,12 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sum25.se180455.metro.pojo.*;
 import sum25.se180455.metro.service.MemberService;
-
 import sum25.se180455.metro.service.TicketService;
 import sum25.se180455.metro.service.TicketTypeService;
 import sum25.se180455.metro.service.TrainStationService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +31,12 @@ public class TicketController {
     @Autowired
     private TrainStationService trainStationService;
 
-
     @GetMapping("/ticket")
     public String showAllTicketTypes(Model model) {
         List<TicketType> types = ticketTypeService.getAllTicketTypes();
         model.addAttribute("ticketTypes", types);
 
-        // ✅ Bổ sung dòng này để truyền danh sách ga vào model
+        // Bổ sung danh sách ga vào model
         List<TrainStation> stations = trainStationService.getAllTrainStations();
         model.addAttribute("stations", stations);
         model.addAttribute("isSearch", false);
@@ -74,7 +74,7 @@ public class TicketController {
         ticket.setMember(member);
         ticket.setTicketType(ticketType);
 
-        Ticket savedTicket = ticketService.save(ticket);  // đảm bảo có ID
+        Ticket savedTicket = ticketService.save(ticket);
         return "redirect:/payment?ticketId=" + savedTicket.getTicketId();
     }
 
@@ -82,27 +82,34 @@ public class TicketController {
     public String searchTickets(@RequestParam(required = false) Long start,
                                 @RequestParam(required = false) Long end,
                                 Model model) {
-        List<TicketType> tickets;
+        List<TicketType> allTickets = ticketTypeService.getAllTicketTypes(); // Lấy tất cả vé
+        List<TicketType> filteredTickets = new ArrayList<>();
 
+        // Lọc vé lượt dựa trên start và end
         if (start != null && end != null) {
-            tickets = ticketTypeService.findByStartAndEnd(start, end);
+            filteredTickets = ticketTypeService.findByStartAndEnd(start, end);
         } else if (start != null) {
-            tickets = ticketTypeService.findByStart(start);
+            filteredTickets = ticketTypeService.findByStart(start);
         } else if (end != null) {
-            tickets = ticketTypeService.findByEnd(end);
+            filteredTickets = ticketTypeService.findByEnd(end);
         } else {
-            tickets = ticketTypeService.getAllTicketTypes();
+            filteredTickets = allTickets; // Nếu không có tham số, lấy tất cả
         }
 
-        model.addAttribute("ticketTypes", tickets);
+        // Thêm vé theo thời gian (stationStart và stationEnd là null)
+        List<TicketType> timeBasedTickets = allTickets.stream()
+                .filter(type -> type.getStationStart() == null && type.getStationEnd() == null)
+                .toList();
+        filteredTickets.addAll(timeBasedTickets);
 
-        // ✅ Truyền danh sách các ga
+        model.addAttribute("ticketTypes", filteredTickets);
+
+        // Truyền danh sách các ga
         List<TrainStation> stations = trainStationService.getAllTrainStations();
         model.addAttribute("stations", stations);
         model.addAttribute("isSearch", true);
 
-        // ❌ KHÔNG dùng redirect
-        return "ticket"; // <== thay đổi đường dẫn HTML đúng
+        return "ticket";
     }
 
     @PostMapping("/ticket/use")
@@ -115,15 +122,9 @@ public class TicketController {
                 && !"Đã dùng".equals(ticket.getStatus())) {
 
             ticket.setStatus("Đã dùng");
-            ticketService.save(ticket); // chỉ cập nhật nếu là "Vé lượt"
+            ticketService.save(ticket); // Chỉ cập nhật nếu là "Vé lượt"
         }
 
         return "redirect:/feedback";
     }
-
-
-
-
 }
-
-
