@@ -59,11 +59,18 @@ public class TicketController {
 
         TicketType ticketType = optionalTicketType.get();
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime dateEnd = null;
+        LocalDateTime dateEnd;
 
-        Integer durationDays = ticketType.getDurationDays();
-        if (durationDays != null && durationDays > 0) {
-            dateEnd = now.plusDays(durationDays);
+        if ("Vé lượt".equals(ticketType.getName())) {
+            // Nếu là vé lượt → hết hạn sau 3 tiếng
+            dateEnd = now.plusHours(3);
+        } else {
+            Integer durationDays = ticketType.getDurationDays();
+            if (durationDays != null && durationDays > 0) {
+                dateEnd = now.plusDays(durationDays);
+            } else {
+                dateEnd = null; // Hoặc bạn có thể thiết lập mặc định khác
+            }
         }
 
         Ticket ticket = new Ticket();
@@ -116,15 +123,22 @@ public class TicketController {
     public String useTicket(@RequestParam Long ticketId, HttpSession session) {
         Ticket ticket = ticketService.getTicketById(ticketId);
 
-        if (ticket != null
-                && ticket.getTicketType() != null
-                && "Vé lượt".equals(ticket.getTicketType().getName())
-                && !"Đã dùng".equals(ticket.getStatus())) {
+        if (ticket != null && ticket.getTicketType() != null) {
+            String ticketName = ticket.getTicketType().getName();
+            String currentStatus = ticket.getStatus();
 
-            ticket.setStatus("Đã dùng");
-            ticketService.save(ticket); // Chỉ cập nhật nếu là "Vé lượt"
+            // Chỉ xử lý nếu vé chưa bị "Hết hạn" hoặc "Đã dùng"
+            if (!"Hết hạn".equals(currentStatus)) {
+                if ("Vé lượt".equals(ticketName)) {
+                    ticket.setStatus("Hết hạn");
+                } else {
+                    ticket.setStatus("Đang sử dụng");
+                }
+                ticketService.save(ticket);
+            }
         }
 
         return "redirect:/feedback";
     }
+
 }

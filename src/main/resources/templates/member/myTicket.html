@@ -31,10 +31,11 @@
             <td>
                 <form th:action="@{/ticket/use}" method="post">
                     <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
+
                     <button type="submit"
-                            th:disabled="${ticket.status == 'Đã dùng'}"
                             class="btn btn-primary"
-                            th:text="${ticket.status == 'Đã dùng'} ? 'Đã dùng' : 'Dùng vé'">
+                            th:disabled="${ticket.status == 'Hết hạn'}">
+                        Dùng vé
                     </button>
                 </form>
             </td>

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface TicketService {
     public Ticket save(Ticket ticket);
     public Ticket findById(Long TicketId);
-    List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status);
+    List<Ticket> findByMember_MemberId(Long memberId);
     Optional<Ticket> findByTicketId(Long TicketId);
     Ticket getTicketById(Long TicketId);
 }
