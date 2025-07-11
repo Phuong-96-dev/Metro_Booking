@@ -9,6 +9,7 @@ import sum25.se180455.metro.pojo.Blog;
 import sum25.se180455.metro.service.BlogService;
 import sum25.se180455.metro.pojo.Member;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -16,13 +17,13 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
-
-    // Blog page
     @GetMapping("/blog")
     public String blogPage(Model model) {
         model.addAttribute("blogs", blogService.findAllBlogsOrderByDateDesc());
-        return "blog"; // trỏ tới file blog.html
+        return "blog"; // trỏ tới file feedback.html
     }
+    // Blog page
+
 
     // Manage blog page
     @GetMapping("/adminManage/manageBlog")
@@ -56,5 +57,13 @@ public class BlogController {
         blogService.deleteBlog(id);
         return "redirect:/adminManage/manageBlog";
     }
+
+
+
+
+
+
+
+
 
 }

@@ -20,6 +20,7 @@ public class Blog {
     private Member admin;
 
     public Blog() {}
+
     public Blog(Long blogId, String title, String content, String imageUrl, LocalDate postingDate, Member admin) {
         this.blogId = blogId;
         this.title = title;
@@ -91,5 +92,7 @@ public class Blog {
     public void setAdmin(Member admin) {
         this.admin = admin;
     }
+
+
 }
 
