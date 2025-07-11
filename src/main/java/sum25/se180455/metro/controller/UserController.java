@@ -78,7 +78,9 @@ public class UserController {
         int blogCount = blogService.countBlogs();
         int busCount = busRouteService.countByBusStatus("ACTIVE");
         long trainStationCount = trainStationService.count();
-        int ticketCount = ticketService.countByStatus("ACTIVE");
+        int count1 = ticketService.countByStatus("Chưa sử dụng");
+        int count2 = ticketService.countByStatus("Đang sử dụng");
+        int ticketCount = count1 + count2;
 
         model.addAttribute("memberCount", memberCount);
         model.addAttribute("blogCount", blogCount);

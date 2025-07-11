@@ -16,9 +16,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     int countByStatus(String status);
 
     List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status);
+
     @Query(value = "SELECT FORMAT(t.date_start, 'yyyy-MM-dd') AS day, SUM(t.price) " +
             "FROM ticket t " +
-            "WHERE t.status = 'ACTIVE' " +
+            "WHERE t.status IN (N'Đang sử dụng', N'Chưa sử dụng') " +
             "AND CAST(t.date_start AS DATE) BETWEEN :startDate AND :endDate " +
             "GROUP BY FORMAT(t.date_start, 'yyyy-MM-dd') " +
             "ORDER BY day",
@@ -27,22 +28,34 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    @Query(value = "SELECT MONTH(t.date_start) AS monthNum, SUM(t.price) FROM ticket t WHERE t.status = 'ACTIVE' AND YEAR(t.date_start) = :year GROUP BY MONTH(t.date_start) ORDER BY MONTH(t.date_start)", nativeQuery = true)
+    @Query(value = "SELECT MONTH(t.date_start) AS monthNum, SUM(t.price) " +
+            "FROM ticket t " +
+            "WHERE t.status IN (N'Đang sử dụng', N'Chưa sử dụng') " +
+            "AND YEAR(t.date_start) = :year " +
+            "GROUP BY MONTH(t.date_start) " +
+            "ORDER BY MONTH(t.date_start)",
+            nativeQuery = true)
     List<Object[]> getRevenueGroupedByMonth(@Param("year") int year);
 
     @Query(value = "SELECT YEAR(t.date_start) AS year, SUM(t.price) " +
             "FROM ticket t " +
-            "WHERE t.status = 'ACTIVE' " +
+            "WHERE t.status IN (N'Đang sử dụng', N'Chưa sử dụng') " +
             "GROUP BY YEAR(t.date_start) " +
             "ORDER BY YEAR(t.date_start)",
             nativeQuery = true)
     List<Object[]> getRevenueGroupedByYear();
 
     @Query(value = "SELECT tt.name AS typeName, SUM(t.price) " +
-            "FROM ticket t JOIN ticket_type tt ON t.ticket_type_id = tt.ticket_type_id " +
-            "WHERE t.status = 'ACTIVE' GROUP BY tt.name", nativeQuery = true)
+            "FROM ticket t " +
+            "JOIN ticket_type tt ON t.ticket_type_id = tt.ticket_type_id " +
+            "WHERE t.status IN (N'Đang sử dụng', N'Chưa sử dụng') " +
+            "GROUP BY tt.name",
+            nativeQuery = true)
     List<Object[]> getRevenueByTicketType();
 
-    @Query(value = "SELECT SUM(t.price) FROM ticket t WHERE t.status = 'ACTIVE'", nativeQuery = true)
+    @Query(value = "SELECT SUM(t.price) " +
+            "FROM ticket t " +
+            "WHERE t.status IN (N'Đang sử dụng', N'Chưa sử dụng')",
+            nativeQuery = true)
     Double getTotalRevenue();
 }
