@@ -1,0 +1,55 @@
+.icon-success {
+    font-size: 60px;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.ticket-box {
+    display: inline-block;
+    margin-top: 30px;
+    border: 1.5px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    padding: 25px 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-align: left;
+    max-width: 340px;
+}
+
+.ticket-title {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 18px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.station {
+    font-size: 16px;
+    color: #2980b9;
+    font-weight: bold;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.info-box p {
+    margin: 8px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+.btn-my-ticket {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-my-ticket:hover {
+    background-color: #0056b3;
+}

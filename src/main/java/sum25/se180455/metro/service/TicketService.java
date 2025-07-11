@@ -1,13 +1,15 @@
 package sum25.se180455.metro.service;
 
+import sum25.se180455.metro.pojo.Member;
 import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.pojo.TicketType;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TicketService {
-    public void save(Ticket ticket);
-    List<Ticket> getUnpaidTickets(Long memberId);
+    public Ticket save(Ticket ticket);
     public Ticket findById(Long TicketId);
-    List<Ticket> getActiveTicketsByMemberId(Long memberId);
+    List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status);
+    Optional<Ticket> findByTicketId(Long TicketId);
 }

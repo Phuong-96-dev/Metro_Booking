@@ -6,7 +6,7 @@ import sum25.se180455.metro.pojo.TicketType;
 @Repository
 
 public interface TicketTypeRepository extends JpaRepository<TicketType, Long> {
-    TicketType findTicketTypeByName(String name);
+
 
     TicketType getTicketTypeByTicketTypeId(Long ticketTypeId);
 

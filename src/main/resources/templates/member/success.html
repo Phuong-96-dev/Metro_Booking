@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh Toán Thành Công</title>
+    <link rel="stylesheet" th:href="@{/me/success.css}">
+</head>
+<body>
+
+<div class="icon-success">✔</div>
+<h2>THANH TOÁN THÀNH CÔNG</h2>
+<p>Cảm ơn bạn đã đặt vé.<br> Dưới đây là thông tin vé của bạn:</p>
+
+<div class="ticket-box">
+
+    <div class="ticket-title">VÉ TÀU</div>
+
+
+    <!-- Vé 1 lần -->
+    <div class="info-box" th:if="${ticket.ticketType.durationDays == null}">
+        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé 1 lần</span></p>
+        <p><strong>Ngày đi:</strong> <span th:text="${#dates.format(ticket.dateStart, 'dd/MM/yyyy')}">01/07/2025</span></p>
+        <p><strong>Giá vé:</strong>
+            <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
+        </p>
+    </div>
+
+    <!-- Vé thời hạn -->
+    <div class="info-box" th:if="${ticket.ticketType.durationDays != null}">
+        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé tháng</span></p>
+        <p><strong>Thời hạn:</strong> <span th:text="${ticket.ticketType.durationDays}">30</span> ngày</p>
+        <p><strong>Giá vé:</strong>
+            <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
+        </p>
+    </div>
+
+</div>
+
+<a th:href="@{/myTicket}" class="btn-my-ticket">Vé của tôi</a>
+
+</body>
+</html>

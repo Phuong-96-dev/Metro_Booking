@@ -2,11 +2,14 @@ package sum25.se180455.metro.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sum25.se180455.metro.pojo.Member;
 import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.pojo.TicketType;
 import sum25.se180455.metro.repository.TicketRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TicketServiceImpl implements TicketService {
     @Autowired
@@ -14,23 +17,25 @@ public class TicketServiceImpl implements TicketService {
 
 
     @Override
-    public void save(Ticket ticket) {
-        ticketRepository.save(ticket);
+    public Ticket save(Ticket ticket) {
+        return ticketRepository.save(ticket);
+    }
+
+
+    @Override
+    public Ticket findById(Long ticketId) {
+        return ticketRepository.findById(ticketId).orElse(null);
     }
 
     @Override
-    public List<Ticket> getUnpaidTickets(Long memberId) {
-        return ticketRepository.findByMember_MemberIdAndStatus(memberId, "payment");
+    public List<Ticket> findByMember_MemberIdAndStatus(Long memberId, String status) {
+        return ticketRepository.findByMember_MemberIdAndStatus(memberId, status);
     }
 
-    @Override
-    public Ticket findById(Long TicketId) {
-        return ticketRepository.findById(TicketId).get();
-    }
 
     @Override
-    public List<Ticket> getActiveTicketsByMemberId(Long memberId) {
-        return ticketRepository.findByMember_MemberIdAndStatus(memberId, "Active");
+    public Optional<Ticket> findByTicketId(Long TicketId) {
+        return ticketRepository.findById(TicketId);
     }
 
 
