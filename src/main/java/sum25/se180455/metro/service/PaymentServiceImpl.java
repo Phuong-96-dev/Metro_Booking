@@ -42,20 +42,17 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = new Payment();
         payment.setPaymentDate(LocalDate.now());
         payment.setPrice(ticket.getPrice());
-        payment.setStatus("Đã thanh toán");
+        payment.setStatus("PAID");
         payment.setTicket(ticket);
         payment.setMember(member);
 
         paymentRepository.save(payment);
 
-        ticket.setStatus("Đã thanh toán");
-        ticketService.save(ticket);
-
         return payment;
     }
 
     @Override
-    public void save(Payment payment) {
-        paymentRepository.save(payment);
+    public Payment save(Payment payment) {
+        return paymentRepository.save(payment);
     }
 }

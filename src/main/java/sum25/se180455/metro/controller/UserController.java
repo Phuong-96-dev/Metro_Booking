@@ -19,6 +19,8 @@ import sum25.se180455.metro.service.PaymentService;
 import sum25.se180455.metro.service.TicketService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -103,15 +105,37 @@ public class UserController {
         return "redirect:/adminManage/managerMember?message=Member role updated successfully";
     }
 
-    @GetMapping("/my-ticket")
-    public String viewMyTickets(HttpSession session, Model model) {
+    @GetMapping("/myTicket")
+    public String showMyTickets(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
+
         if (member == null) {
             return "redirect:/login";
         }
 
-        List<Ticket> activeTickets = ticketService.getActiveTicketsByMemberId(member.getMemberId());
+        Long memberId = member.getMemberId();
+        String status = "ACTIVE";
+
+        // Lấy tất cả vé ACTIVE của member
+        List<Ticket> activeTickets = ticketService.findByMember_MemberIdAndStatus(memberId, status);
+
+        // Kiểm tra hạn vé
+        LocalDateTime now = LocalDateTime.now();
+        List<Ticket> expiredTickets = new ArrayList<>();
+
+        for (Ticket ticket : activeTickets) {
+            if (ticket.getDate_end() != null && ticket.getDate_end().isBefore(now)) {
+                ticket.setStatus("EXPIRED");
+                ticketService.save(ticket); // Cập nhật trạng thái trong DB
+                expiredTickets.add(ticket);
+            }
+        }
+
+
         model.addAttribute("tickets", activeTickets);
-        return "member/myTicket"; // Trỏ đến file Thymeleaf `myTicket.html`
+        return "member/myTicket";
     }
+
+
+
 }

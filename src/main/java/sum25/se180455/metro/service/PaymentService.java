@@ -6,5 +6,5 @@ import sum25.se180455.metro.request.PaymentRequest;
 public interface PaymentService {
     Payment processPayment(PaymentRequest request);
 
-    public void save(Payment payment);
+    public Payment save(Payment payment);
 }

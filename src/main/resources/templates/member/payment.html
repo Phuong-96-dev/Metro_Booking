@@ -1,44 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
 <head>
     <meta charset="UTF-8">
-    <title>Trang Thanh Toán</title>
+    <title>Thanh Toán</title>
+    <link rel="stylesheet" th:href="@{/common/navbar.css}">
+    <link rel="stylesheet" th:href="@{/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/member/payment.css}">
 </head>
 <body>
+
 <div th:replace="~{common/navbar :: navbar}"></div>
 
-<h2>Danh sách vé chưa thanh toán</h2>
+<div class="container">
+    <h2>THANH TOÁN</h2>
 
-<!-- Hiển thị thông báo nếu có -->
-<div th:if="${success}" style="color: green" th:text="${success}"></div>
-<div th:if="${error}" style="color: red" th:text="${error}"></div>
+    <!-- Hiển thị thông báo nếu có -->
+    <div class="success" th:if="${success}" th:text="${success}"></div>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Mã vé</th>
-        <th>Giá</th>
-        <th>Trạng thái</th>
-        <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="ticket : ${unpaidTickets}">
-        <td th:text="${ticket.ticketId}">123</td>
-        <td th:text="${ticket.price}">50000</td>
-        <td th:text="${ticket.status}">Chưa thanh toán</td>
-        <td>
-            <form th:action="@{/payment}" method="post">
-                <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
-                <input type="hidden" name="memberId" th:value="${member.memberId}" />
-                <button type="submit">Thanh toán</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <form th:action="@{/payment}" method="post">
+        <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
+        <input type="hidden" name="memberId" th:value="${member.memberId}" />
+
+        <input type="text" placeholder="Họ và tên" name="fullName" required />
+        <input type="email" placeholder="Email" name="email" required />
+        <input type="tel" placeholder="Số điện thoại" name="phone" required />
+
+        <div class="info-box" th:if="${ticket.ticketType != null and ticket.ticketType.durationDays == null}">
+
+
+        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé 1 lần</span></p>
+            <p><strong>Ngày đi:</strong> <span th:text="${ticket.getDate_start()}">01/07/2025</span></p>
+
+            <p><strong>Giá vé:</strong>
+                <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
+            </p>
+        </div>
+
+        <!-- Các loại vé thời hạn (vé ngày, tuần, tháng, sinh viên, ...) -->
+        <div class="info-box" th:if="${ticket.ticketType != null and ticket.ticketType.durationDays != null}">
+
+        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé tháng</span></p>
+            <p><strong>Thời hạn:</strong> <span th:text="${ticket.ticketType.durationDays}">30</span> ngày</p>
+            <p><strong>Giá vé:</strong>
+                <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
+            </p>
+        </div>
+
+
+
+        <div class="payment-method">
+            <label for="paymentMethod">Phương thức thanh toán</label>
+            <select name="paymentMethod" id="paymentMethod" required>
+                <option value="banking">Chuyển khoản</option>
+                <option value="momo">Ví Momo</option>
+                <option value="zalopay">ZaloPay</option>
+            </select>
+        </div>
+
+        <input type="text" name="note" placeholder="Ghi chú (nếu có)" />
+
+        <button class="btn-pay" type="submit">
+            Thanh toán: <span th:text="${ticket.price}">30.000đ</span>
+        </button>
+    </form>
+
+    <div class="footer-note">
+        <p>🔁 Chính sách hoàn tiền | 💬 Hỗ trợ trực tuyến</p>
+    </div>
+</div>
+
 <div th:replace="~{common/footer :: footer}"></div>
 
 </body>

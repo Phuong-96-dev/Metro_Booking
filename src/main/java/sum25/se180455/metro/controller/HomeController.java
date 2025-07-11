@@ -34,7 +34,7 @@ public class HomeController {
         Member member = memberService.login(email, password);
         if (member != null) {
             if (!"ACTIVE".equalsIgnoreCase(member.getStatus())) {
-                return "redirect:/login?message=Tài khoản đã bị khóa";
+                return "redirect:/login?message=Account not available";
             }
 
             session.setAttribute("member", member);

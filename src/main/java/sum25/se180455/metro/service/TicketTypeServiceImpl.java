@@ -1,5 +1,6 @@
 package sum25.se180455.metro.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sum25.se180455.metro.pojo.TicketType;
@@ -20,7 +21,34 @@ public class TicketTypeServiceImpl implements TicketTypeService {
     }
 
     @Override
-    public Optional<TicketType> getTicketTypeById(Long id) {
-        return Optional.ofNullable(ticketTypeRepository.getTicketTypeByTicketTypeId(id));
+    public Optional<TicketType> getTicketTypeById(Long ticketTypeId) {
+        return Optional.ofNullable(ticketTypeRepository.getTicketTypeByTicketTypeId(ticketTypeId));
     }
+
+    @Override
+    public TicketType updateTicketTypeById(Long ticketTypeId, TicketType newTicket) {
+        TicketType existing = ticketTypeRepository.findById(ticketTypeId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại vé"));
+
+        existing.setName(newTicket.getName());
+        existing.setPrice(newTicket.getPrice());
+        existing.setDurationDays(newTicket.getDurationDays()); // có thể null
+
+        existing.setStationStart(newTicket.getStationStart()); // có thể null
+        existing.setStationEnd(newTicket.getStationEnd());     // có thể null
+
+        return ticketTypeRepository.save(existing);
+    }
+
+    @Override
+    public void deleteTicketTypeById(Long ticketTypeId) {
+        ticketTypeRepository.deleteById(ticketTypeId);
+    }
+
+    @Override
+    public TicketType createTicketType(TicketType ticketType) {
+       return ticketTypeRepository.save(ticketType);
+    }
+
+
 }

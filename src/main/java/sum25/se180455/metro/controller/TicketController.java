@@ -44,7 +44,6 @@ public class TicketController {
     @PostMapping("/ticket/buy")
     public String buyTicket(@RequestParam("ticketTypeId") Long ticketTypeId,
                             HttpSession session) {
-
         Member member = (Member) session.getAttribute("member");
         if (member == null) {
             return "redirect:/login";
@@ -59,8 +58,9 @@ public class TicketController {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime dateEnd = null;
 
-        if (ticketType.getDurationDays() > 0) {
-            dateEnd = now.plusDays(ticketType.getDurationDays());
+        Integer durationDays = ticketType.getDurationDays();
+        if (durationDays != null && durationDays > 0) {
+            dateEnd = now.plusDays(durationDays);
         }
 
         Ticket ticket = new Ticket();
@@ -70,12 +70,13 @@ public class TicketController {
         ticket.setPrice(ticketType.getPrice());
         ticket.setMember(member);
         ticket.setTicketType(ticketType);
-        // KHÔNG set schedule ở đây
 
-        ticketService.save(ticket);
-
-        return "redirect:/ticket";
+        Ticket savedTicket = ticketService.save(ticket);  // đảm bảo có ID
+        return "redirect:/payment?ticketId=" + savedTicket.getTicketId();
     }
+
+
+
 }
 
 

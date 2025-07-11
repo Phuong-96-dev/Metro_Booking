@@ -2,7 +2,7 @@ package sum25.se180455.metro.pojo;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+
 import java.util.List;
 
 @Entity
@@ -13,7 +13,8 @@ public class TicketType {
     @Column(name = "name", columnDefinition = "NVARCHAR(100)")
     private String name;
     private Double price;
-    private int durationDays;
+
+    private Integer durationDays;
 
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
@@ -26,7 +27,7 @@ public class TicketType {
     @JoinColumn(name = "station_end_id")
     private TrainStation stationEnd;
 
-    public TicketType(Long ticketTypeId, String name, Double price, int durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
+    public TicketType(Long ticketTypeId, String name, Double price, Integer durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.ticketTypeId = ticketTypeId;
         this.name = name;
         this.price = price;
@@ -36,7 +37,7 @@ public class TicketType {
         this.stationEnd = stationEnd;
     }
 
-    public TicketType(String name, Double price, int durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
+    public TicketType(String name, Double price, Integer durationDays, List<Ticket> tickets, TrainStation stationStart, TrainStation stationEnd) {
         this.name = name;
         this.price = price;
         this.durationDays = durationDays;
@@ -99,11 +100,11 @@ public class TicketType {
         this.stationEnd = stationEnd;
     }
 
-    public int getDurationDays() {
+    public Integer getDurationDays() {
         return durationDays;
     }
 
-    public void setDurationDays(int durationDays) {
+    public void setDurationDays(Integer durationDays) {
         this.durationDays = durationDays;
     }
 }

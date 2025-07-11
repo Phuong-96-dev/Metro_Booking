@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách loại vé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1, h3 {
+            color: #2c3e50;
+        }
+
+        form {
+            margin-bottom: 20px;
+            background: #f8f8f8;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        label {
+            display: inline-block;
+            margin: 5px 10px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 6px;
+            margin-left: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 6px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .edit-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Danh sách các loại vé</h1>
+
+<!-- ✅ Form thêm mới -->
+<h3>Thêm loại vé mới</h3>
+<form th:action="@{/adminManage/manageTicketType/create}" method="post">
+    <!-- Tên vé cố định -->
+    <p>Loại vé: <strong>Vé 1 lần</strong></p>
+    <input type="hidden" name="name" value="Vé 1 lần" />
+
+    <!-- Giá có thể điều chỉnh -->
+    <label>Giá:
+        <input type="number" name="price" required min="0" />
+    </label>
+
+    <!-- Ga đi -->
+    <label>Ga đi:
+        <select name="stationStartId" required>
+            <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"></option>
+        </select>
+    </label>
+
+    <!-- Ga đến -->
+    <label>Ga đến:
+        <select name="stationEndId" required>
+            <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"></option>
+        </select>
+    </label>
+
+    <button type="submit">Thêm Vé</button>
+</form>
+
+<!-- ✅ Danh sách và chỉnh sửa -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên vé</th>
+        <th>Giá</th>
+        <th>Thời hạn</th>
+        <th>Ga đi</th>
+        <th>Ga đến</th>
+        <th>Chức năng</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${ticketTypes}">
+        <td th:text="${ticket.ticketTypeId}"></td>
+        <td>
+            <form th:action="@{/adminManage/manageTicketType/update/{id}(id=${ticket.ticketTypeId})}" method="post" class="edit-form">
+                <input type="text" name="name" th:value="${ticket.name}" required />
+        </td>
+        <td>
+            <input type="number" name="price" th:value="${ticket.price}" required />
+        </td>
+        <td th:if="${ticket.name != 'Vé 1 lần'}">
+            <input type="number" name="durationDays" th:value="${ticket.durationDays}" required />
+        </td>
+
+        <td th:if="${ticket.name == 'Vé 1 lần'}">-</td>
+
+        <td>
+            <select name="stationStartId"
+                    th:if="${ticket.name == 'Vé 1 lần'}">
+                <option value="" th:if="${ticket.stationStart == null}" selected>Chưa có</option>
+                <option th:each="s : ${stations}"
+                        th:value="${s.stationId}"
+                        th:text="${s.name}"
+                        th:selected="${ticket.stationStart != null and s.stationId == ticket.stationStart.stationId}">
+                </option>
+            </select>
+            <span th:if="${ticket.name != 'Vé 1 lần'}">-</span>
+        </td>
+
+        <!-- Ga đến -->
+        <td>
+            <select name="stationEndId"
+                    th:if="${ticket.name == 'Vé 1 lần'}">
+                <option value="" th:if="${ticket.stationEnd == null}" selected>Chưa có</option>
+                <option th:each="s : ${stations}"
+                        th:value="${s.stationId}"
+                        th:text="${s.name}"
+                        th:selected="${ticket.stationEnd != null and s.stationId == ticket.stationEnd.stationId}">
+                </option>
+            </select>
+            <span th:if="${ticket.name != 'Vé 1 lần'}">-</span>
+        </td>
+        <td class="action-buttons">
+            <button type="submit">Lưu</button>
+            </form>
+
+            <!-- ✅ Form xóa -->
+            <form th:action="@{/adminManage/manageTicketType/delete/{id}(id=${ticket.ticketTypeId})}" method="post">
+                <button type="submit" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

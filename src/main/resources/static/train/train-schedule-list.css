@@ -1,0 +1,242 @@
+/* style.css - Custom styles for Train Schedule List page */
+
+/* General Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #f0f4f8;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+/* Container for content */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* Headings */
+h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1e40af;
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+    margin: 0.5rem auto;
+    border-radius: 2px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #1f2937;
+    text-align: center;
+    margin: 1.25rem 0;
+}
+
+/* Links for viewing trains and stations */
+h2 a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+h2 a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* Add New Schedule Link */
+a[href="/train-schedules/add"] {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #10b981;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+a[href="/train-schedules/add"]:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    margin: 1.5rem 0;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border: none;
+}
+
+th {
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+tr:hover {
+    background-color: #e0f2fe;
+    transition: background-color 0.2s ease;
+}
+
+.Btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100px;
+    height: 40px;
+    border: none;
+    padding: 0px 20px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
+    transition-duration: .3s;
+}
+
+.edit-btn {
+    background-color: #3b82f6; /* Xanh nhạt cho Edit */
+    box-shadow: 5px 5px 0px #2563eb;
+}
+
+.delete-btn {
+    background-color: #22c55e; /* Xanh lá đậm hơn cho Delete */
+    box-shadow: 5px 5px 0px #16a34a;
+}
+
+.svg {
+    width: 13px;
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    fill: white;
+    transition-duration: .3s;
+}
+
+.Btn:hover {
+    color: transparent;
+}
+
+.Btn:hover svg {
+    right: 43%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    transition-duration: .3s;
+}
+
+.Btn:active {
+    transform: translate(3px, 3px);
+    transition-duration: .3s;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Tùy chỉnh thêm nếu cần */
+.edit-btn:hover {
+    background-color: #2563eb; /* Xanh đậm hơn khi hover */
+}
+
+.delete-btn:hover {
+    background-color: #16a34a; /* Xanh lá đậm hơn khi hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    th, td {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    td a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    a[href="/train-schedules/add"],
+    a.btn-secondary.mt-3 {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Row Animation */
+tr {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+tr:hover {
+    transform: translateY(-2px);
+}
+
+/* Custom Scrollbar for Table */
+table::-webkit-scrollbar {
+    height: 8px;
+}
+
+table::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 4px;
+}
+
+table::-webkit-scrollbar-track {
+    background: #e5e7eb;
+}
