@@ -3,29 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard - Metro</title>
+    <link rel="stylesheet" th:href="@{/common/sidebar.css}" type="text/css">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             background: #f8f9fa;
             font-family: Arial, sans-serif;
-        }
-        .sidebar {
-            height: 100vh;
-            background: #003366;
-            color: white;
-            padding-top: 1rem;
-        }
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 0.75rem 1rem;
-            border-left: 3px solid transparent;
-        }
-        .sidebar a:hover {
-            background: #002244;
-            border-left: 3px solid #ffc107;
         }
         .content {
             padding: 2rem;
@@ -37,6 +22,7 @@
             transform: translateY(-5px);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+
     </style>
 </head>
 <body>
@@ -44,16 +30,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-2 sidebar">
-            <h4 class="text-center mb-4">Admin Metro</h4>
-            <a th:href="@{/adminManage/manageTicketType}"><i class="fa fa-ticket-alt"></i> Quản lý Vé</a>
-            <a th:href="@{/train-schedules}"><i class="fa fa-train"></i> Quản lý Ga Tàu</a>
-            <a th:href="@{/bus-routes}"><i class="fa fa-bus"></i> Quản lý Bus</a>
-            <a th:href="@{/adminManage/manageBlog}"><i class="fa fa-newspaper"></i> Quản lý Tin tức</a>
-            <a th:href="@{/adminManage/managerMember}"><i class="fa fa-users"></i> Quản lý Người dùng</a>
-            <a th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i> Log Out</a>
-        </div>
-
+        <div class="col-md-2 sidebar" th:insert="common/sidebar :: sidebar"></div>
         <!-- Main content -->
         <div class="col-md-10 content">
             <h2>Dashboard Tổng Quan</h2>
@@ -62,28 +39,28 @@
                     <div class="card p-3 text-center">
                         <i class="fa fa-ticket-alt fa-2x mb-2 text-primary"></i>
                         <h5>Vé bán</h5>
-                        <p>1200</p> <!-- giả -->
+                        <p>1200</p>
                     </div>
                 </div>
                 <div class="col-md-3 mb-4">
                     <div class="card p-3 text-center">
                         <i class="fa fa-train fa-2x mb-2 text-success"></i>
                         <h5>Ga Tàu</h5>
-                        <p>15</p> <!-- giả -->
+                        <p>15</p>
                     </div>
                 </div>
                 <div class="col-md-3 mb-4">
                     <div class="card p-3 text-center">
                         <i class="fa fa-bus fa-2x mb-2 text-warning"></i>
                         <h5>Tuyến Bus</h5>
-                        <p>20</p> <!-- giả -->
+                        <p>20</p>
                     </div>
                 </div>
                 <div class="col-md-3 mb-4">
                     <div class="card p-3 text-center">
                         <i class="fa fa-newspaper fa-2x mb-2 text-danger"></i>
                         <h5>Bài Tin</h5>
-                        <p th:text="${blogCount}">35</p> <!-- thật -->
+                        <p th:text="${blogCount}">35</p>
                     </div>
                 </div>
             </div>
@@ -93,7 +70,7 @@
                     <div class="card p-3 text-center">
                         <i class="fa fa-users fa-2x mb-2 text-info"></i>
                         <h5>Người dùng</h5>
-                        <p th:text="${memberCount}">50</p> <!-- thật -->
+                        <p th:text="${memberCount}">50</p>
                     </div>
                 </div>
             </div>
