@@ -55,12 +55,10 @@ h1 {
     padding: 12px;
 }
 
-.table tbody tr {
-    transition: background-color 0.2s;
-}
-
+/* Table hover effect */
 .table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #d1f1ff;
+    transition: background-color 0.3s ease;
 }
 
 /* Button styling */
