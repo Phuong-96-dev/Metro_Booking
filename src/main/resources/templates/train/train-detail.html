@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Train Detail</title>
+    <title>Chi tiết Tàu</title>
     <style>
         table, th, td {
             border: 1px solid black;
@@ -17,45 +17,43 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{common/navbar :: navbar}"></div>
-<h1>Train Detail</h1>
+<h1>Chi tiết Tàu</h1>
 <div th:if="${train != null}">
-    <h2>Train Information</h2>
+    <h2>Thông tin Tàu</h2>
     <p>
         ID: <span th:text="${train.trainId}"></span><br>
-        Name: <span th:text="${train.name}"></span><br>
+        Tên: <span th:text="${train.name}"></span><br>
     </p>
-    <h3>Admin Information</h3>
+    <h3>Thông tin Quản trị viên</h3>
     <p th:if="${train.admin != null}">
-        Admin ID: <span th:text="${train.admin.memberId}"></span><br>
-        Name: <span th:text="${train.admin.name}"></span><br>
+        ID Quản trị viên: <span th:text="${train.admin.memberId}"></span><br>
+        Tên: <span th:text="${train.admin.name}"></span><br>
         Email: <span th:text="${train.admin.email}"></span><br>
-        Phone: <span th:text="${train.admin.phone}"></span><br>
-        Role: <span th:text="${train.admin.role}"></span><br>
+        Điện thoại: <span th:text="${train.admin.phone}"></span><br>
+        Vai trò: <span th:text="${train.admin.role}"></span><br>
     </p>
-    <p th:unless="${train.admin != null}">No Admin Assigned</p>
-    <h3>Schedules</h3>
+    <p th:unless="${train.admin != null}">Chưa có Quản trị viên được chỉ định</p>
+    <h3>Lịch trình</h3>
     <table th:if="${train.schedules != null and not #lists.isEmpty(train.schedules)}">
         <tr>
-            <th>Schedule ID</th>
-            <th>Start Time</th>
-            <th>Depart Time</th>
-            <th>Arrival Time</th>
-            <th>Direction</th>
-            <th>Train ID</th>
+            <th>ID Lịch trình</th>
+            <th>Giờ Khởi hành</th>
+            <th>Giờ Đến</th>
+            <th>Hướng đi</th>
+            <th>ID Tàu</th>
         </tr>
         <tr th:each="schedule : ${train.schedules}">
             <td th:text="${schedule.scheduleId}"></td>
-            <td th:text="${schedule.startTime}"></td>
-            <td th:text="${schedule.departTime}"></td>
-            <td th:text="${schedule.arrivalTime}"></td>
+            <td th:text="${#temporals.format(schedule.departTime, 'HH:mm')}"></td>
+            <td th:text="${#temporals.format(schedule.arrivalTime, 'HH:mm')}"></td>
             <td th:text="${schedule.startStation.name} + ' → ' + ${schedule.endStation.name}"></td>
             <td th:text="${schedule.train?.trainId}"></td>
         </tr>
     </table>
-    <p th:unless="${train.schedules != null and not #lists.isEmpty(train.schedules)}">No Schedules Available</p>
+    <p th:unless="${train.schedules != null and not #lists.isEmpty(train.schedules)}">Không có lịch trình</p>
 </div>
-<p th:unless="${train != null}">Train not found</p>
-<a href="/trains">Back to List</a>
+<p th:unless="${train != null}">Không tìm thấy tàu</p>
+<a href="/trains">Quay lại Danh sách</a>
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>
 

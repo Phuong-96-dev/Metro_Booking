@@ -14,7 +14,6 @@ import sum25.se180455.metro.service.BusRouteService;
 import sum25.se180455.metro.service.TrainScheduleService;
 import sum25.se180455.metro.service.TrainStationService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,13 +33,12 @@ public class ScheduleSearchController {
     @GetMapping
     public String showSearchForm(Model model) {
         model.addAttribute("stations", trainStationService.getAllTrainStations());
-        return "train/schedule-search"; // Updated to point to the combined template
+        return "train/schedule-search";
     }
 
     @PostMapping
     public String searchSchedules(@RequestParam Long startStationId,
                                   @RequestParam Long endStationId,
-                                  @RequestParam LocalDateTime dateTime,
                                   Model model) {
 
         TrainStation startStation = trainStationService.getTrainStationById(startStationId).orElse(null);
@@ -49,53 +47,51 @@ public class ScheduleSearchController {
         if (startStation == null || endStation == null || startStation.equals(endStation)) {
             model.addAttribute("error", "Ga bắt đầu hoặc kết thúc không hợp lệ.");
             model.addAttribute("stations", trainStationService.getAllTrainStations());
-            return "train/schedule-search"; // Updated to point to the combined template
+            return "train/schedule-search";
         }
 
-        // Tìm lịch trình phù hợp
+        // Find matching schedules
         List<TrainSchedule> schedules = trainScheduleService.getAllTrainSchedules().stream()
-                .filter(schedule -> isValidSchedule(schedule, startStation, endStation, dateTime))
+                .filter(schedule -> isValidSchedule(schedule, startStation, endStation))
                 .collect(Collectors.toList());
 
-        // Tính thời gian di chuyển
+        // Calculate travel time
         List<ScheduleResult> results = schedules.stream()
                 .map(schedule -> {
                     int stationCount = Math.abs(startStation.getPosition() - endStation.getPosition());
-                    long travelMinutes = stationCount * 2; // Giả định 2 phút mỗi ga
+                    long travelMinutes = stationCount * 2; // Assume 2 minutes per station
                     return new ScheduleResult(schedule, travelMinutes);
                 })
                 .collect(Collectors.toList());
 
-        // Lấy các tuyến xe buýt tại ga đến
+        // Get bus routes at end station
         List<BusRoute> busRoutesAtEndStation = busRouteService.findBusRoutesByStation(endStationId);
 
-        // Truyền dữ liệu vào model
+        // Pass data to model
         model.addAttribute("results", results);
         model.addAttribute("stations", trainStationService.getAllTrainStations());
         model.addAttribute("busRoutes", busRoutesAtEndStation);
         model.addAttribute("endStation", endStation);
 
-        return "train/schedule-search"; // Updated to point to the combined template
+        return "train/schedule-search";
     }
 
-    // Hàm kiểm tra lịch trình có hợp lệ không
-    private boolean isValidSchedule(TrainSchedule schedule, TrainStation startStation, TrainStation endStation, LocalDateTime dateTime) {
+    // Check if schedule is valid
+    private boolean isValidSchedule(TrainSchedule schedule, TrainStation startStation, TrainStation endStation) {
         boolean isForward = schedule.getStartStation().getName().equals("Bến Thành");
         int startPos = startStation.getPosition();
         int endPos = endStation.getPosition();
 
         if (isForward) {
             return startPos <= endPos && startPos >= schedule.getStartStation().getPosition() &&
-                    endPos <= schedule.getEndStation().getPosition() &&
-                    schedule.getDepartTime().toLocalDate().equals(dateTime.toLocalDate());
+                    endPos <= schedule.getEndStation().getPosition();
         } else {
             return startPos >= endPos && startPos <= schedule.getStartStation().getPosition() &&
-                    endPos >= schedule.getEndStation().getPosition() &&
-                    schedule.getDepartTime().toLocalDate().equals(dateTime.toLocalDate());
+                    endPos >= schedule.getEndStation().getPosition();
         }
     }
 
-    // Class chứa kết quả lịch trình + thời gian
+    // Class for schedule result + travel time
     public static class ScheduleResult {
         private TrainSchedule schedule;
         private long travelMinutes;

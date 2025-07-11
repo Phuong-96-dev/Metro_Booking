@@ -46,10 +46,6 @@
             </select>
         </div>
         <div class="search-group">
-            <label for="dateTime">Ngày đi:</label>
-            <input type="datetime-local" name="dateTime" id="dateTime" class="form-control" required />
-        </div>
-        <div class="search-group">
             <button type="submit" class="search-button">Tra cứu</button>
         </div>
     </form>
@@ -61,16 +57,16 @@
             <thead class="table-light">
             <tr>
                 <th>Tàu</th>
-                <th>Thời gian khởi hành</th>
-                <th>Thời gian đến</th>
+                <th>Giờ khởi hành</th>
+                <th>Giờ đến</th>
                 <th>Thời gian di chuyển (phút)</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="result : ${results}">
                 <td th:text="${result.schedule.train != null} ? ${result.schedule.train.name} : 'Không có tàu'"></td>
-                <td th:text="${#temporals.format(result.schedule.departTime, 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:text="${#temporals.format(result.schedule.arrivalTime, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${#temporals.format(result.schedule.departTime, 'HH:mm')}"></td>
+                <td th:text="${#temporals.format(result.schedule.arrivalTime, 'HH:mm')}"></td>
                 <td th:text="${result.travelMinutes}"></td>
             </tr>
             </tbody>

@@ -25,7 +25,6 @@
 <table>
   <tr>
     <th>ID</th>
-    <th>Start Time</th>
     <th>Depart Time</th>
     <th>Arrival Time</th>
     <th>Station Start</th>
@@ -35,9 +34,8 @@
   </tr>
   <tr th:each="schedule : ${schedules}">
     <td th:text="${schedule.scheduleId}"></td>
-    <td th:text="${schedule.startTime}"></td>
-    <td th:text="${schedule.departTime}"></td>
-    <td th:text="${schedule.arrivalTime}"></td>
+    <td th:text="${#temporals.format(schedule.departTime, 'HH:mm')}"></td>
+    <td th:text="${#temporals.format(schedule.arrivalTime, 'HH:mm')}"></td>
     <td th:text="${schedule.startStation.name}"></td>
     <td th:text="${schedule.endStation.name}"></td>
     <td th:text="${schedule.train != null} ? ${schedule.train.name} : 'No Train'"></td>
