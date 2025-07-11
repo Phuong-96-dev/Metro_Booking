@@ -71,25 +71,32 @@ public class TicketTypeController {
 
 
     @PostMapping("/create")
-    public String createTicketType(@RequestParam Double price,
-                                   @RequestParam Long stationStartId,
-                                   @RequestParam Long stationEndId) {
+    public String createTicketType(@RequestParam String name,
+                                   @RequestParam Double price,
+                                   @RequestParam(required = false) Integer durationDays,
+                                   @RequestParam(required = false) Long stationStartId,
+                                   @RequestParam(required = false) Long stationEndId) {
 
-        // Tìm ga đi và ga đến từ ID
-        TrainStation stationStart = trainStationRepository.findById(stationStartId).orElse(null);
-        TrainStation stationEnd = trainStationRepository.findById(stationEndId).orElse(null);
-
-        // Tạo vé mới với tên cố định và durationDays là null
         TicketType ticket = new TicketType();
-        ticket.setName("Vé lượt");
-        ticket.setPrice(price); // ✅ lấy từ người dùng
-        ticket.setDurationDays(null); // ✅ cố định null
-        ticket.setStationStart(stationStart);
-        ticket.setStationEnd(stationEnd);
+        ticket.setName(name);
+        ticket.setPrice(price);
+
+        if ("Vé lượt".equals(name)) {
+            // Vé lượt không có thời hạn, có ga đi - ga đến
+            ticket.setDurationDays(null);
+            ticket.setStationStart(trainStationRepository.findById(stationStartId).orElse(null));
+            ticket.setStationEnd(trainStationRepository.findById(stationEndId).orElse(null));
+        } else {
+            // Vé theo thời gian có thời hạn, không có ga đi/đến
+            ticket.setDurationDays(durationDays);
+            ticket.setStationStart(null);
+            ticket.setStationEnd(null);
+        }
 
         ticketTypeService.createTicketType(ticket);
         return "redirect:/adminManage/manageTicketType";
     }
+
 
 
 

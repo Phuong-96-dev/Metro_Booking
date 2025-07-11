@@ -88,6 +88,26 @@
 
 <h1>Danh sách các loại vé</h1>
 
+<h3>Thêm loại vé có thời hạn</h3>
+<form th:action="@{/adminManage/manageTicketType/create}" method="post">
+    <!-- Tên vé nhập tự do -->
+    <label>Tên vé:
+        <input type="text" name="name" required />
+    </label>
+
+    <!-- Giá vé -->
+    <label>Giá:
+        <input type="number" name="price" required min="0" />
+    </label>
+
+    <!-- Thời hạn sử dụng (số ngày) -->
+    <label>Thời hạn (ngày):
+        <input type="number" name="durationDays" required min="1" />
+    </label>
+
+    <button type="submit">Thêm Vé</button>
+</form>
+
 <!-- ✅ Form thêm mới -->
 <h3>Thêm loại vé mới</h3>
 <form th:action="@{/adminManage/manageTicketType/create}" method="post">

@@ -114,10 +114,10 @@ public class UserController {
         }
 
         Long memberId = member.getMemberId();
-        String status = "Hoạt động";
+//        String status = "Hoạt động";
 
         // Lấy tất cả vé ACTIVE của member
-        List<Ticket> activeTickets = ticketService.findByMember_MemberIdAndStatus(memberId, status);
+        List<Ticket> activeTickets = ticketService.findByMember_MemberId(memberId);
 
         // Kiểm tra hạn vé
         LocalDateTime now = LocalDateTime.now();

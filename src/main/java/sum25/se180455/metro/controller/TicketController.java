@@ -59,11 +59,18 @@ public class TicketController {
 
         TicketType ticketType = optionalTicketType.get();
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime dateEnd = null;
+        LocalDateTime dateEnd;
 
-        Integer durationDays = ticketType.getDurationDays();
-        if (durationDays != null && durationDays > 0) {
-            dateEnd = now.plusDays(durationDays);
+        if ("Vé lượt".equals(ticketType.getName())) {
+            // Nếu là vé lượt → hết hạn sau 3 tiếng
+            dateEnd = now.plusHours(3);
+        } else {
+            Integer durationDays = ticketType.getDurationDays();
+            if (durationDays != null && durationDays > 0) {
+                dateEnd = now.plusDays(durationDays);
+            } else {
+                dateEnd = null; // Hoặc bạn có thể thiết lập mặc định khác
+            }
         }
 
         Ticket ticket = new Ticket();
@@ -121,7 +128,7 @@ public class TicketController {
                 && "Vé lượt".equals(ticket.getTicketType().getName())
                 && !"Đã dùng".equals(ticket.getStatus())) {
 
-            ticket.setStatus("Đã dùng");
+            ticket.setStatus("Đang sử dụng");
             ticketService.save(ticket); // Chỉ cập nhật nếu là "Vé lượt"
         }
 
