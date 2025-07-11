@@ -7,8 +7,6 @@ import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.pojo.TicketType;
 
 
-import java.util.Optional;
-
 import java.util.List;
 
 
@@ -24,4 +22,5 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, Long> {
     List<TicketType> findByStationStart_StationId(Long startStationId);
 
     List<TicketType> findByStationEnd_StationId(Long endStationId);
+
 }
