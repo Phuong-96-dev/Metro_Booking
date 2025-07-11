@@ -1,6 +1,7 @@
 package sum25.se180455.metro.service;
 
 import sum25.se180455.metro.pojo.TrainSchedule;
+import sum25.se180455.metro.request.ScheduleResult;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface TrainScheduleService {
     public Optional<TrainSchedule> getTrainScheduleById(Long id);
     public TrainSchedule saveTrainSchedule(TrainSchedule schedule);
     public void deleteTrainSchedule(Long id);
-
+    List<ScheduleResult> searchSchedules(Long startStationId, Long endStationId);
 }
