@@ -19,6 +19,7 @@ import sum25.se180455.metro.service.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,12 +126,26 @@ public class UserController {
     }
     // Admin dashboard
     @GetMapping("/adminManage/managerMember")
-    public String adminManageMember(Model model) {
+    public String manageMembers(Model model) {
         List<Member> members = memberService.findAll();
+
+        Map<Long, Integer> memberTicketCounts = new HashMap<>();
+        Map<Long, Double> memberTotalPaid = new HashMap<>();
+
+        for (Member member : members) {
+            List<Ticket> tickets = ticketService.getTicketsByMemberId(member.getMemberId());
+            memberTicketCounts.put(member.getMemberId(), tickets.size());
+
+            Double totalPaid = ticketService.getTotalPaidByMemberId(member.getMemberId());
+            memberTotalPaid.put(member.getMemberId(), totalPaid != null ? totalPaid : 0.0);
+        }
+
         model.addAttribute("members", members);
+        model.addAttribute("memberTicketCounts", memberTicketCounts);
+        model.addAttribute("memberTotalPaid", memberTotalPaid);
+
         return "adminManage/manageMember";
     }
-
     // Update member status
     @PostMapping("/adminManage/updateMemberStatus")
     public String updateMemberStatus(@ModelAttribute("member") Member member) {

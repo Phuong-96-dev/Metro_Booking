@@ -58,4 +58,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "WHERE t.status IN (N'Đang sử dụng', N'Chưa sử dụng')",
             nativeQuery = true)
     Double getTotalRevenue();
+
+    @Query("SELECT t FROM Ticket t WHERE t.member.memberId = :memberId")
+    List<Ticket> findByMemberId(@Param("memberId") Long memberId);
+
+    @Query(value = "SELECT SUM(price) FROM Ticket WHERE member_id = :memberId AND status IN (N'Chưa sử dụng', N'Đang sử dụng', N'Chưa thanh toán')", nativeQuery = true)
+    Double getTotalPaidByMemberId(@Param("memberId") Long memberId);
+
+
 }

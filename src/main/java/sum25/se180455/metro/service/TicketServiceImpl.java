@@ -48,4 +48,14 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.countByStatus(status);
     }
 
+    @Override
+    public List<Ticket> getTicketsByMemberId(Long memberId) {
+        return ticketRepository.findByMemberId(memberId);
+    }
+
+    @Override
+    public Double getTotalPaidByMemberId(Long memberId) {
+        Double total = ticketRepository.getTotalPaidByMemberId(memberId);
+        return total != null ? total : 0.0;
+    }
 }

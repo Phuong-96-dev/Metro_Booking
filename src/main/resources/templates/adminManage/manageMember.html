@@ -45,6 +45,7 @@
                     <th>Role</th>
                     <th>Status</th>
                     <th>Tickets Bought</th>
+                    <th>Total Paid</th>
                     <th>Update Role</th>
                     <th>Update Status</th>
                 </tr>
@@ -72,7 +73,9 @@
                               class="badge bg-warning text-dark badge-status" th:text="${member.status}"></span>
                     </td>
 
-                    <td th:text="${memberTicketCount[member.memberId]} ?: 0"></td>
+                    <!-- Tickets Bought -->
+                    <td th:text="${memberTicketCounts[member.memberId]} ?: 0"></td>
+                    <td th:text="${#numbers.formatDecimal(memberTotalPaid[member.memberId] ?: 0, 1, 'POINT', 2, 'COMMA')}"></td>
 
                     <!-- Update role -->
                     <td>
