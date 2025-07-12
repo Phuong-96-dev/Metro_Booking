@@ -1,0 +1,45 @@
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.feedback-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.feedback-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 300px;
+    transition: transform 0.2s ease;
+}
+
+.feedback-card:hover {
+    transform: translateY(-5px);
+}
+
+.feedback-rating {
+    margin-bottom: 10px;
+}
+
+.feedback-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.feedback-content {
+    margin-bottom: 10px;
+}
+
+.feedback-date,
+.feedback-author {
+    font-size: 14px;
+    color: #555;
+}

@@ -8,4 +8,5 @@ import java.util.List;
 public interface FeedbackService {
     Feedback createFeedback(Feedback feedback);
     List<Feedback> findAllBlogsOrderByDateDesc();
+    List<Feedback> findAllFeedbacks();
 }
