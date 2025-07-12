@@ -15,5 +15,6 @@ public interface TicketService {
     Ticket getTicketById(Long TicketId);
     int countByStatus(String status);
 
-
+    List<Ticket> getTicketsByMemberId(Long memberId);
+    Double getTotalPaidByMemberId(Long memberId);
 }
