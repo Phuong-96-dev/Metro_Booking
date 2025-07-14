@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sum25.se180455.metro.pojo.TicketType;
 import sum25.se180455.metro.pojo.TrainStation;
 import sum25.se180455.metro.repository.TrainStationRepository;
@@ -29,12 +30,13 @@ public class TicketTypeController {
     @GetMapping
     public String viewAllTicketTypes(Model model) {
         List<TicketType> ticketTypes = ticketTypeService.getAllTicketTypes();
-        List<TrainStation> stations = trainStationService.getAllTrainStations(); // Cần thêm service lấy danh sách ga tàu
-        model.addAttribute("ticketTypes", ticketTypes);
-        model.addAttribute("stations", trainStationService.getAllTrainStations());
+        List<TrainStation> stations = trainStationService.getAllTrainStations();
 
+        model.addAttribute("ticketTypes", ticketTypes);
+        model.addAttribute("stations", stations);
         return "adminManage/manageTicketType";
     }
+
 
     @PostMapping("/update/{id}")
     public String updateTicketType(
@@ -62,10 +64,14 @@ public class TicketTypeController {
 
 
     @PostMapping("/delete/{id}")
-    public String deleteTicketType(@PathVariable("id") Long id) {
-        ticketTypeService.deleteTicketTypeById(id);
+    public String deleteTicketType(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            ticketTypeService.deleteTicketTypeById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa loại vé thành công.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/adminManage/manageTicketType";
-
     }
 
 
