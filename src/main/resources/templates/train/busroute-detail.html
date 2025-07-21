@@ -2,83 +2,85 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Bus Route Detail</title>
-  <style>
-    table, th, td {
-      border: 1px solid black;
-      border-collapse: collapse;
-      padding: 5px;
-    }
-  </style>
-  <link rel="stylesheet" th:href="@{/style.css}">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/common/navbar.css}">
-  <link rel="stylesheet" th:href="@{/common/footer.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/common/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/bus/busDetail.css}" type="text/css">
+
 </head>
-<body>
-<!-- Navbar -->
-<div th:replace="~{common/navbar :: navbar}"></div>
 
-<div class="container mt-4">
-  <h1>Bus Route Detail</h1>
-  <div th:if="${bus != null}">
-    <h2>Bus Route Information</h2>
-    <p>
-      ID: <span th:text="${bus.busId}"></span><br>
-      Name: <span th:text="${bus.name}"></span><br>
-      Location: <span th:text="${bus.location}"></span><br>
-      Status: <span th:text="${bus.busStatus}"></span><br>
-    </p>
-    <h3>Station Information</h3>
-    <p th:if="${bus.station != null}">
-      Station ID: <span th:text="${bus.station.stationId}"></span><br>
-      Name: <span th:text="${bus.station.name}"></span><br>
-      Arrival Time: <span th:text="${bus.station.arrivalTime}"></span><br>
-      Note: <span th:text="${bus.station.note}"></span><br>
-      Position: <span th:text="${bus.station.position}"></span><br>
-    </p>
-    <p th:unless="${bus.station != null}">No Station Assigned</p>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 p-0">
+      <div th:replace="common/sidebar :: sidebar"></div>
+    </div>
 
-    <h3>Destinations</h3>
-    <!-- Button to open modal for creating new destination -->
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#destinationModal"
-            th:attr="data-mode='create',data-bus-id=${bus.busId}">
-      Add New Destination
-    </button>
+    <div class="col-md-10 p-4 bg-light min-vh-100">
+      <div class="bus-detail card shadow-sm p-4">
+        <h2 class="mb-4 text-primary fw-bold">Thông tin tuyến bus</h2>
+        <div class="mb-4">
+          <p><strong>ID:</strong> <span th:text="${bus.busId}"></span></p>
+          <p><strong>Tên tuyến:</strong> <span th:text="${bus.name}"></span></p>
+          <p><strong>Khu vực:</strong> <span th:text="${bus.location}"></span></p>
+          <p><strong>Trạng thái:</strong> <span th:text="${bus.busStatus}"></span></p>
+        </div>
 
-    <table th:if="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}" class="table table-bordered">
-      <thead class="table-light">
-      <tr>
-        <th>Destination ID</th>
-        <th>Destination Name</th>
-        <th>Estimated Minutes</th>
-        <th>Bus Route ID</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="destination : ${bus.destinations}">
-        <td th:text="${destination.id}"></td>
-        <td th:text="${destination.destination}"></td>
-        <td th:text="${destination.estimatedMinutes}"></td>
-        <td th:text="${destination.busRoute?.busId}"></td>
-        <td>
-          <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#destinationModal"
-                  th:attr="data-mode='edit',data-destination-id=${destination.id},data-destination-name=${destination.destination},data-estimated-minutes=${destination.estimatedMinutes},data-bus-id=${bus.busId}">
-            Edit
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-secondary fw-semibold">Danh sách điểm dừng</h4>
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#destinationModal"
+                  th:attr="data-mode='create',data-bus-id=${bus.busId}">
+            <i class="fas fa-plus-circle"></i> Thêm điểm dừng
           </button>
-          <form th:action="@{/bus-routes/{busId}/destinations/delete/{id}(busId=${bus.busId},id=${destination.id})}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this destination?')">Delete</button>
-          </form>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <p th:unless="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}">No Destinations Available</p>
-  </div>
-  <p th:unless="${bus != null}">Bus Route not found</p>
+        </div>
 
-  <a href="/bus-routes" class="btn btn-secondary mt-3">Back to List</a>
-</div>
+        <div th:if="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-primary text-center">
+            <tr>
+              <th>#</th>
+              <th>Điểm dừng</th>
+              <th>Thời gian (phút)</th>
+              <th>ID Tuyến</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="destination, iter : ${bus.destinations}">
+              <td th:text="${iter.index + 1}" class="text-center"></td>
+              <td th:text="${destination.destination}"></td>
+              <td th:text="${destination.estimatedMinutes}" class="text-center"></td>
+              <td th:text="${destination.busRoute?.busId}" class="text-center"></td>
+              <td class="text-center">
+                <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal"
+                        data-bs-target="#destinationModal"
+                        th:attr="data-mode='edit',data-destination-id=${destination.id},
+                             data-destination-name=${destination.destination},
+                             data-estimated-minutes=${destination.estimatedMinutes},
+                             data-bus-id=${bus.busId}">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form th:action="@{/bus-routes/{busId}/destinations/delete/{id}(busId=${bus.busId},id=${destination.id})}"
+                      method="post" style="display:inline;">
+                  <button type="submit" class="btn btn-danger btn-sm"
+                          onclick="return confirm('Bạn chắc chắn muốn xoá điểm dừng này?')">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <p th:unless="${bus.destinations != null and not #lists.isEmpty(bus.destinations)}" class="text-muted">Chưa có điểm dừng nào.</p>
+
+        <a href="/bus-routes" class="btn btn-outline-secondary mt-4">
+          <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+      </div>
+    </div>
+
 
 <!-- Modal for creating/editing destination -->
 <div class="modal fade" id="destinationModal" tabindex="-1" aria-labelledby="destinationModalLabel" aria-hidden="true">
@@ -105,9 +107,10 @@
     </div>
   </div>
 </div>
+        </div>
+        </div>
 
-<!-- Footer -->
-<div th:replace="~{common/footer :: footer}"></div>
+        </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
