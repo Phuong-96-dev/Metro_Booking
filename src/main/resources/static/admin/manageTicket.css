@@ -1,47 +1,44 @@
-/* manageTicket.css */
 body {
     background-color: #f4f7fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* Loại bỏ thanh trượt ngang trên body */
-    height: 100vh; /* Đảm bảo body chiếm toàn bộ chiều cao viewport */
+    overflow-x: hidden;
+    height: 100vh;
 }
 
 .container-fluid {
     padding: 0;
-    height: 100%; /* Chiếm toàn bộ chiều cao của body */
-    overflow: hidden; /* Loại bỏ thanh trượt tổng thể */
+    height: 100%;
+    overflow: hidden;
 }
 
 .row {
     height: 100%;
-    overflow: hidden; /* Ngăn row tạo thanh trượt */
+    overflow: hidden;
 }
 
-/* Sidebar integration (assuming it uses sidebar.css) */
 .col-md-2 {
     background-color: #2c3e50;
     height: 100%;
-    overflow-y: auto; /* Giữ thanh trượt dọc cho sidebar nếu cần */
+    overflow-y: auto;
     padding: 0;
 }
 
-/* Main content */
 .col-md-10 {
     padding: 30px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    height: 100%; /* Chiếm toàn bộ chiều cao còn lại */
-    overflow-y: auto; /* Cho phép scroll dọc nếu nội dung vượt quá */
-    overflow-x: hidden; /* Loại bỏ thanh trượt ngang */
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .content {
     padding: 20px;
-    min-height: 100%; /* Đảm bảo nội dung chiếm ít nhất toàn bộ chiều cao */
+    min-height: 100%;
 }
 
 h1 {
@@ -62,14 +59,16 @@ h3 {
     margin-bottom: 15px;
 }
 
-/* Form styling */
 form {
     background-color: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
-    overflow-x: hidden; /* Loại bỏ thanh trượt ngang trong form */
+    overflow-x: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 label {
@@ -78,6 +77,7 @@ label {
     margin-right: 10px;
     display: inline-block;
     width: 120px;
+    margin-bottom: 5px;
 }
 
 input[type="text"],
@@ -89,7 +89,7 @@ select {
     font-size: 0.9rem;
     width: 200px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus,
@@ -100,7 +100,6 @@ select:focus {
     outline: none;
 }
 
-/* Custom button styling */
 .custom-button {
     width: 50px;
     height: 50px;
@@ -137,7 +136,7 @@ select:focus {
 }
 
 .save-button {
-    background-color: rgb(20, 120, 20); /* Màu xanh lá cho nút Lưu */
+    background-color: rgb(20, 120, 20);
 }
 
 .save-button:hover {
@@ -152,7 +151,7 @@ select:focus {
 }
 
 .delete-button {
-    background-color: rgb(120, 20, 20); /* Màu đỏ cho nút Xóa */
+    background-color: rgb(120, 20, 20);
 }
 
 .delete-button:hover {
@@ -175,7 +174,8 @@ table {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    table-layout: fixed; /* Đảm bảo bảng cố định chiều rộng */
+    table-layout: auto;
+    word-wrap: break-word;
 }
 
 thead {
@@ -183,32 +183,21 @@ thead {
     color: #fff;
 }
 
-th {
-    font-weight: 600;
-    padding: 15px;
-    text-align: center;
-    border-bottom: 2px solid #ddd;
-    white-space: nowrap; /* Ngăn th vượt quá chiều rộng */
-}
-
-th:first-child { /* Cột ID */
-    width: 50px; /* Đặt chiều rộng nhỏ cho cột ID */
-}
-
+th,
 td {
-    padding: 12px;
-    vertical-align: middle;
+    padding: 8px 10px;
     text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid #eee;
-    transition: background-color 0.3s ease;
-    overflow: hidden; /* Ngăn nội dung tràn ra ngoài */
-    text-overflow: ellipsis; /* Cắt ngắn nội dung nếu quá dài */
-    white-space: nowrap; /* Ngăn xuống dòng */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
-td:first-child { /* Cột ID */
-    width: 50px; /* Giữ chiều rộng nhỏ cho cột ID */
-    font-size: 0.9rem; /* Giảm kích thước font cho cột ID */
+th:first-child,
+td:first-child {
+    width: 50px;
+    font-size: 0.9rem;
 }
 
 tr:hover td {
@@ -220,19 +209,21 @@ tr:hover td {
 }
 
 .edit-form input[type="text"],
-.edit-form input[type="number"] {
-    width: 100px;
-    margin-right: 5px;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+.edit-form input[type="number"],
+.edit-form select {
+    width: 100%;
+    max-width: 100px;
+    font-size: 0.9rem;
 }
 
 .action-buttons {
     display: flex;
     gap: 5px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
-/* Responsive design */
+/* Responsive */
 @media (max-width: 768px) {
     .col-md-10 {
         padding: 15px;
@@ -269,8 +260,8 @@ tr:hover td {
 
     th:first-child,
     td:first-child {
-        width: 40px; /* Giảm thêm chiều rộng ID trên màn hình nhỏ */
-        font-size: 0.8rem; /* Giảm font-size thêm trên màn hình nhỏ */
+        width: 40px;
+        font-size: 0.8rem;
     }
 
     .custom-button {
@@ -287,7 +278,74 @@ tr:hover td {
     }
 }
 
-/* Đảm bảo không có thanh trượt không cần thiết */
 html {
-    overflow-x: hidden; /* Loại bỏ thanh trượt ngang toàn cục */
+    overflow-x: hidden;
+}
+
+/* Kiểm soát bố cục bảng */
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+}
+
+/* Cột dữ liệu */
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+}
+
+/* Căn chiều rộng cột phù hợp */
+th:nth-child(2), td:nth-child(2) { width: 160px; } /* Tên vé */
+th:nth-child(4), td:nth-child(4) { width: 110px; } /* Thời hạn */
+th:nth-child(5), td:nth-child(5),
+th:nth-child(6), td:nth-child(6) { width: 150px; } /* Ga đi / Ga đến */
+th:nth-child(7), td:nth-child(7) { width: 120px; } /* Chức năng */
+
+/* Nút bấm trong table */
+.custom-button {
+    border: none;
+    background-color: #007bff;
+    color: white;
+    padding: 6px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.custom-button.delete-button {
+    background-color: #dc3545;
+}
+
+.custom-button:hover {
+    opacity: 0.85;
+}
+
+/* Fix form alignment */
+form {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+}
+
+label {
+    margin-bottom: 5px !important;
+    width: 120px !important;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 200px !important;
+    margin-bottom: 10px !important;
+}
+
+button[type="submit"] {
+    margin-top: 10px !important;
 }

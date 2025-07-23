@@ -29,21 +29,15 @@
             <table>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Admin Name</th>
-                    <th>Admin Email</th>
-                    <th>Admin Phone</th>
-                    <th>Admin Role</th>
-                    <th>Schedules</th>
-                    <th>Action</th>
+                    <th>Tên</th>
+
+                    <th>Lịch trình</th>
+                    <th>Hoạt động</th>
                 </tr>
                 <tr th:each="train : ${trains}">
                     <td th:text="${train.trainId}"></td>
                     <td th:text="${train.name}"></td>
-                    <td th:text="${train.admin != null} ? ${train.admin.name} : 'No Admin'"></td>
-                    <td th:text="${train.admin != null} ? ${train.admin.email} : 'No Admin'"></td>
-                    <td th:text="${train.admin != null} ? ${train.admin.phone} : 'No Admin'"></td>
-                    <td th:text="${train.admin != null} ? ${train.admin.role} : 'No Admin'"></td>
+
                     <td>
                         <span th:if="${train.schedules != null and not #lists.isEmpty(train.schedules)}"
                               th:utext="${#strings.listJoin(train.schedules.![scheduleId], ', ')}"></span>

@@ -1,12 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Train Station Detail</title>
+  <title>Chi Tiết Trạm Tàu</title>
   <style>
-    table, th, td {
-      border: 1px solid black;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+
+    p, span {
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 15px;
       border-collapse: collapse;
-      padding: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      background-color: #ffffff;
+      table-layout: fixed; /* Fix độ rộng các cột đều nhau */
+    }
+
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: center;
+      vertical-align: middle;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    th {
+      background-color: #f1f3f5;
+      font-weight: bold;
+    }
+
+    /* Cột "Vị Trí" xử lý nội dung dài */
+    td:nth-child(3) {
+      max-width: 300px;
+      white-space: normal;
+    }
+
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
   </style>
   <link rel="stylesheet" th:href="@{/style.css}">
@@ -17,35 +67,40 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{common/navbar :: navbar}"></div>
-<h1>Train Station Detail</h1>
+
+<h1>Chi Tiết Trạm Tàu</h1>
+
 <div th:if="${station != null}">
-  <h2>Station Information</h2>
   <p>
-    ID: <span th:text="${station.stationId}"></span><br>
-    Name: <span th:text="${station.name}"></span><br>
-    Arrival Time: <span th:text="${station.arrivalTime}"></span><br>
-    Note: <span th:text="${station.note != null} ? ${station.note} : 'No Note'"></span><br>
-    Position: <span th:text="${station.position}"></span><br>
+    <strong>ID:</strong> <span th:text="${station.stationId}"></span><br>
+    <strong>Tên trạm:</strong> <span th:text="${station.name}"></span><br>
+    <strong>Thời gian đến:</strong> <span th:text="${station.arrivalTime}"></span><br>
+    <strong>Ghi chú:</strong> <span th:text="${station.note != null} ? ${station.note} : 'Không có ghi chú'"></span><br>
+    <strong>Vị trí:</strong> <span th:text="${station.position}"></span><br>
   </p>
-  <h3>Bus Routes</h3>
+
+  <h3>Tuyến Xe Buýt </h3>
   <table th:if="${station.busRoutes != null and not #lists.isEmpty(station.busRoutes)}">
     <tr>
-      <th>Bus Route ID</th>
-      <th>Name</th>
-      <th>Location</th>
-      <th>Status</th>
+      <th>ID Tuyến</th>
+      <th>Tên Tuyến</th>
+      <th>Vị Trí</th>
+      <th>Trạng Thái</th>
     </tr>
     <tr th:each="busRoute : ${station.busRoutes}">
       <td th:text="${busRoute.busId}"></td>
       <td th:text="${busRoute.name}"></td>
-      <td th:text="${busRoute.location != null} ? ${busRoute.location} : 'No Location'"></td>
-      <td th:text="${busRoute.busStatus != null} ? ${busRoute.busStatus} : 'No Status'"></td>
+      <td th:text="${busRoute.location != null} ? ${busRoute.location} : 'Không có vị trí'"></td>
+      <td th:text="${busRoute.busStatus != null} ? ${busRoute.busStatus} : 'Không có trạng thái'"></td>
     </tr>
   </table>
-  <p th:unless="${station.busRoutes != null and not #lists.isEmpty(station.busRoutes)}">No Bus Routes Available</p>
+  <p th:unless="${station.busRoutes != null and not #lists.isEmpty(station.busRoutes)}">Không có tuyến xe buýt nào</p>
 </div>
-<p th:unless="${station != null}">Station not found</p>
-<a href="/train-stations">Back to List</a>
+
+<p th:unless="${station != null}">Không tìm thấy trạm tàu</p>
+
+<a href="/train-stations">← Quay lại danh sách</a>
+
 <!-- Footer -->
 <div th:replace="~{common/footer :: footer}"></div>
 
