@@ -1,96 +1,91 @@
-/* Container styling */
-.search-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 15px;
-    background-color: #e9ecef;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* Container tổng */
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Form group styling */
+/* Tiêu đề */
+h1, h2, h3, h5 {
+    color: #2c3e50;
+}
+
+/* Form tra cứu */
+.search-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 25px;
+    align-items: flex-end;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
 .search-group {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0; /* Prevents overflow */
+    min-width: 200px;
 }
 
-.search-group label {
-    font-size: 0.9rem;
-    color: #495057;
-    margin-bottom: 5px;
-    text-align: center;
-}
-
-.search-group select,
-.search-group input {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    background-color: #ffffff;
-    font-size: 1rem;
-    color: #495057;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
-}
-
-.search-group select:focus,
-.search-group input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-.search-group select option {
-    color: #495057;
-}
-
-/* Button styling */
+/* Button tra cứu */
 .search-button {
-    padding: 10px 20px;
     background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
     border: none;
-    border-radius: 5px;
-    color: #ffffff;
-    font-size: 1.1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    height: 100%; /* Matches input height */
+    border-radius: 6px;
+    transition: 0.3s ease;
 }
 
 .search-button:hover {
     background-color: #0056b3;
 }
 
-/* Error message styling */
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    border: 1px solid #f5c6cb;
+/* Table kết quả */
+table {
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Responsive design */
+thead {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Nút Mua vé */
+.btn-success {
+    padding: 6px 10px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Tuyến xe buýt */
+ul {
+    padding-left: 18px;
+}
+
+ul li {
+    list-style-type: none;
+}
+
+.text-muted {
+    font-style: italic;
+}
+
+/* Responsive nhẹ */
 @media (max-width: 768px) {
     .search-container {
         flex-direction: column;
-        padding: 10px;
-    }
-
-    .search-group {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .search-button {
-        width: 100%;
     }
 }
