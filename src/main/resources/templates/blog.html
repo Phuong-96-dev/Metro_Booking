@@ -113,7 +113,7 @@
           <h3 th:text="${blogs[0].title}"></h3>
           <p class="text-muted" th:text="'Ngày đăng: ' + ${blogs[0].postingDate}"></p>
           <p th:text="${blogs[0].content}"></p>
-          <p class="fw-light" th:text="'Đăng bởi: ' + ${blogs[0].admin.name}"></p>
+          <p class="fw-light" th:text="'Đăng bởi: ' + ${blogs[0].admin?.name}"></p>
         </div>
       </div>
     </div>
@@ -134,7 +134,7 @@
         </div>
         <div class="card-footer text-muted">
           <small th:text="'Ngày đăng: ' + ${blog.postingDate}"></small><br>
-          <small th:text="'Đăng bởi: ' + ${blog.admin.name}"></small>
+          <small th:text="'Đăng bởi: ' + ${blog.admin?.name}"></small>
         </div>
       </div>
     </div>
