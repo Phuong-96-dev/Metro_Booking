@@ -22,10 +22,6 @@
         <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
         <input type="hidden" name="memberId" th:value="${member.memberId}" />
 
-        <input type="text" placeholder="Họ và tên" name="fullName" required />
-        <input type="email" placeholder="Email" name="email" required />
-        <input type="tel" placeholder="Số điện thoại" name="phone" required />
-
         <div class="info-box" th:if="${ticket.ticketType != null and ticket.ticketType.durationDays == null}">
 
 
@@ -46,9 +42,7 @@
                 <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
             </p>
         </div>
-
-
-        <input type="text" name="note" placeholder="Ghi chú (nếu có)" />
+        <input type="hidden" name="paymentMethod"    value="banking">
 
         <button class="btn-pay" type="submit">
             Thanh toán: <span th:text="${ticket.price}">30.000đ</span>

@@ -49,7 +49,7 @@
                     <td th:text="${blog.content}"></td>
                     <td><img th:src="${blog.imageUrl}" alt="img" style="width:80px; height:auto"></td>
                     <td th:text="${blog.postingDate}"></td>
-                    <td th:text="${blog.admin.name}"></td>
+                    <td th:text="${blog.admin?.name}"></td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
