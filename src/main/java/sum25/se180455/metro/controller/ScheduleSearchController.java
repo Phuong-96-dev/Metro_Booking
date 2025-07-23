@@ -48,55 +48,22 @@ public class ScheduleSearchController {
                                   @RequestParam Long endStationId,
                                   Model model) {
 
-        TrainStation startStation = trainStationService.getTrainStationById(startStationId).orElse(null);
-        TrainStation endStation = trainStationService.getTrainStationById(endStationId).orElse(null);
-
-        if (startStation == null || endStation == null || startStation.equals(endStation)) {
+        if (startStationId.equals(endStationId)) {
             model.addAttribute("error", "Ga bắt đầu hoặc kết thúc không hợp lệ.");
             model.addAttribute("stations", trainStationService.getAllTrainStations());
             return "train/schedule-search";
         }
 
-        // Calculate travel time
-        int stationCount = Math.abs(startStation.getPosition() - endStation.getPosition());
-        long travelMinutes = stationCount * 3; // 3 minutes per station
+        List<ScheduleResult> results = trainScheduleService.searchSchedules(startStationId, endStationId);
+        List<BusRoute> busRoutes = busRouteService.findBusRoutesByStation(endStationId);
+        TrainStation startStation = trainStationService.getTrainStationById(startStationId).orElse(null);
+        TrainStation endStation = trainStationService.getTrainStationById(endStationId).orElse(null);
 
-        // Find matching schedules
-        List<ScheduleResult> results = trainScheduleService.getAllTrainSchedules().stream()
-                .filter(schedule -> isValidSchedule(schedule, startStation, endStation))
-                .map(schedule -> {
-                    // Calculate specific departure and arrival times
-                    boolean isForward = schedule.getStartStation().getName().equals("Bến Thành");
-                    LocalTime departTime;
-                    LocalTime arrivalTime;
+        int travelMinutes = Math.abs(startStation.getPosition() - endStation.getPosition()) * 3;
 
-                    if (isForward) {
-                        int startOffset = startStation.getPosition() - schedule.getStartStation().getPosition();
-                        int endOffset = endStation.getPosition() - schedule.getStartStation().getPosition();
-                        departTime = schedule.getDepartTime().plusMinutes(startOffset * 3);
-                        arrivalTime = schedule.getDepartTime().plusMinutes(endOffset * 3);
-                    } else {
-                        int startOffset = schedule.getStartStation().getPosition() - startStation.getPosition();
-                        int endOffset = schedule.getStartStation().getPosition() - endStation.getPosition();
-                        departTime = schedule.getDepartTime().plusMinutes(startOffset * 3);
-                        arrivalTime = schedule.getDepartTime().plusMinutes(endOffset * 3);
-                    }
-
-                    // Find ticketTypeId for the start/end station pair
-                    List<TicketType> ticketTypes = ticketTypeService.findByStartAndEnd(startStationId, endStationId);
-                    Long ticketTypeId = ticketTypes.isEmpty() ? null : ticketTypes.get(0).getTicketTypeId();
-
-                    return new ScheduleResult(schedule, departTime, arrivalTime, travelMinutes, ticketTypeId);
-                })
-                .collect(Collectors.toList());
-
-        // Get bus routes at end station
-        List<BusRoute> busRoutesAtEndStation = busRouteService.findBusRoutesByStation(endStationId);
-
-        // Pass data to model
         model.addAttribute("results", results);
         model.addAttribute("stations", trainStationService.getAllTrainStations());
-        model.addAttribute("busRoutes", busRoutesAtEndStation);
+        model.addAttribute("busRoutes", busRoutes);
         model.addAttribute("startStation", startStation);
         model.addAttribute("endStation", endStation);
         model.addAttribute("startStationId", startStationId);
@@ -104,20 +71,5 @@ public class ScheduleSearchController {
         model.addAttribute("travelMinutes", travelMinutes);
 
         return "train/schedule-search";
-    }
-
-    // Check if schedule is valid
-    private boolean isValidSchedule(TrainSchedule schedule, TrainStation startStation, TrainStation endStation) {
-        boolean isForward = schedule.getStartStation().getName().equals("Bến Thành");
-        int startPos = startStation.getPosition();
-        int endPos = endStation.getPosition();
-
-        if (isForward) {
-            return startPos <= endPos && startPos >= schedule.getStartStation().getPosition() &&
-                    endPos <= schedule.getEndStation().getPosition();
-        } else {
-            return startPos >= endPos && startPos <= schedule.getStartStation().getPosition() &&
-                    endPos >= schedule.getEndStation().getPosition();
-        }
     }
 }
