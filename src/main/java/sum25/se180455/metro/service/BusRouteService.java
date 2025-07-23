@@ -9,5 +9,7 @@ public interface BusRouteService {
     public List<BusRoute> getAllBusRoutes();
     public Optional<BusRoute> getBusRouteById(Long id);
     List<BusRoute> findBusRoutesByStation(Long stationId);
+    int countByBusStatus(String busStatus);
+
 
 }

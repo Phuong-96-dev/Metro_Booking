@@ -9,4 +9,7 @@ import java.util.Optional;
 @Repository
 public interface TrainStationRepository extends JpaRepository<TrainStation,Long> {
     Optional<TrainStation> findByName(String name);
+    long count();
+
+
 }

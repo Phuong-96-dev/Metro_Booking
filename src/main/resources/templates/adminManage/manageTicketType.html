@@ -1,209 +1,263 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Danh sách loại vé</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
 
-        h1, h3 {
-            color: #2c3e50;
-        }
+    <!-- Nhúng css sidebar -->
+    <link rel="stylesheet" th:href="@{/common/sidebar.css}" type="text/css">
 
-        form {
-            margin-bottom: 20px;
-            background: #f8f8f8;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        label {
-            display: inline-block;
-            margin: 5px 10px;
-        }
+<!--    <style>-->
+<!--        html, body {-->
+<!--            height: 100%;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            overflow: hidden; /* Ngăn cuộn toàn trang */-->
+<!--        }-->
 
-        input[type="text"],
-        input[type="number"],
-        select {
-            padding: 6px;
-            margin-left: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+<!--        .sidebar a {-->
+<!--            color: white;-->
+<!--            text-decoration: none;-->
+<!--            display: block;-->
+<!--            padding: 0.75rem 1rem;-->
+<!--            border-left: 3px solid transparent;-->
+<!--        }-->
+<!--        .sidebar a:hover {-->
+<!--            background: #002244;-->
+<!--            border-left: 3px solid #ffc107;-->
+<!--        }-->
 
-        button {
-            padding: 6px 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
+<!--        .container-fluid {-->
+<!--            height: 100%;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--        }-->
 
-        button:hover {
-            background-color: #2980b9;
-        }
+<!--        .row {-->
+<!--            flex: 1;-->
+<!--            display: flex;-->
+<!--            height: 100%;-->
+<!--        }-->
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+<!--        .col-md-2 {-->
+<!--            flex: 0 0 220px; /* Định nghĩa chiều rộng cố định cho sidebar */-->
+<!--            background-color: #343a40;-->
+<!--            padding: 0;-->
+<!--        }-->
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+<!--        .content {-->
+<!--            flex: 1;-->
+<!--            padding: 1rem;-->
+<!--            overflow-y: auto; /* Cuộn nội bộ nếu nội dung dài */-->
+<!--            max-height: calc(100vh - 60px); /* Giới hạn chiều cao, trừ header/footer */-->
+<!--            background-color: #fff; /* Đảm bảo nền khác sidebar */-->
+<!--        }-->
 
-        th {
-            background-color: #f2f2f2;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 10px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .edit-form {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-    </style>
+<!--        form {-->
+<!--            margin-bottom: 10px;-->
+<!--            background: #f8f8f8;-->
+<!--            padding: 8px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+<!--        label {-->
+<!--            display: inline-block;-->
+<!--            margin: 2px 5px;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+<!--        input[type="text"],-->
+<!--        input[type="number"],-->
+<!--        select {-->
+<!--            padding: 4px;-->
+<!--            margin-left: 3px;-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 4px;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+<!--        button {-->
+<!--            padding: 4px 8px;-->
+<!--            background-color: #3498db;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 4px;-->
+<!--            cursor: pointer;-->
+<!--            margin-left: 5px;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+<!--        button:hover {-->
+<!--            background-color: #2980b9;-->
+<!--        }-->
+<!--        table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--            margin-top: 5px;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+<!--        table, th, td {-->
+<!--            border: 1px solid #ddd;-->
+<!--        }-->
+<!--        th {-->
+<!--            background-color: #f2f2f2;-->
+<!--            text-align: left;-->
+<!--            padding: 6px;-->
+<!--        }-->
+<!--        td {-->
+<!--            padding: 6px;-->
+<!--        }-->
+<!--        tr:nth-child(even) {-->
+<!--            background-color: #f9f9f9;-->
+<!--        }-->
+<!--        .edit-form {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 5px;-->
+<!--        }-->
+<!--        .action-buttons {-->
+<!--            display: flex;-->
+<!--            gap: 5px;-->
+<!--        }-->
+<!--    </style>-->
 </head>
 <body>
 
-<h1>Danh sách các loại vé</h1>
+<!-- Container chính sử dụng Bootstrap Grid -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar cố định -->
+        <div class="col-md-2 p-0">
+            <div th:replace="common/sidebar :: sidebar"></div>
+        </div>
 
-<h3>Thêm loại vé có thời hạn</h3>
-<form th:action="@{/adminManage/manageTicketType/create}" method="post">
-    <!-- Tên vé nhập tự do -->
-    <label>Tên vé:
-        <input type="text" name="name" required />
-    </label>
+        <!-- Nội dung chính -->
+        <div class="col-md-10">
+            <div class="content">
+                <h1>Danh sách các loại vé</h1>
 
-    <!-- Giá vé -->
-    <label>Giá:
-        <input type="number" name="price" required min="0" />
-    </label>
+                <h3>Thêm loại vé có thời hạn</h3>
+                <form th:action="@{/adminManage/manageTicketType/create}" method="post">
+                    <!-- Tên vé nhập tự do -->
+                    <label>Tên vé:
+                        <input type="text" name="name" required />
+                    </label>
 
-    <!-- Thời hạn sử dụng (số ngày) -->
-    <label>Thời hạn (ngày):
-        <input type="number" name="durationDays" required min="1" />
-    </label>
+                    <!-- Giá vé -->
+                    <label>Giá:
+                        <input type="number" name="price" required min="0" />
+                    </label>
 
-    <button type="submit">Thêm Vé</button>
-</form>
+                    <!-- Thời hạn sử dụng (số ngày) -->
+                    <label>Thời hạn (ngày):
+                        <input type="number" name="durationDays" required min="1" />
+                    </label>
 
-<!-- ✅ Form thêm mới -->
-<h3>Thêm loại vé mới</h3>
-<form th:action="@{/adminManage/manageTicketType/create}" method="post">
-    <!-- Tên vé cố định -->
-    <p>Loại vé: <strong>Vé lượt</strong></p>
-    <input type="hidden" name="name" value="Vé lượt" />
+                    <button type="submit">Thêm Vé</button>
+                </form>
 
-    <!-- Giá có thể điều chỉnh -->
-    <label>Giá:
-        <input type="number" name="price" required min="0" />
-    </label>
+                <!-- ✅ Form thêm mới -->
+                <h3>Thêm loại vé mới</h3>
+                <form th:action="@{/adminManage/manageTicketType/create}" method="post">
+                    <!-- Tên vé cố định -->
+                    <p>Loại vé: <strong>Vé lượt</strong></p>
+                    <input type="hidden" name="name" value="Vé lượt" />
 
-    <!-- Ga đi -->
-    <label>Ga đi:
-        <select name="stationStartId" required>
-            <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"></option>
-        </select>
-    </label>
+                    <!-- Giá có thể điều chỉnh -->
+                    <label>Giá:
+                        <input type="number" name="price" required min="0" />
+                    </label>
 
-    <!-- Ga đến -->
-    <label>Ga đến:
-        <select name="stationEndId" required>
-            <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"></option>
-        </select>
-    </label>
+                    <!-- Ga đi -->
+                    <label>Ga đi:
+                        <select name="stationStartId" required>
+                            <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"></option>
+                        </select>
+                    </label>
 
-    <button type="submit">Thêm Vé</button>
-</form>
+                    <!-- Ga đến -->
+                    <label>Ga đến:
+                        <select name="stationEndId" required>
+                            <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"></option>
+                        </select>
+                    </label>
 
-<!-- ✅ Danh sách và chỉnh sửa -->
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Tên vé</th>
-        <th>Giá</th>
-        <th>Thời hạn</th>
-        <th>Ga đi</th>
-        <th>Ga đến</th>
-        <th>Chức năng</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="ticket : ${ticketTypes}">
-        <td th:text="${ticket.ticketTypeId}"></td>
-        <td>
-            <form th:action="@{/adminManage/manageTicketType/update/{id}(id=${ticket.ticketTypeId})}" method="post" class="edit-form">
-                <input type="text" name="name" th:value="${ticket.name}" required />
-        </td>
-        <td>
-            <input type="number" name="price" th:value="${ticket.price}" required />
-        </td>
-        <td th:if="${ticket.name != 'Vé lượt'}">
-            <input type="number" name="durationDays" th:value="${ticket.durationDays}" required />
-        </td>
+                    <button type="submit">Thêm Vé</button>
+                </form>
 
-        <td th:if="${ticket.name == 'Vé lượt'}">-</td>
+                <!-- ✅ Danh sách và chỉnh sửa -->
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên vé</th>
+                        <th>Giá</th>
+                        <th>Thời hạn</th>
+                        <th>Ga đi</th>
+                        <th>Ga đến</th>
+                        <th>Chức năng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ticket : ${ticketTypes}">
+                        <td th:text="${ticket.ticketTypeId}"></td>
+                        <td>
+                            <form th:action="@{/adminManage/manageTicketType/update/{id}(id=${ticket.ticketTypeId})}" method="post" class="edit-form">
+                                <input type="text" name="name" th:value="${ticket.name}" required />
+                        </td>
+                        <td>
+                            <input type="number" name="price" th:value="${ticket.price}" required />
+                        </td>
+                        <td th:if="${ticket.name != 'Vé lượt'}">
+                            <input type="number" name="durationDays" th:value="${ticket.durationDays}" required />
+                        </td>
 
-        <td>
-            <select name="stationStartId"
-                    th:if="${ticket.name == 'Vé lượt'}">
-                <option value="" th:if="${ticket.stationStart == null}" selected>Chưa có</option>
-                <option th:each="s : ${stations}"
-                        th:value="${s.stationId}"
-                        th:text="${s.name}"
-                        th:selected="${ticket.stationStart != null and s.stationId == ticket.stationStart.stationId}">
-                </option>
-            </select>
-            <span th:if="${ticket.name != 'Vé lượt'}">-</span>
-        </td>
+                        <td th:if="${ticket.name == 'Vé lượt'}">-</td>
 
-        <!-- Ga đến -->
-        <td>
-            <select name="stationEndId"
-                    th:if="${ticket.name == 'Vé lượt'}">
-                <option value="" th:if="${ticket.stationEnd == null}" selected>Chưa có</option>
-                <option th:each="s : ${stations}"
-                        th:value="${s.stationId}"
-                        th:text="${s.name}"
-                        th:selected="${ticket.stationEnd != null and s.stationId == ticket.stationEnd.stationId}">
-                </option>
-            </select>
-            <span th:if="${ticket.name != 'Vé lượt'}">-</span>
-        </td>
-        <td class="action-buttons">
-            <button type="submit">Lưu</button>
-            </form>
+                        <td>
+                            <select name="stationStartId"
+                                    th:if="${ticket.name == 'Vé lượt'}">
+                                <option value="" th:if="${ticket.stationStart == null}" selected>Chưa có</option>
+                                <option th:each="s : ${stations}"
+                                        th:value="${s.stationId}"
+                                        th:text="${s.name}"
+                                        th:selected="${ticket.stationStart != null and s.stationId == ticket.stationStart.stationId}">
+                                </option>
+                            </select>
+                            <span th:if="${ticket.name != 'Vé lượt'}">-</span>
+                        </td>
 
-            <!-- ✅ Form xóa -->
-            <form th:action="@{/adminManage/manageTicketType/delete/{id}(id=${ticket.ticketTypeId})}" method="post">
-                <button type="submit" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                        <!-- Ga đến -->
+                        <td>
+                            <select name="stationEndId"
+                                    th:if="${ticket.name == 'Vé lượt'}">
+                                <option value="" th:if="${ticket.stationEnd == null}" selected>Chưa có</option>
+                                <option th:each="s : ${stations}"
+                                        th:value="${s.stationId}"
+                                        th:text="${s.name}"
+                                        th:selected="${ticket.stationEnd != null and s.stationId == ticket.stationEnd.stationId}">
+                                </option>
+                            </select>
+                            <span th:if="${ticket.name != 'Vé lượt'}">-</span>
+                        </td>
+                        <td class="action-buttons">
+                            <button type="submit">Lưu</button>
+                            </form>
 
+                            <!-- ✅ Form xóa -->
+                            <form th:action="@{/adminManage/manageTicketType/delete/{id}(id=${ticket.ticketTypeId})}" method="post">
+                                <button type="submit" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

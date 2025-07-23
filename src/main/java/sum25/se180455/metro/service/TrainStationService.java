@@ -10,4 +10,7 @@ public interface TrainStationService {
     public Optional<TrainStation> getTrainStationById(Long id);
     public Optional<TrainStation> getTrainStationByName(String name);
     public TrainStation getStationById (Long id);
+    long count();
+
+
 }

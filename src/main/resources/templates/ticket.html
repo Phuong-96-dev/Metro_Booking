@@ -27,7 +27,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="type : ${ticketTypes}" th:if="${type.stationStart == null and type.stationEnd == null}">
+            <tr th:each="type : ${ticketTypes}"
+                th:if="${type.stationStart == null and type.stationEnd == null
+                        and (type.name != 'Vé sinh viên' or (member != null and member.studentCard != ''))}">
                 <td th:text="${type.name}"></td>
                 <td th:text="${#numbers.formatDecimal(type.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                 <td th:text="${type.durationDays} + ' ngày'"></td>
@@ -44,7 +46,7 @@
         </table>
 
         <!-- Vé lượt: Chỉ hiển thị khi đã tìm kiếm -->
-        <h2><i class="bi bi-ticket-perforated-fill ticket-icon"></i>Vé lượt</h2>
+        <h2><i class="bi bi-ticket-perforated-fill ticket-icon"></i> Vé lượt</h2>
         <form class="mb-4 row" th:action="@{/ticket/search}" method="get">
             <div class="col-md-5">
                 <label for="stationStart">Ga đi</label>
@@ -70,6 +72,7 @@
                 <button type="submit" class="btn btn-primary">Tìm vé</button>
             </div>
         </form>
+
         <div th:if="${isSearch}">
             <table class="table table-bordered mb-5">
                 <thead>
@@ -85,7 +88,6 @@
                     <td th:text="${type.stationStart.name}"></td>
                     <td th:text="${type.stationEnd.name}"></td>
                     <td th:text="${#numbers.formatDecimal(type.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-
                     <td>
                         <form th:action="@{/ticket/buy}" method="post">
                             <input type="hidden" name="ticketTypeId" th:value="${type.ticketTypeId}" />

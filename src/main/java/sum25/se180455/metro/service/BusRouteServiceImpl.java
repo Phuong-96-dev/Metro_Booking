@@ -37,5 +37,9 @@ public class BusRouteServiceImpl implements BusRouteService {
                         && busRoute.getStation().getStationId().equals(stationId))
                 .collect(Collectors.toList());
     }
-}
+    @Override
+    public int  countByBusStatus(String status) {
+        return busRouteRepository.countByBusStatus(status);
+    }
+    }
 
