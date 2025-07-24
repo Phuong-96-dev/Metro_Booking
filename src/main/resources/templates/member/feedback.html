@@ -15,14 +15,6 @@
     <h2>Gửi bài viết / phản hồi</h2>
     <form th:action="@{/feedback/send}" method="post">
         <div>
-            <label>Tiêu đề:</label>
-            <input type="text" name="title" required>
-        </div>
-        <div>
-            <label>Nội dung:</label>
-            <textarea name="content" rows="5" required></textarea>
-        </div>
-        <div>
             <label>Mức độ hài lòng (1-5):</label>
             <select name="rating" required>
                 <option value="">-- Chọn mức độ --</option>
@@ -33,6 +25,16 @@
                 <option value="5">5 - Rất hài lòng</option>
             </select>
         </div>
+        <div>
+            <label>Tiêu đề:</label>
+            <input type="text" name="title" required>
+        </div>
+
+        <div>
+            <label>Nội dung:</label>
+            <textarea name="content" rows="5" required></textarea>
+        </div>
+
         <button type="submit" class="btn btn-primary">Gửi</button>
     </form>
 </div>
