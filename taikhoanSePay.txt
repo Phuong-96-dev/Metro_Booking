@@ -1,0 +1,6 @@
+
+Admin	admin@metro.demo	Admin@123
+Member	member@metro.demo	Member@123
+
+tài khoản SePay: nguyentranductrung@gmail.com 
+                 Trungok123
