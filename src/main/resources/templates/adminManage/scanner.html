@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quét vé</title>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f3f4f6; margin: 0; padding: 16px; }
+        .wrap { max-width: 520px; margin: 0 auto; }
+        .box { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        h1 { font-size: 20px; margin: 0 0 12px; }
+        h3 { margin: 0 0 8px; font-size: 15px; }
+        input[type=text] { padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; width: 100%; box-sizing: border-box; }
+        button { padding: 8px 14px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; cursor: pointer; margin-top: 8px; }
+        button.gray { background: #6b7280; }
+        #result { padding: 16px; border-radius: 12px; font-size: 16px; display: none; }
+        #result.ok { background: #dcfce7; color: #166534; }
+        #result.fail { background: #fee2e2; color: #991b1b; }
+        #result small { display: block; margin-top: 6px; opacity: .85; }
+        #reader { width: 100%; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>Soát vé</h1>
+
+    <div class="box">
+        <label>Nhân viên quét</label>
+        <input type="text" id="scanner" value="staff-01">
+    </div>
+
+    <div id="result"></div>
+
+    <div class="box">
+        <h3>1. Quét bằng camera</h3>
+        <div id="reader"></div>
+        <button id="btnStart">Bật camera</button>
+        <button id="btnStop" class="gray">Tắt camera</button>
+        <small style="display:block;margin-top:8px;color:#6b7280">Camera chỉ chạy trên HTTPS hoặc localhost.</small>
+    </div>
+
+    <div class="box">
+        <h3>2. Nhập mã / máy quét USB</h3>
+        <input type="text" id="manual" placeholder="TKXXXXXXXXXXXXXXXX" autocomplete="off">
+        <button id="btnManual">Kiểm tra</button>
+    </div>
+
+    <div class="box">
+        <h3>3. Tải ảnh QR/barcode (server giải mã bằng ZXing)</h3>
+        <input type="file" id="file" accept="image/*">
+        <button id="btnFile">Gửi ảnh</button>
+    </div>
+</div>
+
+<script>
+    const resultBox = document.getElementById('result');
+    const scannerName = () => document.getElementById('scanner').value || 'unknown';
+    let locked = false;
+    let qr = null;
+
+    function showResult(r) {
+        resultBox.style.display = 'block';
+        resultBox.className = r.success ? 'ok' : 'fail';
+        resultBox.innerHTML = '<b>' + (r.success ? '✔ ' : '✘ ') + r.message + '</b>'
+            + (r.eventName ? '<small>Sự kiện: ' + r.eventName + '</small>' : '')
+            + (r.code ? '<small>Mã: ' + r.code + '</small>' : '');
+        if (navigator.vibrate) navigator.vibrate(r.success ? 100 : [100, 60, 100]);
+    }
+
+    async function sendCode(code) {
+        if (locked) return;
+        locked = true;
+        try {
+            const res = await fetch('/api/scan', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code, scannedBy: scannerName()})
+            });
+            showResult(await res.json());
+        } catch (e) {
+            showResult({success: false, message: 'Lỗi kết nối server'});
+        } finally {
+            setTimeout(() => locked = false, 2500);
+        }
+    }
+
+    document.getElementById('btnStart').onclick = async () => {
+        if (!qr) qr = new Html5Qrcode('reader');
+        try {
+            await qr.start(
+                {facingMode: 'environment'},
+                {fps: 10, qrbox: {width: 250, height: 250},
+                 formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_128]},
+                text => sendCode(text),
+                () => {}
+            );
+        } catch (e) { alert('Không mở được camera: ' + e); }
+    };
+    document.getElementById('btnStop').onclick = async () => {
+        if (qr && qr.isScanning) await qr.stop();
+    };
+
+    document.getElementById('btnManual').onclick = () => {
+        const v = document.getElementById('manual').value;
+        if (v) sendCode(v);
+    };
+    document.getElementById('manual').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('btnManual').click();
+    });
+
+    document.getElementById('btnFile').onclick = async () => {
+        const f = document.getElementById('file').files[0];
+        if (!f) return alert('Chọn ảnh trước');
+        const fd = new FormData();
+        fd.append('file', f);
+        fd.append('scannedBy', scannerName());
+        const res = await fetch('/api/scan/image', {method: 'POST', body: fd});
+        showResult(await res.json());
+    };
+</script>
+</body>
+</html>
