@@ -43,7 +43,8 @@ public class TicketTypeController {
             @RequestParam("price") Double price,
             @RequestParam(value = "durationDays", required = false) Integer durationDays,
             @RequestParam(value = "stationStartId", required = false) Long stationStartId,
-            @RequestParam(value = "stationEndId", required = false) Long stationEndId
+            @RequestParam(value = "stationEndId", required = false) Long stationEndId,
+            @RequestParam(value = "studentTicket", defaultValue = "false") boolean studentTicket
     ) {
         TrainStation stationStart = (stationStartId != null) ? trainStationService.getStationById(stationStartId) : null;
         TrainStation stationEnd = (stationEndId != null) ? trainStationService.getStationById(stationEndId) : null;
@@ -54,6 +55,7 @@ public class TicketTypeController {
         newTicket.setDurationDays(durationDays);
         newTicket.setStationStart(stationStart);
         newTicket.setStationEnd(stationEnd);
+        newTicket.setStudentTicket(studentTicket);
 
         ticketTypeService.updateTicketTypeById(ticketTypeId, newTicket);
 
@@ -75,11 +77,13 @@ public class TicketTypeController {
                                    @RequestParam Double price,
                                    @RequestParam(required = false) Integer durationDays,
                                    @RequestParam(required = false) Long stationStartId,
-                                   @RequestParam(required = false) Long stationEndId) {
+                                   @RequestParam(required = false) Long stationEndId,
+                                   @RequestParam(defaultValue = "false") boolean studentTicket) {
 
         TicketType ticket = new TicketType();
         ticket.setName(name);
         ticket.setPrice(price);
+        ticket.setStudentTicket(studentTicket);
 
         if ("Vé lượt".equals(name)) {
             // Vé lượt không có thời hạn, có ga đi - ga đến

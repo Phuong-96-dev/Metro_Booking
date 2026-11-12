@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sum25.se180455.metro.pojo.*;
 import sum25.se180455.metro.service.MemberService;
+import sum25.se180455.metro.service.StudentVerificationService;
 import sum25.se180455.metro.service.TicketService;
 import sum25.se180455.metro.service.TicketTypeService;
 import sum25.se180455.metro.service.TrainStationService;
@@ -31,8 +32,11 @@ public class TicketController {
     @Autowired
     private TrainStationService trainStationService;
 
+    @Autowired
+    private StudentVerificationService studentVerificationService;
+
     @GetMapping("/ticket")
-    public String showAllTicketTypes(Model model) {
+    public String showAllTicketTypes(Model model, HttpSession session) {
         List<TicketType> types = ticketTypeService.getAllTicketTypes();
         model.addAttribute("ticketTypes", types);
 
@@ -40,6 +44,8 @@ public class TicketController {
         List<TrainStation> stations = trainStationService.getAllTrainStations();
         model.addAttribute("stations", stations);
         model.addAttribute("isSearch", false);
+        Member member = (Member) session.getAttribute("member");
+        addStudentVerificationState(model, types, member == null ? null : member.getMemberId());
 
         return "ticket";
     }
@@ -58,6 +64,10 @@ public class TicketController {
         }
 
         TicketType ticketType = optionalTicketType.get();
+        if (ticketType.isStudentTicket()
+                && !studentVerificationService.hasCurrentApproval(member.getMemberId())) {
+            return "redirect:/student-verification?required";
+        }
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime dateEnd;
 
@@ -88,7 +98,8 @@ public class TicketController {
     @GetMapping("/ticket/search")
     public String searchTickets(@RequestParam(required = false) Long start,
                                 @RequestParam(required = false) Long end,
-                                Model model) {
+                                Model model,
+                                HttpSession session) {
         List<TicketType> allTickets = ticketTypeService.getAllTicketTypes(); // Lấy tất cả vé
         List<TicketType> filteredTickets = new ArrayList<>();
 
@@ -100,7 +111,9 @@ public class TicketController {
         } else if (end != null) {
             filteredTickets = ticketTypeService.findByEnd(end);
         } else {
-            filteredTickets = allTickets; // Nếu không có tham số, lấy tất cả
+            filteredTickets = new ArrayList<>(allTickets.stream()
+                    .filter(type -> type.getStationStart() != null || type.getStationEnd() != null)
+                    .toList());
         }
 
         // Thêm vé theo thời gian (stationStart và stationEnd là null)
@@ -115,8 +128,20 @@ public class TicketController {
         List<TrainStation> stations = trainStationService.getAllTrainStations();
         model.addAttribute("stations", stations);
         model.addAttribute("isSearch", true);
+        Member member = (Member) session.getAttribute("member");
+        addStudentVerificationState(model, allTickets, member == null ? null : member.getMemberId());
 
         return "ticket";
+    }
+
+    private void addStudentVerificationState(Model model, List<TicketType> allTypes, Long memberId) {
+        model.addAttribute("hasStudentTicketTypes", allTypes.stream().anyMatch(TicketType::isStudentTicket));
+        model.addAttribute("isStudentVerified",
+                memberId != null && studentVerificationService.hasCurrentApproval(memberId));
+        if (memberId != null) {
+            studentVerificationService.latestForMember(memberId)
+                    .ifPresent(value -> model.addAttribute("studentVerification", value));
+        }
     }
 
     @PostMapping("/ticket/use")

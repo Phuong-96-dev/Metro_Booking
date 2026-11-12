@@ -36,6 +36,10 @@
                                 <label class="form-label">Thời hạn (ngày)</label>
                                 <input type="number" name="durationDays" class="form-control" required min="1">
                             </div>
+                            <div class="col-12 form-check ms-2">
+                                <input class="form-check-input" type="checkbox" name="studentTicket" value="true" id="newStudentTicket">
+                                <label class="form-check-label" for="newStudentTicket">Đây là loại vé sinh viên</label>
+                            </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-success">Thêm Vé</button>
                             </div>
@@ -84,6 +88,7 @@
                                     <th>Tên</th>
                                     <th>Giá</th>
                                     <th>Thời hạn</th>
+                                    <th>Vé sinh viên</th>
                                     <th>Ga đi</th>
                                     <th>Ga đến</th>
                                     <th>Hành động</th>
@@ -91,18 +96,21 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="ticket : ${ticketTypes}">
-                                    <form th:action="@{/adminManage/manageTicketType/update/{id}(id=${ticket.ticketTypeId})}" method="post">
                                         <td th:text="${ticket.ticketTypeId}"></td>
-                                        <td><input type="text" name="name" th:value="${ticket.name}" class="form-control" required></td>
-                                        <td><input type="number" name="price" th:value="${ticket.price}" class="form-control" required></td>
+                                        <td><input type="text" name="name" th:value="${ticket.name}" class="form-control" required
+                                                   th:attr="form=|ticketTypeForm-${ticket.ticketTypeId}|"></td>
+                                        <td><input type="number" name="price" th:value="${ticket.price}" class="form-control" required
+                                                   th:attr="form=|ticketTypeForm-${ticket.ticketTypeId}|"></td>
 
                                         <td th:if="${ticket.name != 'Vé lượt'}">
-                                            <input type="number" name="durationDays" th:value="${ticket.durationDays}" class="form-control" required>
+                                            <input type="number" name="durationDays" th:value="${ticket.durationDays}" class="form-control" required
+                                                   th:attr="form=|ticketTypeForm-${ticket.ticketTypeId}|">
                                         </td>
                                         <td th:if="${ticket.name == 'Vé lượt'}">-</td>
 
                                         <td th:if="${ticket.name == 'Vé lượt'}">
-                                            <select name="stationStartId" class="form-select">
+                                            <select name="stationStartId" class="form-select"
+                                                    th:attr="form=|ticketTypeForm-${ticket.ticketTypeId}|">
                                                 <option value="" th:if="${ticket.stationStart == null}" selected>Chưa có</option>
                                                 <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"
                                                         th:selected="${ticket.stationStart != null and s.stationId == ticket.stationStart.stationId}">
@@ -112,7 +120,8 @@
                                         <td th:if="${ticket.name != 'Vé lượt'}">-</td>
 
                                         <td th:if="${ticket.name == 'Vé lượt'}">
-                                            <select name="stationEndId" class="form-select">
+                                            <select name="stationEndId" class="form-select"
+                                                    th:attr="form=|ticketTypeForm-${ticket.ticketTypeId}|">
                                                 <option value="" th:if="${ticket.stationEnd == null}" selected>Chưa có</option>
                                                 <option th:each="s : ${stations}" th:value="${s.stationId}" th:text="${s.name}"
                                                         th:selected="${ticket.stationEnd != null and s.stationId == ticket.stationEnd.stationId}">
@@ -121,14 +130,21 @@
                                         </td>
                                         <td th:if="${ticket.name != 'Vé lượt'}">-</td>
 
+                                        <td>
+                                            <input type="checkbox" name="studentTicket" value="true"
+                                                   th:checked="${ticket.studentTicket}"
+                                                   th:attr="form=|ticketTypeForm-${ticket.ticketTypeId}|">
+                                        </td>
+
                                         <!-- Nút hành động -->
                                         <td class="d-flex justify-content-center gap-2">
-                                            <button type="submit" class="btn-save">
-                                                <i class="fas fa-save"></i>
-                                            </button>
-                                    </form>
-
-                                    <form th:action="@{/adminManage/manageTicketType/delete/{id}(id=${ticket.ticketTypeId})}" method="post">
+                                            <form th:action="@{/adminManage/manageTicketType/update/{id}(id=${ticket.ticketTypeId})}"
+                                                  th:id="|ticketTypeForm-${ticket.ticketTypeId}|" method="post" class="d-inline">
+                                                <button type="submit" class="btn-save">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </form>
+                                            <form th:action="@{/adminManage/manageTicketType/delete/{id}(id=${ticket.ticketTypeId})}" method="post">
                                         <button type="submit" class="btn-delete" onclick="return confirm('Bạn có chắc muốn xóa?')">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
