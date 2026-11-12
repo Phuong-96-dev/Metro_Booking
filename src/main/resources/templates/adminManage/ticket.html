@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vé của bạn</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f3f4f6; display: flex; justify-content: center; padding: 24px; }
+        .card { background: #fff; border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+        .ACTIVE { background: #dcfce7; color: #166534; }
+        .USED { background: #fee2e2; color: #991b1b; }
+        .CANCELLED { background: #e5e7eb; color: #374151; }
+        .code { font-family: monospace; letter-spacing: 2px; font-size: 18px; margin: 12px 0; }
+        img { max-width: 100%; }
+        .meta { color: #6b7280; font-size: 14px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2 th:text="${ticket.eventName}">Tên sự kiện</h2>
+    <span class="badge" th:classappend="${ticket.status}" th:text="${ticket.status}">ACTIVE</span>
+    <div><img th:src="@{/api/tickets/{c}/qr.png(c=${ticket.code})}" alt="QR"></div>
+    <div><img th:src="@{/api/tickets/{c}/barcode.png(c=${ticket.code})}" alt="Barcode"></div>
+    <div class="code" th:text="${ticket.code}">TKXXXXXXXXXXXXXXXX</div>
+    <div class="meta" th:if="${ticket.expiresAt != null}" th:text="'Hết hạn: ' + ${#temporals.format(ticket.expiresAt,'dd/MM/yyyy HH:mm')}"></div>
+    <div class="meta" th:if="${ticket.usedAt != null}" th:text="'Đã dùng lúc: ' + ${#temporals.format(ticket.usedAt,'dd/MM/yyyy HH:mm')}"></div>
+</div>
+</body>
+</html>
