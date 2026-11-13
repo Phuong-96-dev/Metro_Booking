@@ -2,6 +2,7 @@ package sum25.se180455.metro.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.pojo.TicketType;
@@ -44,7 +45,11 @@ public class TicketTypeServiceImpl implements TicketTypeService {
 
     @Override
     public void deleteTicketTypeById(Long ticketTypeId) {
-        ticketTypeRepository.deleteById(ticketTypeId);
+        try {
+            ticketTypeRepository.deleteById(ticketTypeId);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalStateException("Không thể xóa loại vé đang được sử dụng trong vé.");
+        }
     }
 
     @Override

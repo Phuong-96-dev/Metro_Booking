@@ -10,6 +10,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<!-- Thông báo lỗi -->
+<div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+    </div>
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+    </div>
+</div>
+<!-- Container chính sử dụng Bootstrap Grid -->
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 p-0">
