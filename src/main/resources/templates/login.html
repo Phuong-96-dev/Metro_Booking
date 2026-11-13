@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - Metro</title>
     <link rel="stylesheet" th:href="@{/train/login.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/common/navbar.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/common/footer.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/auth/auth.css}">
+    <script defer th:src="@{/auth/auth.js}"></script>
 </head>
 <body>
 <div th:replace="~{common/navbar :: navbar}"></div>
@@ -13,26 +16,29 @@
 <div class="login-container mt-2">
     <h2>Chào mừng trở lại!</h2>
     <h1>Đăng nhập</h1>
-    <form th:action="login" method="post">
+    <p class="auth-error" role="alert" th:if="${param.error}">Email hoặc mật khẩu không chính xác, hoặc tài khoản không khả dụng.</p>
+    <p class="auth-success" role="status" th:if="${param.registered}">Đăng ký thành công. Vui lòng đăng nhập.</p>
+    <p class="auth-success" role="status" th:if="${param.logout}">Bạn đã đăng xuất.</p>
+    <p class="auth-error" role="alert" th:if="${param.google != null and param.google[0] == 'link_required'}">Email Google đã thuộc một tài khoản. Hãy đăng nhập bằng mật khẩu, mở Thông tin cá nhân và xác nhận liên kết Google.</p>
+    <p class="auth-error" role="alert" th:if="${param.google != null and param.google[0] != 'link_required'}">Không thể đăng nhập hoặc liên kết Google. Vui lòng thử lại và kiểm tra trạng thái tài khoản.</p>
+    <form th:action="@{/login   }" method="post" data-auth-form>
         <div class="input-group">
-            <label>Email/SĐT</label>
-            <input type="text" name="email" th:value="${email}" required>
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" autocomplete="username" maxlength="254" required>
         </div>
         <div class="input-group">
-            <label>Mật khẩu</label>
-            <input type="password" name="password" th:value="${password}" required>
-        </div>
-        <div class="remember">
-            <label class="remember-label">
-                <input type="checkbox" name="remember" id="remember"> Nhớ mật khẩu
-            </label>
-            <a href="#" class="forgot">Quên mật khẩu?</a>
+            <label for="password">Mật khẩu</label>
+            <input id="password" type="password" name="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-password-toggle="password" aria-controls="password" aria-pressed="false">Hiện mật khẩu</button>
         </div>
         <button type="submit" class="login-btn">Đăng nhập</button>
     </form>
-    <p class="signup">Không có tài khoản? <a href="#">Đăng ký tại đây</a></p>
+    <a th:if="${googleEnabled}" class="google-btn" th:href="@{/oauth2/authorization/google}">Tiếp tục với Google</a>
+    <p th:unless="${googleEnabled}" class="auth-hint">Đăng nhập Google chưa được cấu hình.</p>
+    <p class="signup">Chưa có tài khoản? <a th:href="@{/register}">Đăng ký tại đây</a></p>
 </div>
 <div th:replace="~{common/footer :: footer}"></div>
 
+<div th:replace="~{common/chatbox :: chatbox}"></div>
 </body>
 </html>

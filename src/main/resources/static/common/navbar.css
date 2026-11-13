@@ -131,3 +131,10 @@ body {
     color: #0B4C8A; /* Màu chữ đậm hơn */
     transform: translateX(5px); /* Hiệu ứng dịch chuyển nhẹ */
 }
+
+.dropdown-content .logout-button {
+    width: 100%; padding: 12px 16px; border: 0; background: transparent;
+    text-align: left; color: #333; font: inherit; cursor: pointer;
+}
+.dropdown-content .logout-button:hover { background-color: #e9ecef; color: #0B4C8A; }
+.dropdown:focus-within .dropdown-content { display: block; }

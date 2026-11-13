@@ -123,6 +123,12 @@ public class TicketController {
     public String useTicket(@RequestParam Long ticketId, HttpSession session) {
         Ticket ticket = ticketService.getTicketById(ticketId);
 
+        Member currentMember = (Member) session.getAttribute("member");
+        if (ticket != null && (ticket.getMember() == null
+                || !ticket.getMember().getMemberId().equals(currentMember.getMemberId()))) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
+        }
+
         if (ticket != null && ticket.getTicketType() != null) {
             String ticketName = ticket.getTicketType().getName();
             String currentStatus = ticket.getStatus();

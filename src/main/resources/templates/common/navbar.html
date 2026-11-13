@@ -21,7 +21,7 @@
             <div class="auth-buttons">
                 <!-- Nếu chưa đăng nhập -->
                 <div th:if="${member == null}">
-                    <a th:href="@{/register}" class="signup">Đăng kí</a>
+                    <a th:href="@{/register}" class="signup">Đăng ký</a>
                     <a th:href="@{/login}" class="signin">Đăng nhập</a>
                 </div>
 
@@ -35,7 +35,8 @@
 
                         <a th:href="@{/profile}">📄Thông tin cá nhân</a>
                         <a th:href="@{/myTicket}">🎫Vé của tôi</a>
-                        <a th:href="@{/logout}">🚪Đăng xuất</a>
+                        <a th:if="${#strings.equalsIgnoreCase(member.role, 'ADMIN')}" th:href="@{/admindashboard}">Quản trị</a>
+                        <form th:action="@{/logout}" method="post"><button type="submit" class="logout-button">🚪Đăng xuất</button></form>
                     </div>
                 </div>
             </div>

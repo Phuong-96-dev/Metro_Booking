@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<div class="sidebar" th:fragment="sidebar">
+<div class="sidebar" th:fragment="sidebar" th:if="${isAdmin}">
     <h4 class="text-center mb-4">Admin Metro</h4>
     <a th:href="@{/admindashboard}"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
     <a th:href="@{/adminManage/manageTicketType}"><i class="fa fa-ticket-alt"></i> Quản lý Vé</a>
@@ -12,7 +12,7 @@
     <a th:href="@{/bus-routes}"><i class="fa fa-bus"></i> Quản lý Bus</a>
     <a th:href="@{/adminManage/manageBlog}"><i class="fa fa-newspaper"></i> Quản lý Tin tức</a>
     <a th:href="@{/adminManage/managerMember}"><i class="fa fa-users"></i> Quản lý Người dùng</a>
-    <a th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i> Log Out</a>
+    <form th:action="@{/logout}" method="post"><button type="submit" class="logout-button">Đăng xuất</button></form>
 </div>
 </body>
 </html>

@@ -20,3 +20,7 @@
     background: #002244;
     border-left: 3px solid #ffc107;
 }
+ .sidebar .logout-button {
+    display: block; width: 100%; padding: 12px 16px; border: 0;
+    background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer;
+}

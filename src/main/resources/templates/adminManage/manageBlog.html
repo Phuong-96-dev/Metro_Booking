@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Quản lý Tin Tức</title>
     <link rel="stylesheet"
@@ -111,7 +112,7 @@
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-2 p-0">
-            <div th:replace="common/sidebar :: sidebar"></div>
+            <div th:replace="~{common/sidebar :: sidebar}"></div>
         </div>
 
         <!-- Main Content -->
@@ -152,11 +153,9 @@
                                 th:data-bs-target="'#editBlogModal' + ${blog.blogId}">
                             Chỉnh sửa
                         </button>
-                        <a th:href="@{/adminManage/deleteBlog/{id}(id=${blog.blogId})}"
-                           class="btn btn-sm btn-danger"
-                           onclick="return confirm('Xóa blog này?');">
-                            Xóa
-                        </a>
+                        <form th:action="@{/adminManage/deleteBlog/{id}(id=${blog.blogId})}" method="post" style="display:inline" onsubmit="return confirm('Xóa blog này?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
@@ -246,5 +245,6 @@
     }
 </script>
 
+<div th:replace="~{common/chatbox :: chatbox}"></div>
 </body>
 </html>

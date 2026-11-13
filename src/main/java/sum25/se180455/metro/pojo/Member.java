@@ -1,6 +1,7 @@
     package sum25.se180455.metro.pojo;
 
     import jakarta.persistence.*;
+    import com.fasterxml.jackson.annotation.JsonIgnore;
 
     import java.util.List;
 
@@ -12,9 +13,11 @@
 
         private String name;
         private String studentCard;
+        @Column(unique = true)
         private String email;
         private String phone;
         private String schoolName;
+        @JsonIgnore
         private String password;
         private String role;
         private String status; // Default status

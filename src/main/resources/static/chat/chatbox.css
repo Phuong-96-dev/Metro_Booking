@@ -1,0 +1,40 @@
+#metro-ai { position: fixed; right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); max-width: calc(100% - 40px); z-index: 1050; font: 14px/1.5 Arial, sans-serif; color: #183247; text-align: left; letter-spacing: normal; pointer-events: none; }
+#metro-ai *, #metro-ai *::before, #metro-ai *::after { box-sizing: border-box; }
+#metro-ai [hidden] { display: none !important; }
+#metro-ai button, #metro-ai textarea { font: inherit; margin: 0; letter-spacing: normal; }
+#metro-ai button { cursor: pointer; border: 0; }
+#metro-ai button:focus-visible, #metro-ai textarea:focus-visible { outline: 3px solid #ffc759; outline-offset: 3px; }
+#metro-ai button:disabled { cursor: wait; opacity: .6; }
+#metro-ai .metro-ai-launcher { display: flex; align-items: center; gap: 8px; margin-left: auto; padding: 13px 18px; border-radius: 32px; background: #0867bd; color: white; font-weight: 700; box-shadow: 0 5px 22px #073c6b40; pointer-events: auto; }
+#metro-ai .metro-ai-launcher:hover { background: #00539c; }
+#metro-ai .metro-ai-panel { display: flex; flex-direction: column; width: 390px; max-width: 100%; height: 570px; max-height: calc(100dvh - 104px); margin-bottom: 12px; border: 1px solid #c9dfee; border-radius: 18px; background: #fff; box-shadow: 0 12px 50px #18324733; overflow: hidden; pointer-events: auto; }
+#metro-ai .metro-ai-header { display: flex; align-items: center; gap: 10px; padding: 17px 14px; background: #0867bd; color: white; }
+#metro-ai .metro-ai-badge { flex: 0 0 34px; height: 34px; display: grid; place-items: center; border: 2px solid #ffffffb3; border-radius: 10px; font-size: 20px; font-weight: 800; }
+#metro-ai .metro-ai-heading { flex: 1; min-width: 0; }
+#metro-ai h2 { margin: 0; color: white; font: 700 16px/1.4 Arial, sans-serif; }
+#metro-ai .metro-ai-heading > span { font-size: 11px; opacity: .9; }
+#metro-ai .metro-ai-header button { flex-shrink: 0; color: white; background: #ffffff1a; width: 28px; height: 30px; border-radius: 6px; font-size: 23px; line-height: 1; padding: 0; }
+#metro-ai .metro-ai-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; background: #f1f7fc; border-bottom: 1px solid #deebf4; font-size: 12px; }
+#metro-ai .metro-ai-toolbar button { color: #075b9e; background: white; border: 1px solid #c9dfee; border-radius: 7px; padding: 5px 8px; font-weight: 700; }
+#metro-ai .metro-ai-messages { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 16px 14px 0; min-height: 0; background: #fbfdff; }
+#metro-ai .metro-ai-message { width: fit-content; max-width: 88%; margin: 0 auto 12px 0; }
+#metro-ai .metro-ai-message p { margin: 0; padding: 10px 12px; border-radius: 13px 13px 13px 3px; background: #eaf2f9; color: #183247; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.55; }
+#metro-ai .metro-ai-message > span { display: block; margin-bottom: 4px; color: #647b8d; font-size: 11px; }
+#metro-ai .metro-ai-user { margin-left: auto; margin-right: 0; }
+#metro-ai .metro-ai-user > span { text-align: right; }
+#metro-ai .metro-ai-user p { color: white; background: #0867bd; border-radius: 13px 13px 3px 13px; }
+#metro-ai .metro-ai-error p { color: #8e3124; background: #fff0e9; }
+#metro-ai .metro-ai-status { min-height: 27px; margin: 0; padding: 4px 14px; color: #486b88; font-size: 12px; background: #fbfdff; }
+#metro-ai .metro-ai-form { display: flex; align-items: flex-end; gap: 8px; margin: 0; padding: 12px 14px 8px; border-top: 1px solid #deebf4; background: white; }
+#metro-ai textarea { flex: 1; min-width: 0; width: auto; max-height: 120px; resize: vertical; border: 1px solid #c0d5e5; border-radius: 10px; padding: 9px 10px; background: white; color: #183247; font-size: 16px; line-height: 1.4; }
+#metro-ai .metro-ai-form button { width: auto; padding: 10px 13px; background: #0867bd; color: white; border-radius: 10px; font-weight: 700; }
+#metro-ai .metro-ai-note { margin: 0; padding: 0 14px 12px; font-size: 10px; line-height: 1.5; color: #526b7e; background: white; }
+#metro-ai .metro-ai-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 480px) {
+    #metro-ai { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); max-width: calc(100% - 24px); }
+    #metro-ai .metro-ai-panel { width: calc(100vw - 24px); max-width: 100%; height: 550px; max-height: calc(100dvh - 96px); }
+    #metro-ai .metro-ai-launcher { padding: 10px 14px; }
+    #metro-ai .metro-ai-header { gap: 7px; padding: 14px 10px; }
+    #metro-ai h2 { font-size: 15px; }
+    #metro-ai .metro-ai-heading > span { font-size: 10px; }
+}
