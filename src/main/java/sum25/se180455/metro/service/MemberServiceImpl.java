@@ -6,21 +6,30 @@ import sum25.se180455.metro.pojo.Member;
 import sum25.se180455.metro.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Locale;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
     @Autowired
     MemberRepository memberRepository;
 
-    @Override
-    public Member login(String email, String password) {
-    return  memberRepository.findByEmailAndPassword(email, password);
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public Member register(Member member) {
-        member.setStatus("active");
-        return memberRepository.save(member);
+        member.setEmail(member.getEmail().strip().toLowerCase(Locale.ROOT));
+        if (memberRepository.findByEmail(member.getEmail()) != null) {
+            throw new IllegalArgumentException("Email đã được đăng ký.");
+        }
+        member.setMemberId(null);
+        member.setRole("MEMBER");
+        member.setStatus("ACTIVE");
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+        return memberRepository.saveAndFlush(member);
     }
 
     @Override
@@ -53,6 +62,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member updateRole(Long memberId, String role) {
+        if (!List.of("ADMIN", "MEMBER").contains(role)) {
+            throw new IllegalArgumentException("Vai trò không hợp lệ.");
+        }
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found with ID: " + memberId));
         member.setRole(role);

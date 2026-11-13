@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface MemberService {
 
-    public Member login(String email, String password);
-
     public Member register(Member member);
 
     public Member updateMember(Member member);

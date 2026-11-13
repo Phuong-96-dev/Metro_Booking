@@ -15,6 +15,7 @@ public class GlobalControllerAdvice {
     public void addMemberToModel(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
         model.addAttribute("member", member);
+        model.addAttribute("isAdmin", member != null && "ADMIN".equalsIgnoreCase(member.getRole()));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)

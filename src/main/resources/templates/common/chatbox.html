@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<body>
+<div th:fragment="chatbox" id="metro-ai" th:attr="data-session-key=${metroChatSessionKey},data-message-url=@{/api/chat/message},data-reset-url=@{/api/chat/reset},data-csrf-token=${_csrf.token},data-csrf-header=${_csrf.headerName}">
+    <link rel="stylesheet" th:href="@{/chat/chatbox.css}">
+    <section id="metro-ai-panel" class="metro-ai-panel" role="dialog" aria-labelledby="metro-ai-title" hidden>
+        <header class="metro-ai-header">
+            <span class="metro-ai-badge" aria-hidden="true">M</span>
+            <div class="metro-ai-heading"><h2 id="metro-ai-title">Metro AI Assistant</h2><span>Đồng hành cùng chuyến đi của bạn</span></div>
+            <button type="button" id="metro-ai-minimize" aria-label="Thu nhỏ chat" title="Thu nhỏ">−</button>
+            <button type="button" id="metro-ai-close" aria-label="Đóng chat" title="Đóng">×</button>
+        </header>
+        <div class="metro-ai-toolbar"><span>Hỗ trợ sử dụng website</span><button type="button" id="metro-ai-new">＋ New Chat</button></div>
+        <div id="metro-ai-messages" class="metro-ai-messages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Tin nhắn hội thoại"></div>
+        <p id="metro-ai-status" class="metro-ai-status" role="status" aria-live="polite"></p>
+        <form id="metro-ai-form" class="metro-ai-form">
+            <label for="metro-ai-input" class="metro-ai-sr-only">Nội dung tin nhắn</label>
+            <textarea id="metro-ai-input" rows="2" maxlength="2000" placeholder="Bạn cần Metro hỗ trợ điều gì?" required></textarea>
+            <button type="submit" id="metro-ai-send" aria-label="Gửi tin nhắn">Gửi <span aria-hidden="true">↗</span></button>
+        </form>
+        <p class="metro-ai-note">Enter để gửi · Shift + Enter xuống dòng<br>Nội dung chat được gửi tới Google Gemini. Không gửi thông tin nhạy cảm.</p>
+    </section>
+    <button type="button" id="metro-ai-launcher" class="metro-ai-launcher" aria-label="Mở Metro AI Assistant" aria-controls="metro-ai-panel" aria-expanded="false">
+        <svg viewBox="0 0 40 40" width="32" height="32" fill="none" aria-hidden="true"><rect x="8" y="5" width="24" height="27" rx="7" stroke="currentColor" stroke-width="2.5"/><path d="M13 12h14v9H13zM14 32l-3 4m15-4 3 4M17 8h6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="27" r="2" fill="currentColor"/><circle cx="26" cy="27" r="2" fill="currentColor"/></svg>
+        <span>Metro AI</span>
+    </button>
+    <script defer th:src="@{/chat/chatbox.js}"></script>
+</div>
+</body>
+</html>

@@ -49,16 +49,23 @@ public class UserController {
 
     // update profile
     @PostMapping("/update-profile")
-    public String updateProfile(@ModelAttribute("member") Member member) {
-        Member existingMember = memberService.findById(member.getMemberId());
+    public String updateProfile(@ModelAttribute("profileUpdate") Member member, HttpSession session) {
+        Member currentMember = (Member) session.getAttribute("member");
+        Member existingMember = memberService.findById(currentMember.getMemberId());
         if (existingMember == null) {
             // Xử lý lỗi, không tìm thấy member
             return "redirect:/profile?error=Member not found";
         }
 
         // Chỉ update các trường cho phép
+        if (member.getName() == null || member.getName().isBlank() || member.getName().length() > 100
+                || (member.getPhone() != null && !member.getPhone().matches("[+0-9 ()-]{0,20}"))
+                || (member.getStudentCard() != null && member.getStudentCard().length() > 100)
+                || (member.getSchoolName() != null && member.getSchoolName().length() > 200)) {
+            return "redirect:/profile?invalid";
+        }
         existingMember.setName(member.getName());
-        existingMember.setEmail(member.getEmail());
+        // Email is a login identity; changing it requires a separate verification flow.
         existingMember.setPhone(member.getPhone());
         existingMember.setStudentCard(member.getStudentCard());
         existingMember.setSchoolName(member.getSchoolName());

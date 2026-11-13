@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Admin Dashboard - Metro</title>
     <link rel="stylesheet" th:href="@{/common/sidebar.css}" type="text/css">
@@ -195,5 +196,6 @@
         }
     });
 </script>
+<div th:replace="~{common/chatbox :: chatbox}"></div>
 </body>
 </html>

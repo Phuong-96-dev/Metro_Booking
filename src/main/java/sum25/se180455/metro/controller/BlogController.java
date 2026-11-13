@@ -52,7 +52,7 @@ public class BlogController {
         return "redirect:/adminManage/manageBlog";
     }
 
-    @GetMapping("/adminManage/deleteBlog/{id}")
+    @PostMapping("/adminManage/deleteBlog/{id}")
     public String deleteBlog(@PathVariable Long id) {
         blogService.deleteBlog(id);
         return "redirect:/adminManage/manageBlog";

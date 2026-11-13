@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import sum25.se180455.metro.pojo.Member;
 
 import jakarta.persistence.LockModeType;
@@ -13,8 +15,8 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Member findByEmailAndPassword(String email, String password);
-    Member findByEmail(String email);
+    @Query("select m from Member m where lower(trim(m.email)) = lower(trim(:email))")
+    Member findByEmail(@Param("email") String email);
     // count members by role and status
     int countByRoleAndStatus(String role, String status);
 
