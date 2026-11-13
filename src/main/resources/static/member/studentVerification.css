@@ -1,0 +1,92 @@
+.verification-page {
+    max-width: 1000px;
+    margin: 2rem auto;
+}
+
+.verification-page h1 {
+    margin-bottom: 1rem;
+}
+
+.verification-card {
+    padding: 1.5rem;
+    margin: 1.25rem 0;
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    background: #fff;
+    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.05);
+}
+
+.verification-card h2 {
+    font-size: 1.2rem;
+}
+
+.verification-image {
+    display: block;
+    max-width: min(100%, 560px);
+    max-height: 360px;
+    object-fit: contain;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+}
+
+.camera-preview {
+    display: block;
+    width: min(100%, 560px);
+    max-height: 420px;
+    background: #111827;
+    border-radius: 0.5rem;
+    object-fit: contain;
+}
+
+.camera-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 700;
+    background: #e9ecef;
+}
+
+.status-pending {
+    color: #854d0e;
+    background: #fef3c7;
+}
+
+.status-approved {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.status-rejected {
+    color: #991b1b;
+    background: #fee2e2;
+}
+
+.status-draft {
+    color: #334155;
+    background: #e2e8f0;
+}
+
+.ocr-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 0.4rem;
+}
+
+@media (max-width: 576px) {
+    .verification-page {
+        margin: 1rem auto;
+    }
+
+    .verification-card {
+        padding: 1rem;
+    }
+}

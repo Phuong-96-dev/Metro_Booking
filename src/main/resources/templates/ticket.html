@@ -15,6 +15,28 @@
 <div class="ticket-page">
     <div class="container mt-4">
 
+        <div class="alert alert-info" th:if="${hasStudentTicketTypes and !isStudentVerified}">
+            <strong>Vé sinh viên yêu cầu xác minh.</strong>
+            <span th:if="${studentVerification == null}">Bạn cần xác minh tư cách sinh viên để mua loại vé này.</span>
+            <span th:if="${studentVerification != null and studentVerification.status == 'PENDING'}">
+                Yêu cầu xác minh đang được xử lý.
+            </span>
+            <span th:if="${studentVerification != null and studentVerification.status == 'REJECTED'}">
+                Yêu cầu trước bị từ chối:
+                <span th:text="${studentVerification.rejectionReason}"></span>
+            </span>
+            <span th:if="${studentVerification != null and studentVerification.status == 'APPROVED'}">
+                Thẻ sinh viên đã hết hạn hoặc cần được xác minh lại.
+            </span>
+            <a class="btn btn-primary btn-sm ms-2" th:href="@{/student-verification}"
+               th:if="${member != null and (studentVerification == null or studentVerification.status != 'PENDING')}">
+                Xác minh ngay
+            </a>
+        </div>
+        <div class="alert alert-success" th:if="${isStudentVerified}">
+            Đã xác minh sinh viên.
+        </div>
+
         <!-- Nổi bật: Luôn hiển thị, đặt trước -->
         <h2><i class="bi bi-fire ticket-icon"></i> Nổi bật</h2>
         <table class="table table-bordered">
@@ -29,7 +51,7 @@
             <tbody>
             <tr th:each="type : ${ticketTypes}"
                 th:if="${type.stationStart == null and type.stationEnd == null
-                        and (type.name != 'Vé sinh viên' or (member != null and member.studentCard != ''))}">
+                        and (!type.studentTicket or isStudentVerified)}">
                 <td th:text="${type.name}"></td>
                 <td th:text="${#numbers.formatDecimal(type.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                 <td th:text="${type.durationDays} + ' ngày'"></td>

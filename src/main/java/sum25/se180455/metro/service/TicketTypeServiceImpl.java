@@ -34,6 +34,7 @@ public class TicketTypeServiceImpl implements TicketTypeService {
         existing.setName(newTicket.getName());
         existing.setPrice(newTicket.getPrice());
         existing.setDurationDays(newTicket.getDurationDays()); // có thể null
+        existing.setStudentTicket(newTicket.isStudentTicket());
 
         existing.setStationStart(newTicket.getStationStart()); // có thể null
         existing.setStationEnd(newTicket.getStationEnd());     // có thể null

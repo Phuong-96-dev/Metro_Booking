@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan(basePackages = "sum25.SE180455.metro.pojo")
+@EntityScan(basePackages = "sum25.se180455.metro.pojo")
 @ComponentScan(basePackages = {"sum25.se180455.metro.controller", "sum25.se180455.metro.service", "sum25.se180455.metro.repository"})
 @EnableJpaRepositories(basePackages = "sum25.se180455.metro.repository")
 

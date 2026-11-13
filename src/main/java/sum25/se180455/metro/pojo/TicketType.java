@@ -16,6 +16,9 @@ public class TicketType {
 
     private Integer durationDays;
 
+    @Column(name = "is_student_ticket", nullable = false)
+    private boolean studentTicket;
+
     @OneToMany(mappedBy = "ticketType")
     private List<Ticket> tickets;
 
@@ -107,5 +110,12 @@ public class TicketType {
     public void setDurationDays(Integer durationDays) {
         this.durationDays = durationDays;
     }
-}
 
+    public boolean isStudentTicket() {
+        return studentTicket;
+    }
+
+    public void setStudentTicket(boolean studentTicket) {
+        this.studentTicket = studentTicket;
+    }
+}
