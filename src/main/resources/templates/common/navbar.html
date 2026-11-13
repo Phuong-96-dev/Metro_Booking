@@ -2,21 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Navbar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Navbar - Metro</title>
     <link rel="stylesheet" th:href="@{/common/navbar.css}" />
 </head>
 <body>
 <div th:fragment="navbar">
     <nav class="navbar">
         <div class="logo-container">
-            <img th:src="@{/images/metro-logo.png}" alt="Metro Logo">
+            <img th:src="@{/images/metro-logo.png}" alt="Hanoi Metro Logo" class="logo">
         </div>
         <div class="menu-auth-container">
             <ul class="menu">
                 <li><a th:href="@{/}">Trang chủ</a></li>
                 <li><a th:href="@{/search-schedules}">Bản đồ</a></li>
                 <li><a th:href="@{/blog}">Tin tức</a></li>
-                <li><a th:href="@{/ticket}">Vé tàu</a></li>
+                <li><a th:href="@{/ticket}" class="highlight">Vé tàu</a></li>
             </ul>
             <div class="auth-buttons">
                 <!-- Nếu chưa đăng nhập -->

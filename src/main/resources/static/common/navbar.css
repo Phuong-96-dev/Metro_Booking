@@ -9,13 +9,17 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 10px 0;
-    position: relative; /* để auth-buttons dùng absolute theo navbar */
+    position: relative;
+    min-height: 80px; /* Giữ chiều cao navbar cố định */
+    overflow: hidden; /* Ngăn logo tràn ra ngoài nếu quá lớn */
 }
 
-/* Logo chính giữa */
+/* Logo chính giữa, tăng kích thước khung ảnh */
 .logo-container img {
-    height: 100px;
-    margin-bottom: 10px;
+    height: 80px; /* Tăng kích thước logo lên, ví dụ 70px */
+    max-height: 80px; /* Giới hạn tối đa để không vượt navbar */
+    width: auto; /* Giữ tỷ lệ khung hình */
+    margin-bottom: 1px; /* Giảm khoảng cách với menu */
 }
 
 /* Menu ở giữa dưới logo */
@@ -125,7 +129,6 @@ body {
     transition: all 0.3s ease;
 }
 
-
 .dropdown-content a:hover {
     background-color: #e9ecef; /* Màu nền nhạt khi hover */
     color: #0B4C8A; /* Màu chữ đậm hơn */
@@ -138,3 +141,21 @@ body {
 }
 .dropdown-content .logout-button:hover { background-color: #e9ecef; color: #0B4C8A; }
 .dropdown:focus-within .dropdown-content { display: block; }
+
+/* Responsive design (tùy chọn) */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 5px 0;
+        min-height: 60px;
+    }
+    .logo-container img {
+        height: 50px;
+        max-height: 50px;
+    }
+    .menu {
+        gap: 30px;
+    }
+    .auth-buttons {
+        right: 10px;
+    }
+}
