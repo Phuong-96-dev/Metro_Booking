@@ -21,11 +21,11 @@ public interface ScanTicketRepository extends JpaRepository<ScanTicket, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
             UPDATE ScanTicket t
-               SET t.status = com.team.ticket.pojo.TicketStatus.USED,
+               SET t.status = sum25.se180455.metro.pojo.TicketStatus.USED,
                    t.usedAt = :now,
                    t.usedBy = :scannedBy
              WHERE t.code = :code
-               AND t.status = com.team.ticket.pojo.TicketStatus.ACTIVE
+               AND t.status = sum25.se180455.metro.pojo.TicketStatus.ACTIVE
                AND (t.expiresAt IS NULL OR t.expiresAt > :now)
             """)
     int markUsed(@Param("code") String code,

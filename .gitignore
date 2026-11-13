@@ -35,3 +35,7 @@ build/
 .env.*
 !.env.example
 .maven-repository/
+.maven-home/
+
+# Local payment account notes must never be committed.
+taikhoanSePay.txt
