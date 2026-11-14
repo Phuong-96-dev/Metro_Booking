@@ -36,14 +36,25 @@ Before using this flow:
 3. Configure `student-verification.ocr-command`,
    `student-verification.ocr-languages`, and
    `student-verification.storage-directory` in `application.properties` or
-   environment variables. Images are stored outside the public static
+   environment variables. If Tesseract language data is stored outside its
+   default location, set `student-verification.ocr-data-directory` to the
+   directory containing `vie.traineddata` and `eng.traineddata`. For example,
+   on Windows, add the following to the ignored `.env` file, adjusting paths:
+
+   ```properties
+   student-verification.ocr-command=C:\\Program Files\\Tesseract-OCR\\tesseract.exe
+   student-verification.ocr-data-directory=C:\\Users\\YourUser\\AppData\\Local\\MetroBooking\\tessdata
+   ```
+
+   Backslashes in `.env` must be escaped as shown. Images are stored outside the public static
    directory and are available only to their owner or an ADMIN. Define and
    implement a retention period before production use.
 4. Members can open **Xác minh sinh viên**, capture a card with the camera or
    upload a JPG/JPEG, PNG, or WEBP image (maximum 5 MB), review OCR, then submit
    it for ADMIN approval at `/admin/student-verifications`. Camera access
    requires HTTPS or localhost and is requested only after the member starts a
-   scan.
+   scan. Members must sign in to access verification pages; the review pages
+   require an ADMIN account. Form submissions require a valid CSRF token.
 
 The existing `/ticket/buy` flow is retained. The backend checks the
 database-backed student-ticket flag and current approval before creating a

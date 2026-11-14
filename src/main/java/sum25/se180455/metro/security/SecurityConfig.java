@@ -52,11 +52,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/chat/message", "/api/chat/reset").permitAll()
                 .requestMatchers(HttpMethod.GET, "/chat/**").permitAll()
                 .requestMatchers("/scanner", "/api/scan", "/api/scan/**", "/api/users/**").hasRole("ADMIN")
+                .requestMatchers("/admin/student-verifications", "/admin/student-verifications/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/tickets").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/tickets/**", "/api/tickets/**").authenticated()
                 .requestMatchers("/adminManage/**", "/admindashboard", "/train-schedules/add", "/train-schedules/edit/**", "/train-schedules/delete/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/train-schedules", "/bus-routes/*/destinations/**").hasRole("ADMIN")
-                .requestMatchers("/profile", "/update-profile", "/myTicket", "/payment", "/payment/**", "/ticket/buy", "/ticket/use", "/feedback/send", "/account/**").authenticated()
+                .requestMatchers("/profile", "/update-profile", "/myTicket", "/payment", "/payment/**", "/ticket/buy", "/ticket/use", "/feedback/send", "/account/**",
+                        "/student-verification", "/student-verification/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/more", "/blog", "/ticket", "/ticket/search",
                         "/feedback", "/feedback/all", "/trains", "/trains/*", "/train-stations", "/train-stations/*",
                         "/train-schedules", "/bus-routes", "/bus-routes/*", "/search-schedules", "/error",

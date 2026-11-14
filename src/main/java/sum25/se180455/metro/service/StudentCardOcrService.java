@@ -42,6 +42,9 @@ public class StudentCardOcrService {
     @Value("${student-verification.ocr-languages:vie+eng}")
     private String languages;
 
+    @Value("${student-verification.ocr-data-directory:}")
+    private String tessdataDirectory;
+
     public StudentCardOcrResult process(MultipartFile upload) {
         if (upload == null || upload.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn ảnh thẻ sinh viên.");
@@ -74,11 +77,14 @@ public class StudentCardOcrService {
                 throw new IllegalStateException("Không thể chuẩn bị ảnh để nhận diện.");
             }
 
-            process = new ProcessBuilder(
+            ProcessBuilder processBuilder = new ProcessBuilder(
                     tesseractCommand, pngPath.toString(), "stdout", "-l", languages, "--psm", "6")
                     .redirectOutput(outputPath.toFile())
-                    .redirectError(errorPath.toFile())
-                    .start();
+                    .redirectError(errorPath.toFile());
+            if (tessdataDirectory != null && !tessdataDirectory.isBlank()) {
+                processBuilder.environment().put("TESSDATA_PREFIX", tessdataDirectory);
+            }
+            process = processBuilder.start();
             if (!process.waitFor(30, TimeUnit.SECONDS)) {
                 process.destroyForcibly();
                 process.waitFor();
