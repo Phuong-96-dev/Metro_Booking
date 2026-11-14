@@ -126,7 +126,7 @@ Danh sách đầy đủ file tạo/chỉnh sửa nằm trong `docs/AUTHENTICATIO
 
 Theo yêu cầu tạo database mới, đã tạo `metro` trên SQL Server `localhost:1433` và cấu hình `DB_URL` trong `.env` local. Database không có dữ liệu mẫu hoặc tài khoản Admin tự tạo.
 
-Schema cơ sở được xuất từ các entity hiện có bằng SQL Server dialect, lưu tại `docs/database/V000__initial_schema.sql`. Script V000 chỉ chạy khi database tên `metro` và chưa có bảng người dùng; từ chối database không rỗng. Sau V000, chạy `V001__authentication.sql` để bổ sung bảng OAuth, cột/index email chuẩn hóa. Hai script đã được áp dụng cho database local mới, gồm 12 bảng và các khóa ngoại. Các database khác không bị chỉnh sửa.
+Schema cơ sở được xuất từ các entity hiện có bằng SQL Server dialect, lưu tại `docs/database/V000__initial_schema.sql`. Script V000 chỉ chạy khi database tên `metro` và chưa có bảng người dùng; từ chối database không rỗng. Với database mới, có thể chạy trực tiếp `docs/database/CreateMetroDatabase.sql` để tạo database, đủ 14 bảng, index và khóa ngoại. Script `V001__authentication.sql` vẫn dùng để bổ sung email chuẩn hóa cho database cũ. Các database khác không bị chỉnh sửa.
 
 Ứng dụng tiếp tục sử dụng `ddl-auto=validate`; không để Hibernate tự tạo/cập nhật bảng mỗi lần khởi động. Khi chạy từ IntelliJ, đặt working directory `C:\metro` để đọc đúng `.env`, rồi chạy `sum25.se180455.metro.main.MetroApplication`. Khi chạy bằng JAR, mở PowerShell tại thư mục dự án và dùng `java -jar target/metro-0.0.1-SNAPSHOT.jar` với Java 17 trở lên. Các trang danh sách sẽ trống cho tới khi có dữ liệu nghiệp vụ được nhập.
 

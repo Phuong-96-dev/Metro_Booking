@@ -11,12 +11,9 @@
     IMPORTANT:
       1. Run this script against database [metro].
       2. This script does NOT delete existing records.
-      3. Demo passwords are plain text because the current MemberServiceImpl
-         compares email/password directly. Do not use this approach in production.
-      4. The source ZIP provided does not contain the SePay additions in Payment.java
-         or the SePay webhook classes. The final PENDING Payment insert below uses
-         the columns present in your live SQL schema. Verify the running source
-         maps transactionCode/paymentContent/sepayTransactionId before testing webhook.
+      3. Demo passwords are BCrypt hashes compatible with the current Spring
+         Security configuration.
+      4. The sample payment uses only columns mapped by the current Payment entity.
 */
 
 USE [metro];
@@ -37,7 +34,9 @@ BEGIN TRY
             (name, student_card, email, phone, school_name, password, role, status)
         VALUES
             (N'Metro Administrator', 'ADMIN-DEMO-001', 'admin@metro.demo',
-             '0900000001', N'Metro Booking Demo', 'Admin@123', 'ADMIN', 'ACTIVE');
+             '0900000001', N'Metro Booking Demo',
+             '$2a$12$ZN71GHoz0Kr8RKVYetJCUeZOAqcogxc7sDZVGzLJgixsUF4Y.Qsse',
+             'ADMIN', 'ACTIVE');
     END;
 
     IF NOT EXISTS (SELECT 1 FROM dbo.member WHERE email = 'member@metro.demo')
@@ -46,7 +45,9 @@ BEGIN TRY
             (name, student_card, email, phone, school_name, password, role, status)
         VALUES
             (N'Demo Customer', 'MEMBER-DEMO-001', 'member@metro.demo',
-             '0900000002', N'Demo University', 'Member@123', 'MEMBER', 'ACTIVE');
+             '0900000002', N'Demo University',
+             '$2a$12$Nf3ph29qHZAVXH3av71/bu6Tqv4HUgHvlavPEPw2LwLQAZqXx.4U2',
+             'MEMBER', 'ACTIVE');
     END;
 
     DECLARE @AdminId BIGINT =
@@ -264,10 +265,9 @@ BEGIN TRY
     );
 
     /* =========================================================
-       8. ONE SAMPLE PENDING TICKET + PAYMENT FOR SEPAY
+       8. ONE SAMPLE PENDING TICKET + PAYMENT
        Insert only if this demo payment does not already exist.
        It uses the first full-route schedule and first route ticket type.
-       The live SePay service should match transaction_code exactly.
        ========================================================= */
     DECLARE @DemoTicketId BIGINT;
     DECLARE @DemoScheduleId BIGINT =
@@ -290,7 +290,10 @@ BEGIN TRY
     );
 
     IF NOT EXISTS
-       (SELECT 1 FROM dbo.payment WHERE transaction_code = 'METRODEMO1001')
+       (SELECT 1 FROM dbo.payment
+        WHERE member_id = @MemberId
+          AND payment_method = 'DEMO-SEED'
+          AND status = N'PENDING')
     BEGIN
         INSERT INTO dbo.ticket
             (status, date_start, date_end, price, member_id, schedule_id, ticket_type_id)
@@ -302,18 +305,14 @@ BEGIN TRY
         SET @DemoTicketId = SCOPE_IDENTITY();
 
         INSERT INTO dbo.payment
-            (payment_date, payment_method, price, status, member_id, ticket_id,
-             payment_content, sepay_transaction_id, transaction_code)
+            (payment_date, payment_method, price, status, member_id, ticket_id)
         SELECT
             NULL,
-            'SEPAY',
+            'DEMO-SEED',
             t.price,
             N'PENDING',
             @MemberId,
-            @DemoTicketId,
-            'METRODEMO1001',
-            NULL,
-            'METRODEMO1001'
+            @DemoTicketId
         FROM dbo.ticket t
         WHERE t.ticket_id = @DemoTicketId;
     END;
@@ -356,12 +355,11 @@ ORDER BY position;
 
 SELECT
     p.payment_id,
-    p.transaction_code,
-    p.payment_content,
+    p.payment_method,
     p.price,
     p.status,
     p.ticket_id,
     t.status AS ticket_status
 FROM dbo.payment p
 LEFT JOIN dbo.ticket t ON t.ticket_id = p.ticket_id
-WHERE p.transaction_code = 'METRODEMO1001';
+WHERE p.payment_method = 'DEMO-SEED';

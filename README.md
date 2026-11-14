@@ -2,6 +2,18 @@
 
 Spring Boot 3.5.3 / Java 17 / Thymeleaf / SQL Server.
 
+## Tạo database local
+
+1. Khởi động SQL Server và bảo đảm TCP port `1433` đang mở.
+2. Mở `docs/database/CreateMetroDatabase.sql` trong SQL Server Management Studio
+   và chạy toàn bộ script. Script tạo database `metro`, 14 bảng, index và khóa
+   ngoại; nếu database đã có bảng thì script dừng mà không xóa dữ liệu.
+3. Nếu cần dữ liệu demo, chạy tiếp `Metro_Booking_Demo_Seed_v3.sql`.
+4. Cập nhật `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` trong `.env`, sau đó chạy ứng dụng.
+
+Ứng dụng dùng `spring.jpa.hibernate.ddl-auto=validate`, vì vậy Hibernate chỉ kiểm
+tra schema và không tự tạo hoặc thay đổi bảng lúc khởi động.
+
 Hướng dẫn đăng ký, đăng nhập, Google OIDC, database migration, biến môi trường và kiểm thử: [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md).
 
 Chatbot Gemini, cấu hình `GEMINI_API_KEY` / `GEMINI_MODEL`, cách chạy và kiểm thử: [docs/GEMINI_CHAT.md](docs/GEMINI_CHAT.md).

@@ -38,7 +38,11 @@
                         <a th:href="@{/student-verification}">🎓Xác minh sinh viên</a>
                         <a th:href="@{/myTicket}">🎫Vé của tôi</a>
                         <a th:if="${#strings.equalsIgnoreCase(member.role, 'ADMIN')}" th:href="@{/admindashboard}">Quản trị</a>
-                        <form th:action="@{/logout}" method="post"><button type="submit" class="logout-button">🚪Đăng xuất</button></form>
+                        <form th:action="@{/logout}" method="post" class="logout-form">
+                            <button type="submit" class="logout-button" aria-label="Đăng xuất khỏi tài khoản">
+                                <span aria-hidden="true">🚪</span> Đăng xuất
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

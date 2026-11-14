@@ -1,16 +1,20 @@
--- Metro SQL Server setup for SQL Server Management Studio (SSMS).
--- Creates metro only if absent. Existing tables are never dropped.
--- Initial schema requires a completely empty metro database.
--- No credentials, accounts, or sample business data are included.
+/*
+    Metro Booking - complete SQL Server database setup
+
+    - Creates database [metro] when it does not exist.
+    - Creates the schema only when [metro] has no user tables.
+    - Never drops tables and never deletes existing data.
+    - Matches the current JPA entities used with spring.jpa.hibernate.ddl-auto=validate.
+*/
+
 IF DB_ID(N'metro') IS NULL
     EXEC(N'CREATE DATABASE [metro]');
 GO
+
 USE [metro];
 GO
--- Initial SQL Server schema exported from the current JPA entities.
--- Run only against a new, empty local database named metro.
--- Then run V001__authentication.sql to add OAuth storage and normalized email uniqueness.
--- No tables are dropped and no seed users or business data are inserted.
+
+SET NOCOUNT ON;
 SET XACT_ABORT ON;
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
@@ -19,90 +23,267 @@ SET ANSI_WARNINGS ON;
 SET CONCAT_NULL_YIELDS_NULL ON;
 SET ARITHABORT ON;
 SET NUMERIC_ROUNDABORT OFF;
+
 IF DB_NAME() <> N'metro'
-    THROW 51010, 'Initial schema is restricted to the metro database.', 1;
+    THROW 51010, 'Database setup is restricted to the metro database.', 1;
+
 IF EXISTS (SELECT 1 FROM sys.tables WHERE is_ms_shipped = 0)
-    THROW 51011, 'Initial schema requires an empty database; existing tables are preserved.', 1;
-BEGIN TRANSACTION;
-create table blog (posting_date date, admin_id bigint, blog_id bigint identity not null, image_url varchar(5000), content varchar(255), title varchar(255), primary key (blog_id));
-create table bus_route (bus_id bigint identity not null, station_id bigint, bus_status NVARCHAR(50), location NVARCHAR(100), name NVARCHAR(100), primary key (bus_id));
-create table bus_route_destination (estimated_minutes int, bus_route_id bigint, id bigint identity not null, destination NVARCHAR(100), primary key (id));
-create table feedback (posting_date date, rating float(53), feedback_id bigint identity not null, member_id bigint, content varchar(255), title varchar(255), primary key (feedback_id));
-create table member (member_id bigint identity not null, email varchar(255), name varchar(255), password varchar(255), phone varchar(255), role varchar(255), school_name varchar(255), status varchar(255), student_card varchar(255), primary key (member_id));
-create table payment (payment_date date, price float(53), member_id bigint, payment_id bigint identity not null, ticket_id bigint, payment_method varchar(255), status NVARCHAR(255), primary key (payment_id));
-create table scan_logs (id bigint identity not null, scanned_at datetime2(6) not null, scanned_by varchar(100), ticket_code varchar(100), result varchar(20) not null check (result in ('SUCCESS','ALREADY_USED','EXPIRED','CANCELLED','NOT_FOUND','INVALID_FORMAT')), primary key (id));
-create table scan_tickets (id bigint identity not null, code varchar(32) not null, event_name NVARCHAR(255) not null, expires_at datetime2(6), issued_at datetime2(6) not null, order_ref varchar(64) not null, status varchar(16) not null check (status in ('ACTIVE','USED','CANCELLED')), used_at datetime2(6), user_id bigint not null, used_by varchar(100), primary key (id));
-create table ticket (price float(53), date_end datetime2(6), date_start datetime2(6), member_id bigint, schedule_id bigint, ticket_id bigint identity not null, ticket_type_id bigint, status NVARCHAR(255), primary key (ticket_id));
-create table ticket_type (duration_days int, price float(53), station_end_id bigint, station_start_id bigint, ticket_type_id bigint identity not null, name NVARCHAR(100), primary key (ticket_type_id));
-create table train (number_people int, admin_id bigint, train_id bigint identity not null, name NVARCHAR(100), status NVARCHAR(50), primary key (train_id));
-create table train_schedule (arrival_time time, depart_time time, end_station_id bigint, schedule_id bigint identity not null, start_station_id bigint, train_id bigint, primary key (schedule_id));
-create table train_station (arrival_time date, position int not null, station_id bigint identity not null, name NVARCHAR(100), note NVARCHAR(255), primary key (station_id));
-create unique nonclustered index UKmbmcqelty0fbrvxp1q58dn57t on member (email) where email is not null;
-create unique nonclustered index UK7nggx4t0kjjwi9xg06jm2pwft on payment (ticket_id) where ticket_id is not null;
-create index idx_scanlog_code on scan_logs (ticket_code);
-create unique index uk_scan_ticket_code on scan_tickets (code);
-create unique index uk_scan_ticket_order_ref on scan_tickets (order_ref);
-create index idx_scan_ticket_user on scan_tickets (user_id);
-alter table blog add constraint FKdmxhhegjnn6i13skgdmvtuufw foreign key (admin_id) references member;
-alter table bus_route add constraint FKb0f8c4iolv777bgmm37rifa1q foreign key (station_id) references train_station;
-alter table bus_route_destination add constraint FK9frvo0h70fs9waexo4pi46kum foreign key (bus_route_id) references bus_route;
-alter table feedback add constraint FKmonjtjt92g6gruqyfumtmg8m8 foreign key (member_id) references member;
-alter table payment add constraint FK4pswry4r5sx6j57cdeulh1hx8 foreign key (member_id) references member;
-alter table payment add constraint FKknnc0dgh1i8fkalxi2qcj2bwl foreign key (ticket_id) references ticket;
-alter table ticket add constraint FKd5t3axsm3pj3mt41qhpkmw9yj foreign key (member_id) references member;
-alter table ticket add constraint FK1xpu43qjvqe1b278l512ywttq foreign key (schedule_id) references train_schedule;
-alter table ticket add constraint FKicdt7jp8dniw1fw6y8y0u9gcr foreign key (ticket_type_id) references ticket_type;
-alter table ticket_type add constraint FK87bftkroh8ytn0rsk6bcwo78g foreign key (station_end_id) references train_station;
-alter table ticket_type add constraint FKn9063gxjh8boc9mirc8gfmedb foreign key (station_start_id) references train_station;
-alter table train add constraint FK1b0xyfisa9tfgfmstdldyf9do foreign key (admin_id) references member;
-alter table train_schedule add constraint FKh37tcn2r3ius0rfrnlbscsqnd foreign key (end_station_id) references train_station;
-alter table train_schedule add constraint FKl5h1vuk3afh07vmfmtbw0qsgy foreign key (start_station_id) references train_station;
-alter table train_schedule add constraint FKievh47dn31fxyth9oc0sactio foreign key (train_id) references train;
-COMMIT TRANSACTION;
+    THROW 51011, 'The metro database is not empty. No existing table or data was changed.', 1;
 
--- SQL Server, manual migration. Review against your actual schema and take a backup first.
--- No application startup hook executes this file. Existing PKs/FKs/data are preserved.
-SET XACT_ABORT ON;
-SET ANSI_NULLS ON;
-SET QUOTED_IDENTIFIER ON;
-SET ANSI_PADDING ON;
-SET ANSI_WARNINGS ON;
-SET CONCAT_NULL_YIELDS_NULL ON;
-SET ARITHABORT ON;
-SET NUMERIC_ROUNDABORT OFF;
+BEGIN TRY
+    BEGIN TRANSACTION;
 
-BEGIN TRANSACTION;
-IF OBJECT_ID(N'dbo.member', N'U') IS NULL
-    THROW 51000, 'Expected dbo.member is missing. Check the existing schema before migrating.', 1;
+    CREATE TABLE dbo.member (
+        member_id BIGINT IDENTITY(1,1) NOT NULL,
+        email VARCHAR(255) NULL,
+        name VARCHAR(255) NULL,
+        password VARCHAR(255) NULL,
+        phone VARCHAR(255) NULL,
+        role VARCHAR(255) NULL,
+        school_name VARCHAR(255) NULL,
+        status VARCHAR(255) NULL,
+        student_card VARCHAR(255) NULL,
+        email_normalized AS LOWER(LTRIM(RTRIM(email))) PERSISTED,
+        CONSTRAINT pk_member PRIMARY KEY (member_id)
+    );
 
--- Lock registrations for the duration of the duplicate check and index creation.
-IF EXISTS (SELECT LOWER(LTRIM(RTRIM(email))) FROM dbo.member WITH (TABLOCKX, HOLDLOCK)
-           WHERE email IS NOT NULL GROUP BY LOWER(LTRIM(RTRIM(email))) HAVING COUNT(*) > 1)
-    THROW 51001, 'Duplicate normalized emails exist. Resolve them manually without deleting user data.', 1;
+    CREATE TABLE dbo.train_station (
+        arrival_time DATE NULL,
+        position INT NOT NULL,
+        station_id BIGINT IDENTITY(1,1) NOT NULL,
+        name NVARCHAR(100) NULL,
+        note NVARCHAR(255) NULL,
+        CONSTRAINT pk_train_station PRIMARY KEY (station_id)
+    );
 
-IF COL_LENGTH(N'dbo.member', N'email_normalized') IS NULL
-    EXEC(N'ALTER TABLE dbo.member ADD email_normalized AS LOWER(LTRIM(RTRIM(email))) PERSISTED');
+    CREATE TABLE dbo.blog (
+        posting_date DATE NULL,
+        admin_id BIGINT NULL,
+        blog_id BIGINT IDENTITY(1,1) NOT NULL,
+        image_url VARCHAR(5000) NULL,
+        content VARCHAR(255) NULL,
+        title VARCHAR(255) NULL,
+        CONSTRAINT pk_blog PRIMARY KEY (blog_id)
+    );
 
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID(N'dbo.member') AND name = N'uq_member_email_normalized')
-    EXEC(N'CREATE UNIQUE INDEX uq_member_email_normalized ON dbo.member(email_normalized) WHERE email IS NOT NULL');
+    CREATE TABLE dbo.bus_route (
+        bus_id BIGINT IDENTITY(1,1) NOT NULL,
+        station_id BIGINT NULL,
+        bus_status NVARCHAR(50) NULL,
+        location NVARCHAR(100) NULL,
+        name NVARCHAR(100) NULL,
+        CONSTRAINT pk_bus_route PRIMARY KEY (bus_id)
+    );
 
--- Existing JPA password column defaults to varchar(255), enough for 60-byte BCrypt hashes.
--- Fail rather than silently truncate hashes on a customized schema.
-IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.member') AND name = N'password'
-           AND max_length > 0 AND max_length < 60)
-    THROW 51002, 'Password column is too short for BCrypt. Review and expand it before deployment.', 1;
+    CREATE TABLE dbo.bus_route_destination (
+        estimated_minutes INT NULL,
+        bus_route_id BIGINT NULL,
+        id BIGINT IDENTITY(1,1) NOT NULL,
+        destination NVARCHAR(100) NULL,
+        CONSTRAINT pk_bus_route_destination PRIMARY KEY (id)
+    );
 
-IF OBJECT_ID(N'dbo.oauth_account', N'U') IS NULL
-BEGIN
+    CREATE TABLE dbo.feedback (
+        posting_date DATE NULL,
+        rating FLOAT(53) NULL,
+        feedback_id BIGINT IDENTITY(1,1) NOT NULL,
+        member_id BIGINT NULL,
+        content VARCHAR(255) NULL,
+        title VARCHAR(255) NULL,
+        CONSTRAINT pk_feedback PRIMARY KEY (feedback_id)
+    );
+
     CREATE TABLE dbo.oauth_account (
-        id BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT pk_oauth_account PRIMARY KEY,
+        created_at DATETIMEOFFSET(6) NOT NULL,
+        id BIGINT IDENTITY(1,1) NOT NULL,
         member_id BIGINT NOT NULL,
-        provider VARCHAR(20) COLLATE Latin1_General_100_BIN2 NOT NULL,
-        provider_user_id VARCHAR(255) COLLATE Latin1_General_100_BIN2 NOT NULL,
-        created_at DATETIMEOFFSET(6) NOT NULL CONSTRAINT df_oauth_created_at DEFAULT SYSDATETIMEOFFSET(),
-        CONSTRAINT fk_oauth_member FOREIGN KEY (member_id) REFERENCES dbo.member(member_id),
+        provider VARCHAR(20) NOT NULL,
+        provider_user_id VARCHAR(255) NOT NULL,
+        CONSTRAINT pk_oauth_account PRIMARY KEY (id),
         CONSTRAINT uq_oauth_identity UNIQUE (provider, provider_user_id),
         CONSTRAINT uq_oauth_member_provider UNIQUE (member_id, provider)
     );
-END;
-COMMIT TRANSACTION;
+
+    CREATE TABLE dbo.payment (
+        payment_date DATE NULL,
+        price FLOAT(53) NULL,
+        member_id BIGINT NULL,
+        payment_id BIGINT IDENTITY(1,1) NOT NULL,
+        ticket_id BIGINT NULL,
+        payment_method VARCHAR(255) NULL,
+        status NVARCHAR(255) NULL,
+        CONSTRAINT pk_payment PRIMARY KEY (payment_id)
+    );
+
+    CREATE TABLE dbo.scan_logs (
+        id BIGINT IDENTITY(1,1) NOT NULL,
+        scanned_at DATETIME2(6) NOT NULL,
+        result VARCHAR(20) NOT NULL,
+        scanned_by VARCHAR(100) NULL,
+        ticket_code VARCHAR(100) NULL,
+        CONSTRAINT pk_scan_logs PRIMARY KEY (id),
+        CONSTRAINT ck_scan_result CHECK (
+            result IN ('SUCCESS', 'ALREADY_USED', 'EXPIRED', 'CANCELLED', 'NOT_FOUND', 'INVALID_FORMAT')
+        )
+    );
+
+    CREATE TABLE dbo.scan_tickets (
+        expires_at DATETIME2(6) NULL,
+        id BIGINT IDENTITY(1,1) NOT NULL,
+        issued_at DATETIME2(6) NOT NULL,
+        used_at DATETIME2(6) NULL,
+        user_id BIGINT NOT NULL,
+        status VARCHAR(16) NOT NULL,
+        code VARCHAR(32) NOT NULL,
+        order_ref VARCHAR(64) NOT NULL,
+        used_by VARCHAR(100) NULL,
+        event_name NVARCHAR(255) NOT NULL,
+        CONSTRAINT pk_scan_tickets PRIMARY KEY (id),
+        CONSTRAINT ck_scan_ticket_status CHECK (status IN ('ACTIVE', 'USED', 'CANCELLED')),
+        CONSTRAINT uk_scan_ticket_code UNIQUE (code),
+        CONSTRAINT uk_scan_ticket_order_ref UNIQUE (order_ref)
+    );
+
+    CREATE TABLE dbo.student_verification (
+        date_of_birth DATE NULL,
+        expires_at DATE NULL,
+        issued_at DATE NULL,
+        ocr_date_of_birth DATE NULL,
+        ocr_expires_at DATE NULL,
+        ocr_issued_at DATE NULL,
+        created_at DATETIME2(6) NULL,
+        id BIGINT IDENTITY(1,1) NOT NULL,
+        member_id BIGINT NOT NULL,
+        reviewed_at DATETIME2(6) NULL,
+        reviewed_by_id BIGINT NULL,
+        submitted_at DATETIME2(6) NULL,
+        status VARCHAR(20) NOT NULL,
+        image_content_type VARCHAR(100) NOT NULL,
+        ocr_student_code VARCHAR(100) NULL,
+        student_code VARCHAR(100) NOT NULL,
+        full_name VARCHAR(150) NOT NULL,
+        ocr_full_name VARCHAR(150) NULL,
+        ocr_school_name VARCHAR(200) NULL,
+        school_name VARCHAR(200) NOT NULL,
+        image_path VARCHAR(500) NOT NULL,
+        rejection_reason VARCHAR(1000) NULL,
+        ocr_text NVARCHAR(MAX) NULL,
+        CONSTRAINT pk_student_verification PRIMARY KEY (id)
+    );
+
+    CREATE TABLE dbo.ticket_type (
+        duration_days INT NULL,
+        is_student_ticket BIT NOT NULL
+            CONSTRAINT df_ticket_type_is_student_ticket DEFAULT (0),
+        price FLOAT(53) NULL,
+        station_end_id BIGINT NULL,
+        station_start_id BIGINT NULL,
+        ticket_type_id BIGINT IDENTITY(1,1) NOT NULL,
+        name NVARCHAR(100) NULL,
+        CONSTRAINT pk_ticket_type PRIMARY KEY (ticket_type_id)
+    );
+
+    CREATE TABLE dbo.train (
+        number_people INT NULL,
+        admin_id BIGINT NULL,
+        train_id BIGINT IDENTITY(1,1) NOT NULL,
+        name NVARCHAR(100) NULL,
+        status NVARCHAR(50) NULL,
+        CONSTRAINT pk_train PRIMARY KEY (train_id)
+    );
+
+    CREATE TABLE dbo.train_schedule (
+        arrival_time TIME NULL,
+        depart_time TIME NULL,
+        end_station_id BIGINT NULL,
+        schedule_id BIGINT IDENTITY(1,1) NOT NULL,
+        start_station_id BIGINT NULL,
+        train_id BIGINT NULL,
+        CONSTRAINT pk_train_schedule PRIMARY KEY (schedule_id)
+    );
+
+    CREATE TABLE dbo.ticket (
+        price FLOAT(53) NULL,
+        date_end DATETIME2(6) NULL,
+        date_start DATETIME2(6) NULL,
+        member_id BIGINT NULL,
+        schedule_id BIGINT NULL,
+        ticket_id BIGINT IDENTITY(1,1) NOT NULL,
+        ticket_type_id BIGINT NULL,
+        status NVARCHAR(255) NULL,
+        CONSTRAINT pk_ticket PRIMARY KEY (ticket_id)
+    );
+
+    CREATE UNIQUE INDEX uq_member_email
+        ON dbo.member(email) WHERE email IS NOT NULL;
+    CREATE UNIQUE INDEX uq_member_email_normalized
+        ON dbo.member(email_normalized) WHERE email IS NOT NULL;
+    CREATE UNIQUE INDEX uq_payment_ticket
+        ON dbo.payment(ticket_id) WHERE ticket_id IS NOT NULL;
+    CREATE INDEX idx_scanlog_code ON dbo.scan_logs(ticket_code);
+    CREATE INDEX idx_scan_ticket_user ON dbo.scan_tickets(user_id);
+    CREATE UNIQUE INDEX ux_student_verification_pending_member
+        ON dbo.student_verification(member_id) WHERE status = 'PENDING';
+    CREATE UNIQUE INDEX ux_student_verification_draft_member
+        ON dbo.student_verification(member_id) WHERE status = 'DRAFT';
+    CREATE INDEX ix_student_verification_status_submitted
+        ON dbo.student_verification(status, submitted_at DESC);
+    CREATE UNIQUE INDEX ux_student_verification_pending_code
+        ON dbo.student_verification(student_code) WHERE status = 'PENDING';
+    CREATE UNIQUE INDEX ux_student_verification_approved_code
+        ON dbo.student_verification(student_code) WHERE status = 'APPROVED';
+    CREATE INDEX ix_student_verification_member_created
+        ON dbo.student_verification(member_id, created_at DESC);
+
+    ALTER TABLE dbo.blog ADD CONSTRAINT fk_blog_admin
+        FOREIGN KEY (admin_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.bus_route ADD CONSTRAINT fk_bus_route_station
+        FOREIGN KEY (station_id) REFERENCES dbo.train_station(station_id);
+    ALTER TABLE dbo.bus_route_destination ADD CONSTRAINT fk_bus_destination_route
+        FOREIGN KEY (bus_route_id) REFERENCES dbo.bus_route(bus_id);
+    ALTER TABLE dbo.feedback ADD CONSTRAINT fk_feedback_member
+        FOREIGN KEY (member_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.oauth_account ADD CONSTRAINT fk_oauth_member
+        FOREIGN KEY (member_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.payment ADD CONSTRAINT fk_payment_member
+        FOREIGN KEY (member_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.payment ADD CONSTRAINT fk_payment_ticket
+        FOREIGN KEY (ticket_id) REFERENCES dbo.ticket(ticket_id);
+    ALTER TABLE dbo.student_verification ADD CONSTRAINT fk_student_verification_member
+        FOREIGN KEY (member_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.student_verification ADD CONSTRAINT fk_student_verification_reviewer
+        FOREIGN KEY (reviewed_by_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.ticket ADD CONSTRAINT fk_ticket_member
+        FOREIGN KEY (member_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.ticket ADD CONSTRAINT fk_ticket_schedule
+        FOREIGN KEY (schedule_id) REFERENCES dbo.train_schedule(schedule_id);
+    ALTER TABLE dbo.ticket ADD CONSTRAINT fk_ticket_type
+        FOREIGN KEY (ticket_type_id) REFERENCES dbo.ticket_type(ticket_type_id);
+    ALTER TABLE dbo.ticket_type ADD CONSTRAINT fk_ticket_type_end_station
+        FOREIGN KEY (station_end_id) REFERENCES dbo.train_station(station_id);
+    ALTER TABLE dbo.ticket_type ADD CONSTRAINT fk_ticket_type_start_station
+        FOREIGN KEY (station_start_id) REFERENCES dbo.train_station(station_id);
+    ALTER TABLE dbo.train ADD CONSTRAINT fk_train_admin
+        FOREIGN KEY (admin_id) REFERENCES dbo.member(member_id);
+    ALTER TABLE dbo.train_schedule ADD CONSTRAINT fk_schedule_end_station
+        FOREIGN KEY (end_station_id) REFERENCES dbo.train_station(station_id);
+    ALTER TABLE dbo.train_schedule ADD CONSTRAINT fk_schedule_start_station
+        FOREIGN KEY (start_station_id) REFERENCES dbo.train_station(station_id);
+    ALTER TABLE dbo.train_schedule ADD CONSTRAINT fk_schedule_train
+        FOREIGN KEY (train_id) REFERENCES dbo.train(train_id);
+
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;
+GO
+
+SELECT
+    DB_NAME() AS database_name,
+    COUNT_BIG(*) AS application_table_count
+FROM sys.tables
+WHERE is_ms_shipped = 0;
+GO

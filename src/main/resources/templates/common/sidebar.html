@@ -14,7 +14,11 @@
     <a th:href="@{/adminManage/managerMember}"><i class="fa fa-users"></i> Quản lý Người dùng</a>
     <a th:href="@{/admin/student-verifications}"><i class="fa fa-id-card"></i> Duyệt thẻ sinh viên</a>
     <a th:href="@{/scanner}"><i class="fa fa-qrcode"></i> Quét mã vé</a>
-    <form th:action="@{/logout}" method="post"><button type="submit" class="logout-button">Đăng xuất</button></form>
+    <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="logout-button" aria-label="Đăng xuất khỏi tài khoản">
+            <i class="fa fa-sign-out-alt" aria-hidden="true"></i> Đăng xuất
+        </button>
+    </form>
 </div>
 </body>
 </html>

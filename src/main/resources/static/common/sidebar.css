@@ -24,3 +24,10 @@
     display: block; width: 100%; padding: 12px 16px; border: 0;
     background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer;
 }
+.sidebar .logout-form { margin: 0; }
+.sidebar .logout-button:hover,
+.sidebar .logout-button:focus-visible {
+    background: #7f1d1d;
+    border-left: 3px solid #ffc107;
+    outline: none;
+}
