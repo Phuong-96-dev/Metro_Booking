@@ -21,7 +21,7 @@ create table bus_route_destination (estimated_minutes int, bus_route_id bigint, 
 create table feedback (posting_date date, rating float(53), feedback_id bigint identity not null, member_id bigint, content varchar(255), title varchar(255), primary key (feedback_id));
 create table member (member_id bigint identity not null, email varchar(255), name varchar(255), password varchar(255), phone varchar(255), role varchar(255), school_name varchar(255), status varchar(255), student_card varchar(255), primary key (member_id));
 create table oauth_account (created_at datetimeoffset(6) not null, id bigint identity not null, member_id bigint not null, provider varchar(20) not null, provider_user_id varchar(255) not null, primary key (id));
-create table payment (payment_date date, price float(53), member_id bigint, payment_id bigint identity not null, ticket_id bigint, payment_method varchar(255), status NVARCHAR(255), primary key (payment_id));
+create table payment (payment_date date, price float(53), paid_at datetime2(6), transfer_amount bigint, member_id bigint, payment_id bigint identity not null, sepay_transaction_id bigint, ticket_id bigint, bank_reference varchar(100), payment_method varchar(255), sepay_gateway varchar(50), transaction_code varchar(64), status NVARCHAR(255), payment_content NVARCHAR(1000), primary key (payment_id));
 create table scan_logs (id bigint identity not null, scanned_at datetime2(6) not null, scanned_by varchar(100), ticket_code varchar(100), result varchar(20) not null check (result in ('SUCCESS','ALREADY_USED','EXPIRED','CANCELLED','NOT_FOUND','INVALID_FORMAT')), primary key (id));
 create table scan_tickets (id bigint identity not null, code varchar(32) not null, event_name NVARCHAR(255) not null, expires_at datetime2(6), issued_at datetime2(6) not null, order_ref varchar(64) not null, status varchar(16) not null check (status in ('ACTIVE','USED','CANCELLED')), used_at datetime2(6), user_id bigint not null, used_by varchar(100), primary key (id));
 create table student_verification (date_of_birth date, expires_at date, issued_at date, ocr_date_of_birth date, ocr_expires_at date, ocr_issued_at date, created_at datetime2(6), id bigint identity not null, member_id bigint not null, reviewed_at datetime2(6), reviewed_by_id bigint, submitted_at datetime2(6), status varchar(20) not null, image_content_type varchar(100) not null, ocr_student_code varchar(100), student_code varchar(100) not null, full_name varchar(150) not null, ocr_full_name varchar(150), ocr_school_name varchar(200), school_name varchar(200) not null, image_path varchar(500) not null, rejection_reason varchar(1000), ocr_text NVARCHAR(MAX), primary key (id));
@@ -34,6 +34,8 @@ create unique nonclustered index UKmbmcqelty0fbrvxp1q58dn57t on member (email) w
 alter table oauth_account add constraint uq_oauth_identity unique (provider, provider_user_id);
 alter table oauth_account add constraint uq_oauth_member_provider unique (member_id, provider);
 create unique nonclustered index UK7nggx4t0kjjwi9xg06jm2pwft on payment (ticket_id) where ticket_id is not null;
+create unique index uq_payment_transaction_code on payment (transaction_code) where transaction_code is not null;
+create unique index uq_payment_sepay_transaction on payment (sepay_transaction_id) where sepay_transaction_id is not null;
 create index idx_scanlog_code on scan_logs (ticket_code);
 create unique index uk_scan_ticket_code on scan_tickets (code);
 create unique index uk_scan_ticket_order_ref on scan_tickets (order_ref);

@@ -13,7 +13,8 @@
       2. This script does NOT delete existing records.
       3. Demo passwords are BCrypt hashes compatible with the current Spring
          Security configuration.
-      4. The sample payment uses only columns mapped by the current Payment entity.
+      4. The sample PENDING payment uses the SePay columns from
+         V003__sepay_payment.sql.
 */
 
 USE [metro];
@@ -265,7 +266,7 @@ BEGIN TRY
     );
 
     /* =========================================================
-       8. ONE SAMPLE PENDING TICKET + PAYMENT
+       8. ONE SAMPLE PENDING TICKET + PAYMENT FOR SEPAY
        Insert only if this demo payment does not already exist.
        It uses the first full-route schedule and first route ticket type.
        ========================================================= */
@@ -290,10 +291,7 @@ BEGIN TRY
     );
 
     IF NOT EXISTS
-       (SELECT 1 FROM dbo.payment
-        WHERE member_id = @MemberId
-          AND payment_method = 'DEMO-SEED'
-          AND status = N'PENDING')
+       (SELECT 1 FROM dbo.payment WHERE transaction_code = 'METRODEMO1001')
     BEGIN
         INSERT INTO dbo.ticket
             (status, date_start, date_end, price, member_id, schedule_id, ticket_type_id)
@@ -305,14 +303,18 @@ BEGIN TRY
         SET @DemoTicketId = SCOPE_IDENTITY();
 
         INSERT INTO dbo.payment
-            (payment_date, payment_method, price, status, member_id, ticket_id)
+            (payment_date, payment_method, price, status, member_id, ticket_id,
+             payment_content, sepay_transaction_id, transaction_code)
         SELECT
             NULL,
-            'DEMO-SEED',
+            'SEPAY',
             t.price,
             N'PENDING',
             @MemberId,
-            @DemoTicketId
+            @DemoTicketId,
+            'METRODEMO1001',
+            NULL,
+            'METRODEMO1001'
         FROM dbo.ticket t
         WHERE t.ticket_id = @DemoTicketId;
     END;
@@ -355,11 +357,12 @@ ORDER BY position;
 
 SELECT
     p.payment_id,
-    p.payment_method,
+    p.transaction_code,
+    p.payment_content,
     p.price,
     p.status,
     p.ticket_id,
     t.status AS ticket_status
 FROM dbo.payment p
 LEFT JOIN dbo.ticket t ON t.ticket_id = p.ticket_id
-WHERE p.payment_method = 'DEMO-SEED';
+WHERE p.transaction_code = 'METRODEMO1001';

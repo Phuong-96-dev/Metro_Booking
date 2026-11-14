@@ -1,79 +1,49 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #fafafa;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+:root {
+    color-scheme: light;
+    --primary: #0b4c8a;
+    --primary-dark: #073661;
+    --surface: #ffffff;
+    --background: #f3f7fb;
+    --muted: #5c6b7a;
+    --success: #067647;
+    --danger: #b42318;
 }
 
-h2 {
-    margin-top: 20px;
-}
+body { margin: 0; font-family: Arial, sans-serif; background: var(--background); color: #17212b; }
+.payment-page { padding: 36px 16px 56px; }
+.payment-card { max-width: 920px; margin: 0 auto; background: var(--surface); border-radius: 20px; box-shadow: 0 18px 50px rgba(11,76,138,.12); overflow: hidden; }
+.payment-header { padding: 28px 32px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: #fff; }
+.payment-header h1 { margin: 4px 0 10px; font-size: clamp(24px, 4vw, 34px); }
+.payment-header p { margin: 0; opacity: .9; }
+.payment-header .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: 12px; font-weight: 700; }
+.alert { margin: 24px 28px 0; padding: 14px 16px; border-radius: 10px; }
+.alert.error { background: #fff1f0; color: var(--danger); border: 1px solid #fecdca; }
+.checkout-grid { display: grid; grid-template-columns: minmax(280px, .9fr) minmax(300px, 1.1fr); gap: 28px; padding: 30px; }
+.qr-panel { text-align: center; background: #f8fafc; border: 1px solid #e4eaf0; border-radius: 16px; padding: 22px; }
+.payment-qr { display: block; width: min(100%, 360px); margin: auto; border-radius: 12px; }
+.waiting { display: flex; justify-content: center; align-items: center; gap: 9px; margin-top: 16px; color: var(--muted); font-weight: 600; }
+.waiting.paid { color: var(--success); }
+.spinner { width: 16px; height: 16px; border: 2px solid #cbd5e1; border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.details-panel h2, .ticket-summary h2 { margin: 0 0 18px; color: var(--primary-dark); }
+.details-panel dl { margin: 0; }
+.details-panel dl div { padding: 11px 0; border-bottom: 1px solid #edf1f5; }
+.details-panel dt { color: var(--muted); font-size: 13px; margin-bottom: 5px; }
+.details-panel dd { margin: 0; font-size: 17px; font-weight: 700; word-break: break-word; }
+.details-panel .amount { color: var(--success); font-size: 24px; }
+.payment-code { color: var(--primary); letter-spacing: .04em; }
+.copy-button { width: 100%; margin-top: 18px; padding: 12px 18px; border: 0; border-radius: 10px; background: var(--primary); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; }
+.copy-button:hover, .copy-button:focus-visible { background: var(--primary-dark); }
+.important-note { padding: 12px 14px; margin: 14px 0 0; background: #fffaeb; color: #7a2e0e; border-radius: 9px; font-size: 14px; line-height: 1.45; }
+.ticket-summary { margin: 0 30px; padding: 22px; background: #f8fafc; border-radius: 14px; }
+.ticket-summary p { margin: 8px 0; }
+.back-link { display: inline-block; margin: 24px 30px 30px; color: var(--primary); font-weight: 700; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
 
-.container {
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-input[type="text"], input[type="email"], input[type="tel"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.info-box {
-    text-align: left;
-    background-color: #f4f6f8;
-    border-left: 4px solid #007bff;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-}
-
-.info-box p {
-    margin: 6px 0;
-}
-
-.payment-method {
-    margin-bottom: 20px;
-}
-
-.btn-pay {
-    background-color: #1d1d1f;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.btn-pay:hover {
-    background-color: #3d3d3f;
-}
-
-.footer-note {
-    margin-top: 10px;
-    font-size: 13px;
-    color: gray;
-}
-
-.success, .error {
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.success {
-    color: green;
-}
-
-.error {
-    color: red;
+@media (max-width: 760px) {
+    .payment-page { padding: 18px 10px 36px; }
+    .payment-header { padding: 22px 20px; }
+    .checkout-grid { grid-template-columns: 1fr; padding: 20px; }
+    .ticket-summary { margin: 0 20px; }
+    .back-link { margin-left: 20px; }
 }

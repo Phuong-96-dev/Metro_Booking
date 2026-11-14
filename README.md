@@ -8,7 +8,7 @@ Spring Boot 3.5.3 / Java 17 / Thymeleaf / SQL Server.
 2. Mở `docs/database/CreateMetroDatabase.sql` trong SQL Server Management Studio
    và chạy toàn bộ script. Script tạo database `metro`, 14 bảng, index và khóa
    ngoại; nếu database đã có bảng thì script dừng mà không xóa dữ liệu.
-3. Nếu cần dữ liệu demo, chạy tiếp `Metro_Booking_Demo_Seed_v3.sql`.
+3. Nếu cần dữ liệu demo, chạy tiếp `docs/database/Metro_Booking_Demo_Seed_v3.sql`.
 4. Cập nhật `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` trong `.env`, sau đó chạy ứng dụng.
 
 Ứng dụng dùng `spring.jpa.hibernate.ddl-auto=validate`, vì vậy Hibernate chỉ kiểm
@@ -19,6 +19,8 @@ Hướng dẫn đăng ký, đăng nhập, Google OIDC, database migration, biế
 Chatbot Gemini, cấu hình `GEMINI_API_KEY` / `GEMINI_MODEL`, cách chạy và kiểm thử: [docs/GEMINI_CHAT.md](docs/GEMINI_CHAT.md).
 
 Quét QR/barcode cho vé, migration database và cách dùng cho thành viên/admin: [docs/TICKET_SCAN.md](docs/TICKET_SCAN.md).
+
+Thanh toán tự động bằng VietQR + webhook SePay, cấu hình HMAC/API Key và migration: [docs/SEPAY.md](docs/SEPAY.md).
 
 ## Student ticket verification
 

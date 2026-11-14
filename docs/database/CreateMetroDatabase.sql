@@ -107,11 +107,18 @@ BEGIN TRY
     CREATE TABLE dbo.payment (
         payment_date DATE NULL,
         price FLOAT(53) NULL,
+        paid_at DATETIME2(6) NULL,
+        transfer_amount BIGINT NULL,
         member_id BIGINT NULL,
         payment_id BIGINT IDENTITY(1,1) NOT NULL,
+        sepay_transaction_id BIGINT NULL,
         ticket_id BIGINT NULL,
+        bank_reference VARCHAR(100) NULL,
         payment_method VARCHAR(255) NULL,
+        sepay_gateway VARCHAR(50) NULL,
+        transaction_code VARCHAR(64) NULL,
         status NVARCHAR(255) NULL,
+        payment_content NVARCHAR(1000) NULL,
         CONSTRAINT pk_payment PRIMARY KEY (payment_id)
     );
 
@@ -220,6 +227,10 @@ BEGIN TRY
         ON dbo.member(email_normalized) WHERE email IS NOT NULL;
     CREATE UNIQUE INDEX uq_payment_ticket
         ON dbo.payment(ticket_id) WHERE ticket_id IS NOT NULL;
+    CREATE UNIQUE INDEX uq_payment_transaction_code
+        ON dbo.payment(transaction_code) WHERE transaction_code IS NOT NULL;
+    CREATE UNIQUE INDEX uq_payment_sepay_transaction
+        ON dbo.payment(sepay_transaction_id) WHERE sepay_transaction_id IS NOT NULL;
     CREATE INDEX idx_scanlog_code ON dbo.scan_logs(ticket_code);
     CREATE INDEX idx_scan_ticket_user ON dbo.scan_tickets(user_id);
     CREATE UNIQUE INDEX ux_student_verification_pending_member

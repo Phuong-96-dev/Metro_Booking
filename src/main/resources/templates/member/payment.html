@@ -1,62 +1,115 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>Thanh Toán</title>
+    <title>Thanh toán SePay</title>
     <link rel="stylesheet" th:href="@{/common/navbar.css}">
     <link rel="stylesheet" th:href="@{/common/footer.css}">
     <link rel="stylesheet" th:href="@{/member/payment.css}">
 </head>
 <body>
-
 <div th:replace="~{common/navbar :: navbar}"></div>
 
-<div class="container">
-    <h2>THANH TOÁN</h2>
+<main class="payment-page">
+    <section class="payment-card"
+             th:attr="data-status-url=@{/api/payments/{id}/status(id=${ticket.ticketId})},data-success-url=@{/payment/success(ticketId=${ticket.ticketId})}">
+        <header class="payment-header">
+            <p class="eyebrow">Thanh toán chuyển khoản</p>
+            <h1>Quét mã để thanh toán vé</h1>
+            <p>SePay sẽ tự động xác nhận ngay khi ngân hàng ghi nhận giao dịch.</p>
+        </header>
 
-    <!-- Hiển thị thông báo nếu có -->
-    <div class="success" th:if="${success}" th:text="${success}"></div>
-    <div class="error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
 
-    <form th:action="@{/payment}" method="post">
-        <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
-        <input type="hidden" name="memberId" th:value="${member.memberId}" />
+        <div class="checkout-grid" th:if="${checkout != null}">
+            <div class="qr-panel">
+                <img class="payment-qr" th:src="${checkout.qrUrl}" alt="Mã QR thanh toán SePay">
+                <div class="waiting" id="payment-state" role="status" aria-live="polite">
+                    <span class="spinner" aria-hidden="true"></span>
+                    Đang chờ ngân hàng xác nhận…
+                </div>
+            </div>
 
-        <div class="info-box" th:if="${ticket.ticketType != null and ticket.ticketType.durationDays == null}">
-
-
-            <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé lượt</span></p>
-            <p><strong>Ngày đi:</strong> <span th:text="${ticket.getDate_start()}">01/07/2025</span></p>
-
-            <p><strong>Giá vé:</strong>
-                <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
-            </p>
+            <div class="details-panel">
+                <h2>Thông tin chuyển khoản</h2>
+                <dl>
+                    <div><dt>Ngân hàng</dt><dd th:text="${checkout.bank}">Vietcombank</dd></div>
+                    <div><dt>Số tài khoản</dt><dd><span id="account-number" th:text="${checkout.accountNumber}">0000000000</span></dd></div>
+                    <div th:if="${checkout.accountHolder != null and !checkout.accountHolder.isBlank()}">
+                        <dt>Chủ tài khoản</dt><dd th:text="${checkout.accountHolder}">METRO</dd>
+                    </div>
+                    <div><dt>Số tiền</dt><dd class="amount" th:text="${#numbers.formatInteger(checkout.amount, 0, 'POINT')} + ' đ'">30.000 đ</dd></div>
+                    <div><dt>Nội dung</dt><dd class="payment-code" id="payment-code" th:text="${checkout.transferDescription}">METRO123ABC</dd></div>
+                </dl>
+                <button type="button" class="copy-button" data-copy-target="payment-code">Sao chép nội dung</button>
+                <p class="important-note">Vui lòng giữ nguyên số tiền và nội dung chuyển khoản để hệ thống nhận đúng vé.</p>
+            </div>
         </div>
 
-        <!-- Các loại vé thời hạn (vé ngày, tuần, tháng, sinh viên, ...) -->
-        <div class="info-box" th:if="${ticket.ticketType != null and ticket.ticketType.durationDays != null}">
-
-            <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé tháng</span></p>
-            <p><strong>Thời hạn:</strong> <span th:text="${ticket.ticketType.durationDays}">30</span> ngày</p>
-            <p><strong>Giá vé:</strong>
-                <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
+        <div class="ticket-summary">
+            <h2>Thông tin vé</h2>
+            <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType != null ? ticket.ticketType.name : 'Vé Metro'}">Vé Metro</span></p>
+            <p th:if="${ticket.ticketType != null and ticket.ticketType.durationDays != null}">
+                <strong>Thời hạn:</strong> <span th:text="${ticket.ticketType.durationDays}">30</span> ngày
             </p>
+            <p><strong>Mã vé:</strong> <span th:text="${ticket.ticketId}">1</span></p>
         </div>
-        <input type="hidden" name="paymentMethod"    value="banking">
 
-        <button class="btn-pay" type="submit">
-            Thanh toán: <span th:text="${ticket.price}">30.000đ</span>
-        </button>
-    </form>
-
-    <div class="footer-note">
-        <p>🔁 Chính sách hoàn tiền | 💬 Hỗ trợ trực tuyến</p>
-    </div>
-</div>
+        <a class="back-link" th:href="@{/myTicket}">← Quay lại vé của tôi</a>
+    </section>
+</main>
 
 <div th:replace="~{common/footer :: footer}"></div>
-
 <div th:replace="~{common/chatbox :: chatbox}"></div>
+
+<script th:if="${checkout != null}">
+    (() => {
+        const card = document.querySelector('.payment-card');
+        const state = document.getElementById('payment-state');
+        let stopped = false;
+
+        document.querySelectorAll('[data-copy-target]').forEach(button => {
+            button.addEventListener('click', async () => {
+                const text = document.getElementById(button.dataset.copyTarget).textContent.trim();
+                try {
+                    await navigator.clipboard.writeText(text);
+                    button.textContent = 'Đã sao chép';
+                    setTimeout(() => button.textContent = 'Sao chép nội dung', 1500);
+                } catch (_) {
+                    state.textContent = 'Không thể sao chép tự động. Vui lòng sao chép nội dung thủ công.';
+                }
+            });
+        });
+
+        async function checkStatus() {
+            if (stopped) return;
+            try {
+                const response = await fetch(card.dataset.statusUrl, {
+                    headers: {'Accept': 'application/json'},
+                    credentials: 'same-origin'
+                });
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.paid) {
+                        stopped = true;
+                        state.className = 'waiting paid';
+                        state.textContent = 'Đã nhận thanh toán. Đang mở vé…';
+                        window.location.href = card.dataset.successUrl;
+                        return;
+                    }
+                }
+            } catch (_) {
+                state.textContent = 'Đang kết nối lại để kiểm tra thanh toán…';
+            }
+            setTimeout(checkStatus, 3000);
+        }
+        setTimeout(checkStatus, 2000);
+    })();
+</script>
 </body>
 </html>

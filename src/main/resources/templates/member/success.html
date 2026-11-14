@@ -1,44 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>Thanh Toán Thành Công</title>
-    <link rel="stylesheet" th:href="@{/me/success.css}">
+    <title>Thanh toán thành công</title>
+    <link rel="stylesheet" th:href="@{/common/navbar.css}">
+    <link rel="stylesheet" th:href="@{/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/member/success.css}">
 </head>
 <body>
+<div th:replace="~{common/navbar :: navbar}"></div>
+<main class="success-page">
+    <div class="success-card">
+        <div class="icon-success" aria-hidden="true">✓</div>
+        <h1>Thanh toán thành công</h1>
+        <p>SePay đã xác nhận giao dịch. Vé của bạn đã sẵn sàng để sử dụng.</p>
 
-<div class="icon-success">✔</div>
-<h2>THANH TOÁN THÀNH CÔNG</h2>
-<p>Cảm ơn bạn đã đặt vé.<br> Dưới đây là thông tin vé của bạn:</p>
+        <div class="ticket-box">
+            <div class="ticket-title">VÉ METRO</div>
+            <p><strong>Mã vé:</strong> <span th:text="${ticket.ticketId}">1</span></p>
+            <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType != null ? ticket.ticketType.name : 'Vé Metro'}">Vé Metro</span></p>
+            <p th:if="${ticket.ticketType != null and ticket.ticketType.durationDays != null}">
+                <strong>Thời hạn:</strong> <span th:text="${ticket.ticketType.durationDays}">30</span> ngày
+            </p>
+            <p><strong>Số tiền:</strong> <span th:text="${#numbers.formatInteger(payment.price, 0, 'POINT')} + ' đ'">30.000 đ</span></p>
+            <p><strong>Mã thanh toán:</strong> <span th:text="${payment.transactionCode}">METRO123</span></p>
+        </div>
 
-<div class="ticket-box">
-
-    <div class="ticket-title">VÉ TÀU</div>
-
-
-    <!-- Vé 1 lần -->
-    <div class="info-box" th:if="${ticket.ticketType.durationDays == null}">
-        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé 1 lần</span></p>
-        <p><strong>Ngày đi:</strong> <span th:text="${#dates.format(ticket.dateStart, 'dd/MM/yyyy')}">01/07/2025</span></p>
-        <p><strong>Giá vé:</strong>
-            <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
-        </p>
+        <a th:href="@{/myTicket}" class="btn-my-ticket">Mở vé của tôi</a>
     </div>
-
-    <!-- Vé thời hạn -->
-    <div class="info-box" th:if="${ticket.ticketType.durationDays != null}">
-        <p><strong>Loại vé:</strong> <span th:text="${ticket.ticketType.name}">Vé tháng</span></p>
-        <p><strong>Thời hạn:</strong> <span th:text="${ticket.ticketType.durationDays}">30</span> ngày</p>
-        <p><strong>Giá vé:</strong>
-            <span th:text="${#numbers.formatInteger(ticket.price, 0, 'POINT')}">15.000</span>đ
-        </p>
-    </div>
-
-</div>
-
-<a th:href="@{/myTicket}" class="btn-my-ticket">Vé của tôi</a>
-
+</main>
+<div th:replace="~{common/footer :: footer}"></div>
 <div th:replace="~{common/chatbox :: chatbox}"></div>
 </body>
 </html>

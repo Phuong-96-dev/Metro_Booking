@@ -3,7 +3,7 @@ package sum25.se180455.metro.pojo;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 public class Payment {
@@ -24,6 +24,27 @@ public class Payment {
     @OneToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
+
+    @Column(name = "transaction_code", length = 64)
+    private String transactionCode;
+
+    @Column(name = "sepay_transaction_id")
+    private Long sepayTransactionId;
+
+    @Column(name = "payment_content", columnDefinition = "NVARCHAR(1000)")
+    private String paymentContent;
+
+    @Column(name = "bank_reference", length = 100)
+    private String bankReference;
+
+    @Column(name = "sepay_gateway", length = 50)
+    private String sepayGateway;
+
+    @Column(name = "transfer_amount")
+    private Long transferAmount;
+
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt;
     public Payment() {
     }
 
@@ -100,5 +121,61 @@ public class Payment {
 
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
+    }
+
+    public String getTransactionCode() {
+        return transactionCode;
+    }
+
+    public void setTransactionCode(String transactionCode) {
+        this.transactionCode = transactionCode;
+    }
+
+    public Long getSepayTransactionId() {
+        return sepayTransactionId;
+    }
+
+    public void setSepayTransactionId(Long sepayTransactionId) {
+        this.sepayTransactionId = sepayTransactionId;
+    }
+
+    public String getPaymentContent() {
+        return paymentContent;
+    }
+
+    public void setPaymentContent(String paymentContent) {
+        this.paymentContent = paymentContent;
+    }
+
+    public String getBankReference() {
+        return bankReference;
+    }
+
+    public void setBankReference(String bankReference) {
+        this.bankReference = bankReference;
+    }
+
+    public String getSepayGateway() {
+        return sepayGateway;
+    }
+
+    public void setSepayGateway(String sepayGateway) {
+        this.sepayGateway = sepayGateway;
+    }
+
+    public Long getTransferAmount() {
+        return transferAmount;
+    }
+
+    public void setTransferAmount(Long transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
+    public LocalDateTime getPaidAt() {
+        return paidAt;
+    }
+
+    public void setPaidAt(LocalDateTime paidAt) {
+        this.paidAt = paidAt;
     }
 }

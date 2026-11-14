@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import sum25.se180455.metro.repository.MemberRepository;
 
 @Configuration
@@ -46,14 +47,18 @@ public class SecurityConfig {
     @Bean public SecurityFilterChain securityFilterChain(HttpSecurity http, MemberAuthenticationProvider provider,
             MemberRepository members, GoogleOidcUserService oidcService,
             ObjectProvider<ClientRegistrationRepository> registrations, AuthenticationSuccessHandler success) throws Exception {
+        RequestMatcher sePayWebhook = request -> HttpMethod.POST.matches(request.getMethod())
+                && (request.getContextPath() + "/api/webhooks/sepay").equals(request.getRequestURI());
         http.authenticationProvider(provider)
+            .csrf(csrf -> csrf.ignoringRequestMatchers(sePayWebhook))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(sePayWebhook).permitAll()
                 .requestMatchers("/oauth2/authorization/google-link").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/chat/message", "/api/chat/reset").permitAll()
                 .requestMatchers(HttpMethod.GET, "/chat/**").permitAll()
                 .requestMatchers("/scanner", "/api/scan", "/api/scan/**", "/api/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/tickets").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/tickets/**", "/api/tickets/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/tickets/**", "/api/tickets/**", "/api/payments/**").authenticated()
                 .requestMatchers("/adminManage/**", "/admindashboard", "/train-schedules/add", "/train-schedules/edit/**", "/train-schedules/delete/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/train-schedules", "/bus-routes/*/destinations/**").hasRole("ADMIN")
                 .requestMatchers("/profile", "/update-profile", "/myTicket", "/payment", "/payment/**", "/ticket/buy", "/ticket/use", "/feedback/send", "/account/**").authenticated()

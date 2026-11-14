@@ -1,139 +1,120 @@
 package sum25.se180455.metro.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sum25.se180455.metro.pojo.Member;
 import sum25.se180455.metro.pojo.Payment;
 import sum25.se180455.metro.pojo.Ticket;
-import sum25.se180455.metro.request.PaymentRequest;
-import sum25.se180455.metro.service.MemberService;
+import sum25.se180455.metro.request.SePayCheckout;
 import sum25.se180455.metro.service.PaymentService;
-import sum25.se180455.metro.service.ScanTicketService;
 import sum25.se180455.metro.service.TicketService;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Controller
 public class PaymentController {
-    @Autowired
-    private PaymentService paymentService;
-    @Autowired
-    private TicketService ticketService;
-    @Autowired
-    MemberService memberService;
-    @Autowired
-    private ScanTicketService scanTicketService;
+    private final PaymentService paymentService;
+    private final TicketService ticketService;
+
+    public PaymentController(PaymentService paymentService, TicketService ticketService) {
+        this.paymentService = paymentService;
+        this.ticketService = ticketService;
+    }
 
     @GetMapping("/payment")
-    public String showPaymentPage(@RequestParam(required = false) Long ticketId,
+    public String showPaymentPage(@RequestParam Long ticketId,
                                   HttpSession session,
-                                  Model model) {
+                                  Model model,
+                                  RedirectAttributes redirect) {
         Member member = (Member) session.getAttribute("member");
-
         if (member == null) {
             return "redirect:/login";
+        }
+        Ticket ticket = ticketService.findById(ticketId);
+        if (!isOwned(ticket, member)) {
+            redirect.addFlashAttribute("error", "Vé không tồn tại hoặc không thuộc tài khoản của bạn.");
+            return "redirect:/ticket";
+        }
+
+        Payment existing = paymentService.findOwnedPayment(ticketId, member.getMemberId()).orElse(null);
+        if (existing != null && "PAID".equalsIgnoreCase(existing.getStatus())) {
+            return "redirect:/payment/success?ticketId=" + ticketId;
+        }
+        if (!"Chưa thanh toán".equalsIgnoreCase(ticket.getStatus())) {
+            redirect.addFlashAttribute("error", "Vé không còn ở trạng thái chờ thanh toán.");
+            return "redirect:/myTicket";
         }
 
         model.addAttribute("member", member);
-
-        if (ticketId != null) {
-            Ticket ticket = ticketService.findById(ticketId);
-
-            // Kiểm tra vé thuộc về user và trạng thái chưa Active
-            if (ticket != null
-                    && ticket.getMember().getMemberId().equals(member.getMemberId())
-                    && !"Đang sử dụng".equalsIgnoreCase(ticket.getStatus())) {
-
-                model.addAttribute("ticket", ticket);
-            } else {
-                model.addAttribute("error", "Vé không hợp lệ hoặc đã thanh toán.");
-                return "redirect:/ticket"; // chuyển về danh sách vé hoặc trang chính
-            }
-        } else {
-            model.addAttribute("error", "Không tìm thấy vé cần thanh toán.");
-            return "redirect:/ticket";
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("sepayConfigured", paymentService.isSePayConfigured());
+        if (!paymentService.isSePayConfigured()) {
+            model.addAttribute("error", "SePay chưa được cấu hình trên máy chủ. Vui lòng liên hệ quản trị viên.");
+            return "member/payment";
         }
-
+        try {
+            SePayCheckout checkout = paymentService.prepareSePayCheckout(ticketId, member.getMemberId());
+            model.addAttribute("checkout", checkout);
+        } catch (IllegalArgumentException | IllegalStateException | SecurityException exception) {
+            model.addAttribute("error", exception.getMessage());
+        }
         return "member/payment";
     }
 
-
     @PostMapping("/payment")
-    @Transactional
-    public String processPayment(@RequestParam("ticketId") Long ticketId,
-                                 @RequestParam("paymentMethod") String paymentMethod,
+    public String processPayment(@RequestParam Long ticketId,
                                  HttpSession session,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirect) {
         Member member = (Member) session.getAttribute("member");
-
         if (member == null) {
             return "redirect:/login";
         }
-
-        Ticket ticket = ticketService.findById(ticketId);
-        if (ticket == null) {
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy vé.");
+        try {
+            paymentService.prepareSePayCheckout(ticketId, member.getMemberId());
+            return "redirect:/payment?ticketId=" + ticketId;
+        } catch (IllegalArgumentException | IllegalStateException | SecurityException exception) {
+            redirect.addFlashAttribute("error", exception.getMessage());
             return "redirect:/ticket";
         }
-
-        if (!ticket.getMember().getMemberId().equals(member.getMemberId())
-                || "Đang sử dụng".equalsIgnoreCase(ticket.getStatus())) {
-            redirectAttributes.addFlashAttribute("error", "Vé không hợp lệ hoặc đã thanh toán.");
-            return "redirect:/ticket";
-        }
-
-        // Cập nhật trạng thái vé
-        ticket.setStatus("Chưa sử dụng");
-        ticketService.save(ticket);
-
-        // Tạo payment và lưu
-        Payment payment = new Payment();
-        payment.setTicket(ticket);
-        payment.setMember(member);
-        payment.setPrice(ticket.getPrice());
-        payment.setPaymentMethod(paymentMethod);
-        payment.setStatus("Chưa sử dụng");
-        payment.setPaymentDate(LocalDate.now());
-
-        paymentService.save(payment);
-        scanTicketService.issueForMetroTicket(ticket);
-
-
-        redirectAttributes.addFlashAttribute("Đã thanh toán", "Thanh toán thành công!");
-        return "redirect:/myTicket";
-
-
     }
 
+    @GetMapping("/api/payments/{ticketId}/status")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> paymentStatus(@PathVariable Long ticketId, HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return ResponseEntity.status(401).body(Map.of("status", "UNAUTHENTICATED"));
+        }
+        return paymentService.findOwnedPayment(ticketId, member.getMemberId())
+                .<ResponseEntity<Map<String, Object>>>map(payment -> ResponseEntity.ok(Map.of(
+                        "status", payment.getStatus(),
+                        "paid", "PAID".equalsIgnoreCase(payment.getStatus()),
+                        "redirectUrl", "/payment/success?ticketId=" + ticketId)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/payment/success")
-    public String showSuccessPage(@RequestParam("ticketId") Long ticketId, Model model, HttpSession session) {
+    public String showSuccessPage(@RequestParam Long ticketId, Model model, HttpSession session) {
         Member member = (Member) session.getAttribute("member");
         if (member == null) {
             return "redirect:/login";
         }
-
         Ticket ticket = ticketService.findById(ticketId);
-        if (ticket == null || !ticket.getMember().getMemberId().equals(member.getMemberId())) {
-            return "redirect:/ticket";
+        Payment payment = paymentService.findOwnedPayment(ticketId, member.getMemberId()).orElse(null);
+        if (!isOwned(ticket, member) || payment == null || !"PAID".equalsIgnoreCase(payment.getStatus())) {
+            return "redirect:/payment?ticketId=" + ticketId;
         }
-
         model.addAttribute("ticket", ticket);
-        return "member/success"; // ← file success.html trong templates/member
+        model.addAttribute("payment", payment);
+        return "member/success";
     }
 
-
-
-
-
-
+    private boolean isOwned(Ticket ticket, Member member) {
+        return ticket != null && ticket.getMember() != null
+                && ticket.getMember().getMemberId().equals(member.getMemberId());
+    }
 }

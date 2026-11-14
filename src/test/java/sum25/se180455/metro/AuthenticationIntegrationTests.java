@@ -8,13 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import sum25.se180455.metro.main.MetroApplication;
 import sum25.se180455.metro.pojo.*;
 import sum25.se180455.metro.repository.*;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.HexFormat;
 import java.util.UUID;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
@@ -37,6 +44,25 @@ class AuthenticationIntegrationTests {
     private String ip() { return UUID.randomUUID().toString(); }
     private org.springframework.test.web.servlet.request.RequestPostProcessor address(String address) {
         return request -> { request.setRemoteAddr(address); return request; };
+    }
+    private MockHttpServletRequestBuilder signedWebhook(String body, long timestamp) throws Exception {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(new SecretKeySpec("test-sepay-secret".getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+        mac.update((timestamp + ".").getBytes(StandardCharsets.UTF_8));
+        String signature = "sha256=" + HexFormat.of().formatHex(mac.doFinal(body.getBytes(StandardCharsets.UTF_8)));
+        return post("/api/webhooks/sepay")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-SePay-Timestamp", Long.toString(timestamp))
+                .header("X-SePay-Signature", signature)
+                .content(body);
+    }
+    private String webhook(long id, String account, String code, long amount) {
+        return """
+                {"id":%d,"gateway":"Vietcombank","transactionDate":"2026-11-14 12:00:00",
+                 "accountNumber":"%s","subAccount":"","code":"%s",
+                 "content":"%s thanh toan ve","transferType":"in","description":"test",
+                 "transferAmount":%d,"accumulated":1000000,"referenceCode":"FTTEST%d"}
+                """.formatted(id, account, code, code, amount, id);
     }
     private Member member(String role) {
         Member member = new Member(); member.setName("Nguyễn An");
@@ -215,10 +241,56 @@ class AuthenticationIntegrationTests {
         Ticket ticket = tickets.findByMember_MemberId(member.getMemberId()).get(0);
         assertThat(ticket.getStatus()).isEqualTo("Chưa thanh toán");
         mvc.perform(get("/payment").session(session).param("ticketId", ticket.getTicketId().toString()))
-                .andExpect(status().isOk()).andExpect(content().string(org.hamcrest.Matchers.containsString("name=\"_csrf\"")));
-        mvc.perform(post("/payment").session(session).with(csrf()).param("ticketId", ticket.getTicketId().toString()).param("paymentMethod", "banking"))
-                .andExpect(redirectedUrl("/myTicket"));
-        assertThat(payments.findAll()).anyMatch(payment -> payment.getMember().getMemberId().equals(member.getMemberId()));
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Mã QR thanh toán SePay")));
+        Payment pending = payments.findByTicket_TicketId(ticket.getTicketId()).orElseThrow();
+        assertThat(pending.getStatus()).isEqualTo("PENDING");
+        assertThat(pending.getTransactionCode()).startsWith("METRO");
+        mvc.perform(get("/payment/success").session(session).param("ticketId", ticket.getTicketId().toString()))
+                .andExpect(redirectedUrl("/payment?ticketId=" + ticket.getTicketId()));
+
+        String webhook = webhook(92704, "0123456789", pending.getTransactionCode(), 300000);
+        mvc.perform(post("/api/webhooks/sepay")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(webhook))
+                .andExpect(status().isUnauthorized())
+                .andExpect(header().doesNotExist("Location"))
+                .andExpect(jsonPath("$.success").value(false));
+        mvc.perform(post("/api/webhooks/sepay")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-SePay-Timestamp", Long.toString(Instant.now().getEpochSecond()))
+                        .header("X-SePay-Signature", "sha256=wrong")
+                        .content(webhook))
+                .andExpect(status().isUnauthorized())
+                .andExpect(header().doesNotExist("Location"));
+        long expired = Instant.now().minusSeconds(301).getEpochSecond();
+        mvc.perform(signedWebhook(webhook, expired))
+                .andExpect(status().isUnauthorized())
+                .andExpect(header().doesNotExist("Location"));
+
+        long now = Instant.now().getEpochSecond();
+        mvc.perform(signedWebhook(webhook(92701, "0123456789", "METROUNKNOWN1", 300000), now))
+                .andExpect(status().isCreated());
+        mvc.perform(signedWebhook(webhook(92702, "9999999999", pending.getTransactionCode(), 300000), now))
+                .andExpect(status().isCreated());
+        mvc.perform(signedWebhook(webhook(92703, "0123456789", pending.getTransactionCode(), 299999), now))
+                .andExpect(status().isCreated());
+        assertThat(payments.findById(pending.getPaymentId()).orElseThrow().getStatus()).isEqualTo("PENDING");
+
+        mvc.perform(signedWebhook(webhook, now))
+                .andExpect(status().isCreated())
+                .andExpect(header().doesNotExist("Location"))
+                .andExpect(jsonPath("$.success").value(true));
+        mvc.perform(signedWebhook(webhook, now))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.success").value(true));
+
+        Payment paid = payments.findById(pending.getPaymentId()).orElseThrow();
+        assertThat(paid.getStatus()).isEqualTo("PAID");
+        assertThat(paid.getSepayTransactionId()).isEqualTo(92704L);
+        assertThat(tickets.findById(ticket.getTicketId()).orElseThrow().getStatus()).isEqualTo("Chưa sử dụng");
+        mvc.perform(get("/api/payments/{ticketId}/status", ticket.getTicketId()).session(session))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.paid").value(true));
         mvc.perform(get("/myTicket").session(session)).andExpect(status().isOk());
         mvc.perform(get("/payment/success").session(session).param("ticketId", ticket.getTicketId().toString())).andExpect(status().isOk());
         mvc.perform(post("/ticket/use").session(session).with(csrf()).param("ticketId", ticket.getTicketId().toString())).andExpect(redirectedUrl("/feedback"));

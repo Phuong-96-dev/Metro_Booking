@@ -1,3 +1,24 @@
+.success-page {
+    min-height: 65vh;
+    display: grid;
+    place-items: center;
+    padding: 40px 16px;
+    background: #f3f7fb;
+    font-family: Arial, sans-serif;
+}
+
+.success-card {
+    width: min(100%, 560px);
+    padding: 34px;
+    text-align: center;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 16px 44px rgba(11, 76, 138, .13);
+}
+
+.success-card h1 { color: #073661; margin: 8px 0 10px; }
+.success-card > p { color: #5c6b7a; line-height: 1.5; }
+
 .icon-success {
     font-size: 60px;
     color: #28a745;
@@ -5,7 +26,7 @@
 }
 
 .ticket-box {
-    display: inline-block;
+    display: block;
     margin-top: 30px;
     border: 1.5px solid #ddd;
     border-radius: 12px;
@@ -13,7 +34,7 @@
     padding: 25px 40px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     text-align: left;
-    max-width: 340px;
+    max-width: none;
 }
 
 .ticket-title {
