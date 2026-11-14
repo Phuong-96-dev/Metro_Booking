@@ -6,6 +6,8 @@ Hướng dẫn đăng ký, đăng nhập, Google OIDC, database migration, biế
 
 Chatbot Gemini, cấu hình `GEMINI_API_KEY` / `GEMINI_MODEL`, cách chạy và kiểm thử: [docs/GEMINI_CHAT.md](docs/GEMINI_CHAT.md).
 
+Quét QR/barcode cho vé, migration database và cách dùng cho thành viên/admin: [docs/TICKET_SCAN.md](docs/TICKET_SCAN.md).
+
 ## Student ticket verification
 
 Student ticket eligibility is granted only after an ADMIN approves a submitted

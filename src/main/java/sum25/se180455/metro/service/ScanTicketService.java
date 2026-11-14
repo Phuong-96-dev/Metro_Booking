@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 @Service
 public class ScanTicketService {
 
+    private static final String METRO_ORDER_PREFIX = "METRO-TICKET-";
     private static final char[] ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".toCharArray();
     private static final int CODE_RANDOM_LENGTH = 16;
     private static final Pattern CODE_PATTERN = Pattern.compile("^TK[A-Z2-9]{16}$");
@@ -40,6 +41,36 @@ public class ScanTicketService {
     @Transactional
     public ScanTicket issueTicket(IssueTicketRequest req) {
         return scanTicketRepository.findByOrderRef(req.orderRef()).orElseGet(() -> create(req));
+    }
+
+    @Transactional
+    public ScanTicket issueForMetroTicket(Ticket ticket) {
+        if (ticket == null || ticket.getTicketId() == null || ticket.getMember() == null) {
+            throw new IllegalArgumentException("Vé Metro chưa có đủ thông tin để tạo mã quét");
+        }
+        String eventName = ticket.getTicketType() == null || ticket.getTicketType().getName() == null
+                ? "Vé Metro #" + ticket.getTicketId()
+                : ticket.getTicketType().getName();
+        return issueTicket(new IssueTicketRequest(
+                ticket.getMember().getMemberId(),
+                metroOrderRef(ticket.getTicketId()),
+                eventName,
+                ticket.getDate_end()));
+    }
+
+    public static String metroOrderRef(Long ticketId) {
+        return METRO_ORDER_PREFIX + ticketId;
+    }
+
+    public static Long metroTicketId(String orderRef) {
+        if (orderRef == null || !orderRef.startsWith(METRO_ORDER_PREFIX)) {
+            return null;
+        }
+        try {
+            return Long.valueOf(orderRef.substring(METRO_ORDER_PREFIX.length()));
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     private ScanTicket create(IssueTicketRequest req) {
@@ -76,9 +107,13 @@ public class ScanTicketService {
     public ScanResponse scan(String rawCode, String scannedBy) {
         String code = rawCode == null ? "" : rawCode.trim().toUpperCase();
         String scanner = (scannedBy == null || scannedBy.isBlank()) ? "unknown" : scannedBy.trim();
+        if (scanner.length() > 100) {
+            scanner = scanner.substring(0, 100);
+        }
 
         if (!CODE_PATTERN.matcher(code).matches()) {
-            return finish(ScanResult.INVALID_FORMAT, "Mã không đúng định dạng", code, null, scanner);
+            String safeCode = code.length() > 100 ? code.substring(0, 100) : code;
+            return finish(ScanResult.INVALID_FORMAT, "Mã không đúng định dạng", safeCode, null, scanner);
         }
 
         LocalDateTime now = LocalDateTime.now();

@@ -20,7 +20,7 @@
             <th>HSD</th>
             <th>Mã vé</th>
             <th>Trạng thái</th>
-            <th>Hành động</th> <!-- Cột mới -->
+            <th>Mã QR</th>
         </tr>
         </thead>
         <tbody>
@@ -29,16 +29,11 @@
             <td th:text="${ticket.date_end != null ? #temporals.format(ticket.date_end, 'dd-MM-yyyy') : '---'}">HSD</td>
             <td th:text="${ticket.ticketId}">Mã vé</td>
             <td th:text="${ticket.status}">Trạng thái</td>
-            <td>
-                <form th:action="@{/ticket/use}" method="post">
-                    <input type="hidden" name="ticketId" th:value="${ticket.ticketId}" />
-
-                    <button type="submit"
-                            class="btn btn-primary"
-                            th:disabled="${ticket.status == 'Hết hạn'}">
-                        Dùng vé
-                    </button>
-                </form>
+            <td th:with="scanTicket=${scanTicketsByTicketId[ticket.ticketId]}">
+                <a class="myticket-qr-link"
+                   th:if="${scanTicket != null}"
+                   th:href="@{/tickets/{code}(code=${scanTicket.code})}">Xem mã vé</a>
+                <span th:if="${scanTicket == null}">Chưa có mã</span>
             </td>
         </tr>
         </tbody>

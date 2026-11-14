@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -14,6 +15,7 @@ import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.request.PaymentRequest;
 import sum25.se180455.metro.service.MemberService;
 import sum25.se180455.metro.service.PaymentService;
+import sum25.se180455.metro.service.ScanTicketService;
 import sum25.se180455.metro.service.TicketService;
 
 import java.time.LocalDate;
@@ -28,6 +30,8 @@ public class PaymentController {
     private TicketService ticketService;
     @Autowired
     MemberService memberService;
+    @Autowired
+    private ScanTicketService scanTicketService;
 
     @GetMapping("/payment")
     public String showPaymentPage(@RequestParam(required = false) Long ticketId,
@@ -64,6 +68,7 @@ public class PaymentController {
 
 
     @PostMapping("/payment")
+    @Transactional
     public String processPayment(@RequestParam("ticketId") Long ticketId,
                                  @RequestParam("paymentMethod") String paymentMethod,
                                  HttpSession session,
@@ -100,6 +105,7 @@ public class PaymentController {
         payment.setPaymentDate(LocalDate.now());
 
         paymentService.save(payment);
+        scanTicketService.issueForMetroTicket(ticket);
 
 
         redirectAttributes.addFlashAttribute("Đã thanh toán", "Thanh toán thành công!");

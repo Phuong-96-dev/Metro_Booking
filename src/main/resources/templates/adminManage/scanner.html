@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quét vé</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         body { font-family: system-ui, sans-serif; background: #f3f4f6; margin: 0; padding: 16px; }
@@ -26,8 +28,7 @@
     <h1>Soát vé</h1>
 
     <div class="box">
-        <label>Nhân viên quét</label>
-        <input type="text" id="scanner" value="staff-01">
+        Nhân viên đang đăng nhập: <strong th:text="${scannerName}">admin</strong>
     </div>
 
     <div id="result"></div>
@@ -55,17 +56,35 @@
 
 <script>
     const resultBox = document.getElementById('result');
-    const scannerName = () => document.getElementById('scanner').value || 'unknown';
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
     let locked = false;
     let qr = null;
 
     function showResult(r) {
         resultBox.style.display = 'block';
         resultBox.className = r.success ? 'ok' : 'fail';
-        resultBox.innerHTML = '<b>' + (r.success ? '✔ ' : '✘ ') + r.message + '</b>'
-            + (r.eventName ? '<small>Sự kiện: ' + r.eventName + '</small>' : '')
-            + (r.code ? '<small>Mã: ' + r.code + '</small>' : '');
+        resultBox.replaceChildren();
+        const title = document.createElement('b');
+        title.textContent = (r.success ? '✔ ' : '✘ ') + (r.message || 'Không thể kiểm tra vé');
+        resultBox.appendChild(title);
+        if (r.eventName) appendDetail('Loại vé: ' + r.eventName);
+        if (r.code) appendDetail('Mã: ' + r.code);
         if (navigator.vibrate) navigator.vibrate(r.success ? 100 : [100, 60, 100]);
+    }
+
+    function appendDetail(text) {
+        const detail = document.createElement('small');
+        detail.textContent = text;
+        resultBox.appendChild(detail);
+    }
+
+    async function readResponse(res) {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            return {success: false, message: data.error || 'Yêu cầu bị từ chối (' + res.status + ')'};
+        }
+        return data;
     }
 
     async function sendCode(code) {
@@ -74,10 +93,10 @@
         try {
             const res = await fetch('/api/scan', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({code: code, scannedBy: scannerName()})
+                headers: {'Content-Type': 'application/json', [csrfHeader]: csrfToken},
+                body: JSON.stringify({code: code})
             });
-            showResult(await res.json());
+            showResult(await readResponse(res));
         } catch (e) {
             showResult({success: false, message: 'Lỗi kết nối server'});
         } finally {
@@ -114,9 +133,16 @@
         if (!f) return alert('Chọn ảnh trước');
         const fd = new FormData();
         fd.append('file', f);
-        fd.append('scannedBy', scannerName());
-        const res = await fetch('/api/scan/image', {method: 'POST', body: fd});
-        showResult(await res.json());
+        try {
+            const res = await fetch('/api/scan/image', {
+                method: 'POST',
+                headers: {[csrfHeader]: csrfToken},
+                body: fd
+            });
+            showResult(await readResponse(res));
+        } catch (e) {
+            showResult({success: false, message: 'Lỗi kết nối server'});
+        }
     };
 </script>
 </body>

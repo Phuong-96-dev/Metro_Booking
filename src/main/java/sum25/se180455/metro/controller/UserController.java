@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sum25.se180455.metro.pojo.Member;
 import sum25.se180455.metro.pojo.Payment;
+import sum25.se180455.metro.pojo.ScanTicket;
 import sum25.se180455.metro.pojo.Ticket;
 import sum25.se180455.metro.repository.MemberRepository;
 import sum25.se180455.metro.repository.PaymentRepository;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -33,6 +35,8 @@ public class UserController {
     private TicketService ticketService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private ScanTicketService scanTicketService;
 
     @Autowired
     private BusRouteService busRouteService;
@@ -209,7 +213,15 @@ public class UserController {
         }
 
 
+        Map<Long, ScanTicket> scanTicketsByTicketId = scanTicketService.getByUser(memberId).stream()
+                .filter(scanTicket -> ScanTicketService.metroTicketId(scanTicket.getOrderRef()) != null)
+                .collect(Collectors.toMap(
+                        scanTicket -> ScanTicketService.metroTicketId(scanTicket.getOrderRef()),
+                        scanTicket -> scanTicket,
+                        (first, ignored) -> first));
+
         model.addAttribute("tickets", activeTickets);
+        model.addAttribute("scanTicketsByTicketId", scanTicketsByTicketId);
         return "member/myTicket";
     }
 

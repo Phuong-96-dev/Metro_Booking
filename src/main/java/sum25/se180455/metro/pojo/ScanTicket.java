@@ -25,7 +25,7 @@ public class ScanTicket {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "event_name", nullable = false, length = 255)
+    @Column(name = "event_name", nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String eventName;
 
     @Enumerated(EnumType.STRING)
